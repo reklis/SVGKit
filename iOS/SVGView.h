@@ -9,7 +9,7 @@
 
 @interface SVGView : UIView { }
 
-@property (nonatomic, retain) SVGDocument *document;
+@property (nonatomic, strong) SVGDocument *document;
 
 - (id)initWithDocument:(SVGDocument *)document; // set frame to position
 

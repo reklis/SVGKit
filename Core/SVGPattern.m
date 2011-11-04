@@ -11,7 +11,7 @@
 
 + (SVGPattern *)patternWithUIColor:(UIColor *)color
 {
-    SVGPattern* p = [[[SVGPattern alloc] init] autorelease];
+    SVGPattern* p = [[SVGPattern alloc] init];
     p.color = color;
     return p;
 }

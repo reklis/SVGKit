@@ -21,13 +21,5 @@
 	return YES;
 }
 
-- (void)dealloc {
-	self.window = nil;
-	self.splitViewController = nil;
-	self.rootViewController = nil;
-	self.detailViewController = nil;
-	
-	[super dealloc];
-}
 
 @end

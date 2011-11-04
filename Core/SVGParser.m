@@ -42,68 +42,59 @@ static NSDictionary *NSDictionaryFromCSSAttributes (NSString *css);
 static NSDictionary *elementMap;
 
 - (id)initWithPath:(NSString *)aPath document:(SVGDocument *)document {
+    NSData *data = [NSData dataWithContentsOfFile:aPath];
+    return [self initWithData:data document:document];
+}
+
+-(id)initWithData:(NSData *)data document:(SVGDocument *)document {
 	self = [super init];
 	if (self) {
-		_path = [aPath copy];
+        inputData = data;
+        
 		_document = document;
 		_storedChars = [[NSMutableString alloc] init];
 		_elementStack = [[NSMutableArray alloc] init];
 		_failed = NO;
 		
-		if (!elementMap) {
-			elementMap = [[NSDictionary dictionaryWithObjectsAndKeys:
-						   [SVGCircleElement class], @"circle",
-						   [SVGDefsElement class], @"defs",
-						   [SVGDescriptionElement class], @"description",
-						   [SVGEllipseElement class], @"ellipse",
-						   [SVGGroupElement class], @"g",
-						   [SVGImageElement class], @"image",
-						   [SVGLineElement class], @"line",
-						   [SVGPathElement class], @"path",
-						   [SVGPolygonElement class], @"polygon",
-						   [SVGPolylineElement class], @"polyline",
-						   [SVGRectElement class], @"rect",
-						   [SVGTitleElement class], @"title", nil] retain];
-		}
+        //Removed the "IF" statement here.. for some reason it would cause subsequent renders to fail
+        //elementMap became messed up somehow
+        //#UNSURE
+        elementMap = [NSDictionary dictionaryWithObjectsAndKeys:
+                      [SVGCircleElement class], @"circle",
+                      [SVGDefsElement class], @"defs",
+                      [SVGDescriptionElement class], @"description",
+                      [SVGEllipseElement class], @"ellipse",
+                      [SVGGroupElement class], @"g",
+                      [SVGImageElement class], @"image",
+                      [SVGLineElement class], @"line",
+                      [SVGPathElement class], @"path",
+                      [SVGPolygonElement class], @"polygon",
+                      [SVGPolylineElement class], @"polyline",
+                      [SVGRectElement class], @"rect",
+                      [SVGTitleElement class], @"title", nil];
 	}
-	return self;
-}
-
-- (void)dealloc {
-	[_path release];
-	[_storedChars release];
-	[_elementStack release];
-	
-	[super dealloc];
+    
+    return self;
 }
 
 - (BOOL)parse:(NSError **)outError {
-	const char *cPath = [_path fileSystemRepresentation];
-	FILE *file = fopen(cPath, "r");
-	
-	if (!file)
-		return NO;
-	
-	xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt(&SAXHandler, self, NULL, 0, NULL);
+	xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt(&SAXHandler, (__bridge void *) self, NULL, 0, NULL);
 	
 	if (!ctx) {
-		fclose(file);
+		return NO;
+	}
+    
+    size_t length = [inputData length];
+    const char *bytePtr = (const char *)[inputData bytes];
+	
+	if (!ctx) {
 		return NO;
 	}
 	
-	size_t read = 0;
-	char buff[READ_CHUNK_SZ];
-	
-	while ((read = fread(buff, 1, READ_CHUNK_SZ, file)) > 0) {
-		if (xmlParseChunk(ctx, buff, read, 0) != 0) {
-			_failed = YES;
-			NSLog(@"An error occured while parsing the current XML chunk");
-			
-			break;
-		}
-	}
-	
-	fclose(file);
+    if (xmlParseChunk(ctx, bytePtr, length, 0) != 0) {
+        _failed = YES;
+        NSLog(@"An error occured while parsing the current XML chunk");
+    }
 	
 	if (!_failed)
 		xmlParseChunk(ctx, NULL, 0, 1); // EOF
@@ -140,7 +131,6 @@ static NSDictionary *elementMap;
 	[element parseAttributes:attributes];
 	
 	[_elementStack addObject:element];
-	[element release];
 	
 	if ([elementClass shouldStoreContent]) {
 		[_storedChars setString:@""];
@@ -155,11 +145,11 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 							 const xmlChar *URI, int nb_namespaces, const xmlChar **namespaces,
 							 int nb_attributes, int nb_defaulted, const xmlChar **attributes) {
 	
-	SVGParser *self = (SVGParser *) ctx;
+	SVGParser *self = (__bridge SVGParser *) ctx;
 	
 	NSString *name = NSStringFromLibxmlString(localname);
 	NSMutableDictionary *attrs = NSDictionaryFromLibxmlAttributes(attributes, nb_attributes);
-	
+    
 	[self handleStartElement:name attributes:attrs];
 }
 
@@ -169,12 +159,11 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 		return;
 	}
 	
-	SVGElement *element = [[_elementStack lastObject] retain];
+	SVGElement *element = [_elementStack lastObject];
 	
 	if (![element.localName isEqualToString:name]) {
 		NSLog(@"XML tag mismatch (%@, %@)", element.localName, name);
 		
-		[element release];
 		_failed = YES;
 		
 		return;
@@ -185,8 +174,6 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	SVGElement *parent = [_elementStack lastObject];
 	[parent addChild:element];
 	
-	[element release];
-	
 	if (_storingChars) {
 		[element parseContent:_storedChars];
 		
@@ -196,7 +183,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 }
 
 static void	endElementSAX (void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI) {
-	SVGParser *self = (SVGParser *) ctx;
+	SVGParser *self = (__bridge SVGParser *) ctx;
 	[self handleEndElement:NSStringFromLibxmlString(localname)];
 }
 
@@ -211,7 +198,7 @@ static void	endElementSAX (void *ctx, const xmlChar *localname, const xmlChar *p
 }
 
 static void	charactersFoundSAX (void *ctx, const xmlChar *chars, int len) {
-	SVGParser *self = (SVGParser *) ctx;
+	SVGParser *self = (__bridge SVGParser *) ctx;
 	[self handleFoundCharacters:chars length:len];
 }
 
@@ -220,7 +207,7 @@ static void	charactersFoundSAX (void *ctx, const xmlChar *chars, int len) {
 }
 
 static void errorEncounteredSAX (void *ctx, const char *msg, ...) {
-	[ (SVGParser *) ctx handleError];
+	[ (__bridge SVGParser *) ctx handleError];
 	NSLog(@"Error encountered during parse: %s", msg);
 }
 
@@ -282,7 +269,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 				 forKey:NSStringFromLibxmlString(attrs[i])];
 	}
 	
-	return [dict autorelease];
+	return dict;
 }
 
 #define MAX_ACCUM 256
@@ -335,7 +322,7 @@ static NSDictionary *NSDictionaryFromCSSAttributes (NSString *css) {
 		accum[accumIdx++] = c;
 	}
 	
-	return [dict autorelease];
+	return dict;
 }
 
 @end

@@ -12,10 +12,10 @@
 	NSString *_name;
 }
 
-@property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
-@property (nonatomic, retain) IBOutlet SVGView *contentView;
+@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, strong) IBOutlet SVGView *contentView;
 
-@property (nonatomic, retain) id detailItem;
+@property (nonatomic, strong) id detailItem;
 
 - (IBAction)animate:(id)sender;
 

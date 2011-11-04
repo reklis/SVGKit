@@ -408,17 +408,17 @@ CGMutablePathRef SVGPathFromPointsInString (const char *string, boolean_t close)
 	return path;
 }
 
-CGColorRef CGColorWithSVGColor (SVGColor color) {
-	CGColorRef outColor = NULL;
+UIColor* CGColorWithSVGColor (SVGColor color) {
+	UIColor *returnColor = NULL;
 	
 #if TARGET_OS_IPHONE
-	outColor = [UIColor colorWithRed:RGB_N(color.r)
+	returnColor = [UIColor colorWithRed:RGB_N(color.r)
 							   green:RGB_N(color.g)
 								blue:RGB_N(color.b)
-							   alpha:RGB_N(color.a)].CGColor;
+							   alpha:RGB_N(color.a)];
 #else
-	outColor = CGColorCreateGenericRGB(RGB_N(color.r), RGB_N(color.g), RGB_N(color.b), RGB_N(color.a));
+	returnColor = CGColorCreateGenericRGB(RGB_N(color.r), RGB_N(color.g), RGB_N(color.b), RGB_N(color.a));
 #endif
 	
-	return outColor;
+	return returnColor;
 }

@@ -11,7 +11,7 @@
 
 @interface DetailViewController ()
 
-@property (nonatomic, retain) UIPopoverController *popoverController;
+@property (nonatomic, strong) UIPopoverController *popoverController;
 
 - (void)loadResource:(NSString *)name;
 - (void)shakeHead;
@@ -28,22 +28,18 @@
 {
     [super viewDidLoad];
     
-    UIPinchGestureRecognizer* zoom = [[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinch:)] autorelease];
+    UIPinchGestureRecognizer* zoom = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinch:)];
     [self.view addGestureRecognizer:zoom];
 }
 
 - (void)dealloc {
-	self.popoverController = nil;
-	self.toolbar = nil;
 	self.detailItem = nil;
 	
-	[super dealloc];
 }
 
 - (void)setDetailItem:(id)newDetailItem {
 	if (detailItem != newDetailItem) {
-		[detailItem release];
-		detailItem = [newDetailItem retain];
+		detailItem = newDetailItem;
 		
 		[self loadResource:newDetailItem];
 	}
@@ -60,7 +56,6 @@
 	self.contentView.document = document;
 	
 	if (_name) {
-		[_name release];
 		_name = nil;
 	}
 	
@@ -97,7 +92,6 @@
 	[items insertObject:barButtonItem atIndex:0];
 	
 	[toolbar setItems:items animated:YES];
-	[items release];
 	
 	self.popoverController = pc;
 }
@@ -110,7 +104,6 @@
 	[items removeObjectAtIndex:0];
 	
 	[toolbar setItems:items animated:YES];
-	[items release];
 	
 	self.popoverController = nil;
 }

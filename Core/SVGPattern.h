@@ -15,7 +15,7 @@
 + (SVGPattern*) patternWithUIColor:(UIColor*)color;
 + (SVGPattern*) patternWithImage:(UIImage*)image;
 
-@property (readwrite,nonatomic,retain) UIColor* color;
+@property (readwrite,nonatomic,strong) UIColor* color;
 
 #else
 

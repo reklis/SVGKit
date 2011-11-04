@@ -24,16 +24,10 @@
 	return self;
 }
 
-- (void)dealloc {
-	[_document release];
-	
-	[super dealloc];
-}
 
 - (void)setDocument:(SVGDocument *)aDocument {
 	if (_document != aDocument) {
-		[_document release];
-		_document = [aDocument retain];
+		_document = aDocument;
 
         for (NSInteger i = [self.layer.sublayers count] - 1; i >= 0; i--) {
             CALayer *sublayer = [self.layer.sublayers objectAtIndex:i];

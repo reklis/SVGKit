@@ -18,9 +18,8 @@
 @synthesize href = _href;
 
 - (void)dealloc {
-    [_href release], _href = nil;
+    _href = nil;
 
-    [super dealloc];
 }
 
 - (id)init {
@@ -52,12 +51,12 @@
 	}
 
 	if ((value = [attributes objectForKey:@"href"])) {
-		_href = [value retain];
+		_href = value;
 	}
 }
 
 - (CALayer *)layer {
-	__block CALayer *layer = [CALayer layer];
+	__weak CALayer *layer = [CALayer layer];
 
 	layer.name = self.identifier;
     layer.frame = CGRectMake(_x, _y, _width, _height);

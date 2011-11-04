@@ -12,6 +12,6 @@
 	NSArray *_sampleNames;
 }
 
-@property (nonatomic, retain) IBOutlet DetailViewController *detailViewController;
+@property (nonatomic, strong) IBOutlet DetailViewController *detailViewController;
 
 @end

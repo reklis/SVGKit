@@ -41,19 +41,11 @@
 	self = [self init];
 	if (self) {
 		_document = aDocument;
-		_localName = [name retain];
+		_localName = name;
 	}
 	return self;
 }
 
-- (void)dealloc {
-	[_children release];
-	[_stringValue release];
-	[_localName release];
-	[_identifier release];
-	
-	[super dealloc];
-}
 
 - (void)loadDefaults {
 	// to be overriden by subclasses

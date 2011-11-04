@@ -18,9 +18,9 @@
 
 @property (nonatomic, readonly) NSArray *children;
 @property (nonatomic, readonly, copy) NSString *stringValue;
-@property (nonatomic, readonly) NSString *localName;
+@property (weak, nonatomic, readonly) NSString *localName;
 
-@property (nonatomic, readwrite, retain) NSString *identifier; // 'id' is reserved
+@property (nonatomic, readwrite, strong) NSString *identifier; // 'id' is reserved
 
 + (BOOL)shouldStoreContent; // to optimize parser, default is NO
 

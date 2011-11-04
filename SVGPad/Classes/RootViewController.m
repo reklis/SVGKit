@@ -21,12 +21,6 @@
 	return self;
 }
 
-- (void)dealloc {
-	[_detailViewController release];
-	[_sampleNames release];
-	
-	[super dealloc];
-}
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
@@ -49,8 +43,8 @@
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	
 	if (!cell) {
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-									   reuseIdentifier:CellIdentifier] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+									   reuseIdentifier:CellIdentifier];
 	}
 	
 	cell.textLabel.text = [_sampleNames objectAtIndex:indexPath.row];

@@ -18,7 +18,7 @@
 
 @property (nonatomic, copy) NSString *version;
 
-- (BOOL)parseFileAtPath:(NSString *)aPath;
+- (BOOL)parseData:(NSData *)data;
 
 - (SVGElement *)findFirstElementOfClass:(Class)class;
 
@@ -58,22 +58,32 @@
 }
 
 + (id)documentWithContentsOfFile:(NSString *)aPath {
-	return [[[[self class] alloc] initWithContentsOfFile:aPath] autorelease];
+	return [[[self class] alloc] initWithContentsOfFile:aPath];
+}
+
++ (id)documentWithData:(NSData *)data {
+    return [[[self class] alloc] initWithData:data];
 }
 
 - (id)initWithContentsOfFile:(NSString *)aPath {
 	NSParameterAssert(aPath != nil);
+    
+    NSData *data = [NSData dataWithContentsOfFile:aPath];
 	
+	return [self initWithData:data];
+}
+
+- (id)initWithData:(NSData *)data {
 	self = [super initWithDocument:self name:@"svg"];
 	if (self) {
 		_width = _height = 100;
 		
-		if (![self parseFileAtPath:aPath]) {
-			[self release];
+		if (![self parseData:data]) {
 			return nil;
 		}
 	}
-	return self;
+    
+    return self;
 }
 
 - (id) initWithFrame:(CGRect)frame
@@ -86,24 +96,18 @@
 	return self;
 }
 
-- (void)dealloc {
-	[_version release];
-	[super dealloc];
-}
 
-- (BOOL)parseFileAtPath:(NSString *)aPath {
+- (BOOL)parseData:(NSData *)data {
 	NSError *error = nil;
 	
-	SVGParser *parser = [[SVGParser alloc] initWithPath:aPath document:self];
+	SVGParser *parser = [[SVGParser alloc] initWithData:data document:self];
 	
 	if (![parser parse:&error]) {
 		NSLog(@"Parser error: %@", error);
-		[parser release];
 		
 		return NO;
 	}
 	
-	[parser release];
 	
 	return YES;
 }

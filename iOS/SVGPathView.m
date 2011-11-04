@@ -50,8 +50,8 @@
         
         [self setDocument:doc];
         
-        [newPathElement release]; // retained by doc
-        [doc release]; // retained by super
+         // retained by doc
+         // retained by super
     }
     return self;
 }

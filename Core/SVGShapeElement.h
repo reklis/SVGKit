@@ -22,7 +22,7 @@ typedef enum {
 
 @property (nonatomic, readwrite) SVGFillType fillType;
 @property (nonatomic, readwrite) SVGColor fillColor;
-@property (nonatomic, readwrite, retain) SVGPattern* fillPattern;
+@property (nonatomic, readwrite, strong) SVGPattern* fillPattern;
 
 @property (nonatomic, readwrite) CGFloat strokeWidth;
 @property (nonatomic, readwrite) SVGColor strokeColor;
