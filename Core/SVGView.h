@@ -5,11 +5,15 @@
 //  Copyright Matt Rajca 2010-2011. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 
 @class SVGImage;
 
-@interface SVGView : UIView { }
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+@interface SVGView :UIView { }
+#else
+@interface SVGView : NSView { }
+#endif
 
 @property (nonatomic, retain) SVGImage *image;
 

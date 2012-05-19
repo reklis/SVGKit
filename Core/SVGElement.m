@@ -131,6 +131,9 @@
 		 The individual transform definitions are separated by whitespace and/or a comma. 
 		 */
 		
+#if !(TARGET_OS_IPHONE) && ( !defined( __MAC_10_7 ) || __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_6_7 )
+		NSLog(@"[%@] WARNING: the transform attribute requires OS X 10.7 or above. Ignoring TRANSFORMs in SVG!", [self class] );
+#else
 		NSError* error = nil;
 		NSRegularExpression* regexpTransformListItem = [NSRegularExpression regularExpressionWithPattern:@"[^\\(,]*\\([^\\)]*\\)" options:0 error:&error];
 		
@@ -160,6 +163,7 @@
 		}];
 		
 		NSLog(@"[%@] Set local / relative transform = (%2.2f, %2.2f // %2.2f, %2.2f) + (%2.2f, %2.2f translate)", [self class], self.transformRelative.a, self.transformRelative.b, self.transformRelative.c, self.transformRelative.d, self.transformRelative.tx, self.transformRelative.ty );
+#endif
 	}
 #endif
 }

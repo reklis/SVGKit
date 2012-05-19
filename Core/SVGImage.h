@@ -57,7 +57,9 @@
 #pragma mark - methods to quick load an SVG as an image
 + (SVGImage *)imageNamed:(NSString *)name;      // load from main bundle
 + (SVGImage *)imageWithContentsOfFile:(NSString *)path;
+#if TARGET_OS_IPHONE // doesn't exist on OS X's Image class
 + (SVGImage *)imageWithData:(NSData *)data;
+#endif
 
 - (id)initWithContentsOfFile:(NSString *)path;
 - (id)initWithData:(NSData *)data;
