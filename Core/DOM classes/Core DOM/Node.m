@@ -184,6 +184,7 @@
 	if( refChild == nil )
 	{
 		[self.childNodes.internalArray addObject:newChild];
+		newChild.parentNode = self;
 	}
 	else
 	{
@@ -209,11 +210,17 @@
 			[self.childNodes.internalArray insertObject:child atIndex:oldIndex++];
 		}
 		
+		newChild.parentNode = self;
+		oldChild.parentNode = nil;
+		
 		return oldChild;
 	}
 	else
 	{
 		[self.childNodes.internalArray replaceObjectAtIndex:[self.childNodes.internalArray indexOfObject:oldChild] withObject:newChild];
+		
+		newChild.parentNode = self;
+		oldChild.parentNode = nil;
 		
 		return oldChild;
 	}
@@ -222,6 +229,8 @@
 {
 	[self.childNodes.internalArray removeObject:oldChild];
 	
+	oldChild.parentNode = nil;
+	
 	return oldChild;
 }
 
@@ -229,6 +238,9 @@
 {
 	[self.childNodes.internalArray removeObject:newChild]; // required by spec
 	[self.childNodes.internalArray addObject:newChild];
+	
+	newChild.parentNode = self;
+	
 	return newChild;
 }
 
