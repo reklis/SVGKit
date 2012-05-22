@@ -15,6 +15,11 @@
     return self;
 }
 
+- (void)dealloc {
+    self.internalArray = nil;
+    [super dealloc];
+}
+
 -(Node*) item:(int) index
 {
 	return [self.internalArray objectAtIndex:index];
