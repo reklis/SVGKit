@@ -29,4 +29,9 @@
 // Introduced in DOM Level 2:
 @property(nonatomic,retain,readonly) Element* ownerElement;
 
+#pragma mark - ObjC methods
+
+- (id)initWithName:(NSString*) n;
+- (id)initWithNamespace:(NSString*) ns qualifiedName:(NSString*) qn;
+
 @end

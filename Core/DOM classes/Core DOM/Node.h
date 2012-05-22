@@ -67,26 +67,27 @@
 
 #import <Foundation/Foundation.h>
 
+@class Document;
+#import "Document.h"
 @class NodeList;
 #import "NodeList.h"
-
 @class NamedNodeMap;
 #import "NamedNodeMap.h"
 
 typedef enum SKNodeType
 {
-	SKNodeType_ELEMENT_NODE                   = 1;
-	SKNodeType_ATTRIBUTE_NODE                 = 2;
-	SKNodeType_TEXT_NODE                      = 3;
-	SKNodeType_CDATA_SECTION_NODE             = 4;
-	SKNodeType_ENTITY_REFERENCE_NODE          = 5;
-	SKNodeType_ENTITY_NODE                    = 6;
-	SKNodeType_PROCESSING_INSTRUCTION_NODE    = 7;
-	SKNodeType_COMMENT_NODE                   = 8;
-	SKNodeType_DOCUMENT_NODE                  = 9;
-	SKNodeType_DOCUMENT_TYPE_NODE             = 10;
-	SKNodeType_DOCUMENT_FRAGMENT_NODE         = 11;
-	SKNodeType_NOTATION_NODE                  = 12;
+	SKNodeType_ELEMENT_NODE                   = 1,
+	SKNodeType_ATTRIBUTE_NODE                 = 2,
+	SKNodeType_TEXT_NODE                      = 3,
+	SKNodeType_CDATA_SECTION_NODE             = 4,
+	SKNodeType_ENTITY_REFERENCE_NODE          = 5,
+	SKNodeType_ENTITY_NODE                    = 6,
+	SKNodeType_PROCESSING_INSTRUCTION_NODE    = 7,
+	SKNodeType_COMMENT_NODE                   = 8,
+	SKNodeType_DOCUMENT_NODE                  = 9,
+	SKNodeType_DOCUMENT_TYPE_NODE             = 10,
+	SKNodeType_DOCUMENT_FRAGMENT_NODE         = 11,
+	SKNodeType_NOTATION_NODE                  = 12
 } SKNodeType;
 
 @interface Node : NSObject
@@ -94,7 +95,7 @@ typedef enum SKNodeType
 @property(nonatomic,retain,readonly) NSString* nodeName;
 @property(nonatomic,retain,readonly) NSString* nodeValue;
 	
-@property(nonatomic,retain,readonly) SKNodeType nodeType;
+@property(nonatomic,readonly) SKNodeType nodeType;
 @property(nonatomic,retain,readonly) Node* parentNode;
 @property(nonatomic,retain,readonly) NodeList* childNodes;
 @property(nonatomic,retain,readonly) Node* firstChild;
