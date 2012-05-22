@@ -33,8 +33,8 @@
 @interface NamedNodeMap : NSObject
 
 -(Node*) getNamedItem(in DOMString name);
--(Node*) setNamedItem(in Node arg)
--(Node*) removeNamedItem(in DOMString name)
+-(Node*) setNamedItem(in Node arg);
+-(Node*) removeNamedItem(in DOMString name);
 -(Node*) item(in unsigned long index);
 
 @property(readonly) unsigned long length;
