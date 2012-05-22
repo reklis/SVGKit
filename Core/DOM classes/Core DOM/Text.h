@@ -16,6 +16,6 @@
 
 @interface Text : CharacterData
 
--(Text) splitText:(unsigned long) offset;
+-(Text*) splitText:(unsigned long) offset;
 
 @end
