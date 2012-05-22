@@ -44,6 +44,8 @@ static const char *kLayerTreeKey = "svgkit.layertree";
 - (CALayer *)newLayerWithElement:(SVGElement <SVGLayeredElement> *)element {
 	CALayer *layer = [element newLayer];
 	
+	NSLog(@"[%@] DEBUG: converted SVG element (class:%@) to CALayer (class:%@) for id = %@", [self class], NSStringFromClass([element class]), NSStringFromClass([layer class]), element.identifier);
+	
 	if (![element.children count]) {
 		return layer;
 	}

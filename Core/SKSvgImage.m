@@ -23,6 +23,8 @@
 @property (nonatomic, readwrite) SVGLength svgHeight;
 @property (nonatomic, readwrite) SVGParseResult* parseErrorsAndWarnings;
 
+@property (nonatomic, retain, readwrite) SVGSVGElement* DOMTree; // needs renaming + (possibly) refactoring
+@property (nonatomic, retain, readwrite) CALayer* CALayerTree;
 
 #pragma mark - UIImage methods cloned and re-implemented as SVG intelligent methods
 //NOT DEFINED: what is the scale for a SVGImage? @property(nonatomic,readwrite) CGFloat            scale __OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_4_0);
@@ -36,7 +38,6 @@
 @synthesize svgHeight = _height;
 @synthesize source;
 @synthesize parseErrorsAndWarnings;
-@synthesize rootElement = _rootElement;
 
 @dynamic title, svgDescription, defs;
 
@@ -84,9 +85,9 @@
 		self.svgHeight = SVGLengthZero;
 		
 		NSError* parseError = nil;
-		self.rootElement = [self parseFileAtPath:aPath error:&parseError];
+		self.DOMTree = [self parseFileAtPath:aPath error:&parseError];
 		
-		if ( self.rootElement == nil ) {
+		if ( self.DOMTree == nil ) {
 			
 		}
 		else {
@@ -107,8 +108,8 @@
 		_width = SVGLengthZero;
 		_height = SVGLengthZero;
 		
-		self.rootElement = [self parseFileAtURL:url];
-		if ( self.rootElement == nil ) {
+		self.DOMTree = [self parseFileAtURL:url];
+		if ( self.DOMTree == nil ) {
 			
 		}
 		else
@@ -124,7 +125,7 @@
 {
 	self = [super init];
 	if (self) {
-		self.rootElement = [[[SVGSVGElement alloc] initWithName:@"svg"] autorelease];
+		self.DOMTree = [[[SVGSVGElement alloc] initWithName:@"svg"] autorelease];
 		
         _width = SVGLengthGetWidth(frame);
         _height = SVGLengthGetHeight(frame);
@@ -133,7 +134,7 @@
 }
 
 - (void)dealloc {
-	self.rootElement = nil;
+	self.DOMTree = nil;
 	[super dealloc];
 }
 
@@ -167,7 +168,7 @@
 }
 
 #if TARGET_OS_IPHONE
--(UIImage *)uiImage
+-(UIImage *)UIImage
 {
 	NSAssert( FALSE, @"Auto-converting SVGImage to a rasterized UIImage is not yet implemented by SVGKit" );
 	return nil;
@@ -260,15 +261,15 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 - (void)layoutLayer:(CALayer *)layer { }
 
 - (NSString *)title {
-	return [self.rootElement findFirstElementOfClass:[SVGTitleElement class]].stringValue;
+	return [self.DOMTree findFirstElementOfClass:[SVGTitleElement class]].stringValue;
 }
 
 - (NSString *)desc {
-	return [self.rootElement findFirstElementOfClass:[SVGDescriptionElement class]].stringValue;
+	return [self.DOMTree findFirstElementOfClass:[SVGDescriptionElement class]].stringValue;
 }
 
 - (SVGDefsElement *)defs {
-	return (SVGDefsElement *) [self.rootElement findFirstElementOfClass:[SVGDefsElement class]];
+	return (SVGDefsElement *) [self.DOMTree findFirstElementOfClass:[SVGDefsElement class]];
 }
 
 @end

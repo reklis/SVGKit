@@ -1,8 +1,15 @@
 /**
  SVGElement
  
- Data:
-  - "children": child elements (SVG is a tree: every element can have chidren)
+ This class is WRONG: most of the properties and methods should NOT be implemented here, but instead in the
+ superclass "Node".
+ 
+ c.f. official definition of "Node" in SVG:
+ http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1950641247
+
+ 
+ Documenting the actual data in this class (even though it's incorrect):
+  - "children": nb: the correct name would be "childNodes", according to SVG spec ... child elements (SVG is a tree: every element can have chidren)
   - "localName": the final part of the SVG tag (e.g. in "<svg:element", this would be "element")
   - "identifier": the SVG id attribute (e.g. "<svg:svg id="this is the identifier"")
   - "transformRelative": identity OR the transform to apply BEFORE rendering this element (and its children)

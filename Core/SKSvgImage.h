@@ -38,7 +38,7 @@
 }
 
 #if TARGET_OS_IPHONE
-@property (nonatomic, readonly) UIImage* uiImage; /** generates an image on the fly */
+@property (nonatomic, readonly) UIImage* UIImage; /** generates an image on the fly */
 #endif
 
 @property (nonatomic, readonly) SVGLength svgWidth;
@@ -49,9 +49,10 @@
 // convenience accessors to parsed children
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSString *svgDescription; // 'description' is reserved by NSObject
-@property (nonatomic, readonly) SVGDefsElement *defs;
+@property (nonatomic, readonly) SVGDefsElement *defs; // needs renaming + (possibly) refactoring
 
-@property (nonatomic, readonly) SVGSVGElement* rootElement;
+@property (nonatomic, retain, readonly) SVGSVGElement* DOMTree;
+@property (nonatomic, retain, readonly) CALayer* CALayerTree;
 
 
 #pragma mark - methods to quick load an SVG as an image
@@ -110,9 +111,6 @@
 - (id)initWithContentsOfFile:(NSString *)aPath;
 - (id)initWithFrame:(CGRect)frame;
 
-#pragma mark - utility methods
-
+#pragma mark - core methods for interacting with an SVG image usefully (not from UIImage)
 
 @end
-
-
