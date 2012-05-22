@@ -21,12 +21,12 @@
 #import "Element.h"
 
 @interface Attr : Node
+
 @property(nonatomic,retain,readonly) NSString* name;
 @property(nonatomic,readonly) BOOL specified;
 @property(nonatomic,retain,readonly) NSString* value;
 
 // Introduced in DOM Level 2:
 @property(nonatomic,retain,readonly) Element* ownerElement;
-};
 
 @end

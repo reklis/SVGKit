@@ -87,8 +87,7 @@ typedef enum SKNodeType
 	SKNodeType_DOCUMENT_TYPE_NODE             = 10;
 	SKNodeType_DOCUMENT_FRAGMENT_NODE         = 11;
 	SKNodeType_NOTATION_NODE                  = 12;
-}
-SKNodeType;
+} SKNodeType;
 
 @interface Node : NSObject
 
@@ -134,5 +133,22 @@ SKNodeType;
 
 // Introduced in DOM Level 2:
 @property(nonatomic) BOOL hasAttributes;
+
+#pragma mark - ObjectiveC init methods
+/** Generic init method - used by all the other methods (designated initializer, effectively) */
+- (id)initType:(SKNodeType) nt;
+
+- (id)initAttr:(NSString*) n value:(NSString*) v;
+- (id)initCDATASection:(NSString*) n value:(NSString*) v;
+- (id)initComment:(NSString*) n value:(NSString*) v;
+- (id)initDocument:(NSString*) n;
+- (id)initDocumentFragment:(NSString*) n;
+- (id)initDocumentType:(NSString*) n;
+- (id)initElement:(NSString*) n;
+- (id)initEntity:(NSString*) n;
+- (id)initEntityReference:(NSString*) n;
+- (id)initNotation:(NSString*) n;
+- (id)initProcessingInstruction:(NSString*) n value:(NSString*) v;
+- (id)initText:(NSString*) n value:(NSString*) v;
 
 @end

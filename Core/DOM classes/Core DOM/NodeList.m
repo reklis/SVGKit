@@ -1,10 +1,9 @@
 #import "NodeList.h"
-
-@interface NodeList()
-@property(nonatomic,retain) NSMutableArray* internalArray;
-@end
+#import "NodeList+Mutable.h"
 
 @implementation NodeList
+
+@synthesize internalArray;
 
 - (id)init {
     self = [super init];
