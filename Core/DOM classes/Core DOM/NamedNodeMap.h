@@ -32,10 +32,10 @@
 
 @interface NamedNodeMap : NSObject
 
--(Node*) getNamedItem(in DOMString name);
--(Node*) setNamedItem(in Node arg);
--(Node*) removeNamedItem(in DOMString name);
--(Node*) item(in unsigned long index);
+-(Node*) getNamedItem:(NSString*) name;
+-(Node*) setNamedItem:(Node*) arg;
+-(Node*) removeNamedItem:(NSString*) name;
+-(Node*) item:(unsigned long) index;
 
 @property(readonly) unsigned long length;
 
@@ -46,6 +46,6 @@
 -(Node*) setNamedItemNS:(Node*) arg;
 
 // Introduced in DOM Level 2:
--(Node*) removeNamedItemNS(NSString*) namespaceURI localName:(NSString*) localName;
+-(Node*) removeNamedItemNS:(NSString*) namespaceURI localName:(NSString*) localName;
 
 @end
