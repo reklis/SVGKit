@@ -70,12 +70,14 @@
 #import "NodeList.h"
 @class ProcessingInstruction;
 #import "ProcessingInstruction.h"
+@class DocumentType;
+#import "DocumentType.h"
 
 @interface Document : Node
 
-@property(nonatomic,retain,readonly) DocumentType     doctype;
+@property(nonatomic,retain,readonly) DocumentType*     doctype;
 @property(nonatomic,retain,readonly) DOMImplementation  implementation;
-@property(nonatomic,retain,readonly) Element          documentElement;
+@property(nonatomic,retain,readonly) Element*          documentElement;
 
 
 -(Element*) createElement:(NSString*) tagName;

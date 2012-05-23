@@ -23,12 +23,12 @@
  
  */
 
-#import "SVGBasicDataTypes.h"
+#import "SKBasicDataTypes.h"
 #import "SVGElement.h"
 #import "SVGSVGElement.h"
 #import "SVGGroupElement.h"
 
-#import "SVGParser.h"
+#import "SKParser.h"
 #import "SVGSource.h"
 
 @class SVGDefsElement;

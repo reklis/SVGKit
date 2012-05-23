@@ -7,7 +7,7 @@
 @property(nonatomic,retain,readwrite) NSString* nodeName;
 @property(nonatomic,retain,readwrite) NSString* nodeValue;
 
-@property(nonatomic,retain,readwrite) SKNodeType nodeType;
+@property(nonatomic,readwrite) SKNodeType nodeType;
 @property(nonatomic,retain,readwrite) Node* parentNode;
 @property(nonatomic,retain,readwrite) NodeList* childNodes;
 @property(nonatomic,retain,readwrite) Node* firstChild;
@@ -26,8 +26,5 @@
 
 // Introduced in DOM Level 2:
 @property(nonatomic,retain,readwrite) NSString* localName;
-
-// Introduced in DOM Level 2:
-@property(nonatomic) BOOL hasAttributes;
 
 @end

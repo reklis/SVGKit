@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/CAShapeLayer.h>
 
-#import "SVGView.h"
+#import "SKSvgView.h"
 
 #define ENABLE_SVGPATHVIEW_CLASS 0
 
@@ -28,7 +28,7 @@ typedef void (^layerTreeEnumerator)(CALayer* child);
 
 @protocol SVGPathViewDelegate;
 
-@interface SVGPathView : SVGView
+@interface SVGPathView : SKSvgView
 {
     
 }

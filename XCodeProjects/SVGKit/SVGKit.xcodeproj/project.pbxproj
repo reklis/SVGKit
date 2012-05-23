@@ -173,6 +173,10 @@
 		66614354156C619F000F3A27 /* DocumentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66614350156C619D000F3A27 /* DocumentType.m */; };
 		66614357156C6263000F3A27 /* Node+Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66614355156C625E000F3A27 /* Node+Mutable.h */; };
 		66614358156C6263000F3A27 /* Node+Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66614355156C625E000F3A27 /* Node+Mutable.h */; };
+		6661435D156C645F000F3A27 /* DOMImplementation.h in Headers */ = {isa = PBXBuildFile; fileRef = 6661435B156C645A000F3A27 /* DOMImplementation.h */; };
+		6661435E156C645F000F3A27 /* DOMImplementation.h in Headers */ = {isa = PBXBuildFile; fileRef = 6661435B156C645A000F3A27 /* DOMImplementation.h */; };
+		6661435F156C645F000F3A27 /* DOMImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6661435C156C645C000F3A27 /* DOMImplementation.m */; };
+		66614360156C645F000F3A27 /* DOMImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6661435C156C645C000F3A27 /* DOMImplementation.m */; };
 		6684CD451566CF1300A46247 /* SVGImage+SVGPathView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6684CD431566CF1300A46247 /* SVGImage+SVGPathView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6684CD471566CF1300A46247 /* SVGImage+SVGPathView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6684CD441566CF1300A46247 /* SVGImage+SVGPathView.m */; };
 		6684CD481566CF1300A46247 /* SVGImage+SVGPathView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6684CD441566CF1300A46247 /* SVGImage+SVGPathView.m */; };
@@ -297,6 +301,8 @@
 		6661434F156C619A000F3A27 /* DocumentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocumentType.h; sourceTree = "<group>"; };
 		66614350156C619D000F3A27 /* DocumentType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentType.m; sourceTree = "<group>"; };
 		66614355156C625E000F3A27 /* Node+Mutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Node+Mutable.h"; sourceTree = "<group>"; };
+		6661435B156C645A000F3A27 /* DOMImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOMImplementation.h; sourceTree = "<group>"; };
+		6661435C156C645C000F3A27 /* DOMImplementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOMImplementation.m; sourceTree = "<group>"; };
 		6684CD431566CF1300A46247 /* SVGImage+SVGPathView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SVGImage+SVGPathView.h"; path = "../../Core/SVGImage+SVGPathView.h"; sourceTree = "<group>"; };
 		6684CD441566CF1300A46247 /* SVGImage+SVGPathView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SVGImage+SVGPathView.m"; path = "../../Core/SVGImage+SVGPathView.m"; sourceTree = "<group>"; };
 		6684CD491566D07400A46247 /* SKSvgView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSvgView.h; sourceTree = "<group>"; };
@@ -530,6 +536,8 @@
 				66614331156C45F1000F3A27 /* DocumentFragment.m */,
 				6661434F156C619A000F3A27 /* DocumentType.h */,
 				66614350156C619D000F3A27 /* DocumentType.m */,
+				6661435B156C645A000F3A27 /* DOMImplementation.h */,
+				6661435C156C645C000F3A27 /* DOMImplementation.m */,
 				66614342156C4722000F3A27 /* EntityReference.h */,
 				66614343156C4724000F3A27 /* EntityReference.m */,
 				6661430C156C3DC6000F3A27 /* NamedNodeMap.h */,
@@ -667,6 +675,7 @@
 				6661434B156C5452000F3A27 /* NodeList+Mutable.h in Headers */,
 				66614352156C619F000F3A27 /* DocumentType.h in Headers */,
 				66614358156C6263000F3A27 /* Node+Mutable.h in Headers */,
+				6661435E156C645F000F3A27 /* DOMImplementation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,6 +733,7 @@
 				6661434A156C5452000F3A27 /* NodeList+Mutable.h in Headers */,
 				66614351156C619F000F3A27 /* DocumentType.h in Headers */,
 				66614357156C6263000F3A27 /* Node+Mutable.h in Headers */,
+				6661435D156C645F000F3A27 /* DOMImplementation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -875,6 +885,7 @@
 				66614341156C46DF000F3A27 /* CDATASection.m in Sources */,
 				66614347156C4726000F3A27 /* EntityReference.m in Sources */,
 				66614354156C619F000F3A27 /* DocumentType.m in Sources */,
+				66614360156C645F000F3A27 /* DOMImplementation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -928,6 +939,7 @@
 				66614340156C46DF000F3A27 /* CDATASection.m in Sources */,
 				66614346156C4726000F3A27 /* EntityReference.m in Sources */,
 				66614353156C619F000F3A27 /* DocumentType.m in Sources */,
+				6661435F156C645F000F3A27 /* DOMImplementation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

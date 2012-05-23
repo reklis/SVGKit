@@ -162,6 +162,8 @@
 	{
 		[self.childNodes.internalArray insertObject:newChild atIndex:[self.childNodes.internalArray indexOfObject:refChild]];
 	}
+	
+	return newChild;
 }
 
 -(Node*) replaceChild:(Node*) newChild oldChild:(Node*) oldChild

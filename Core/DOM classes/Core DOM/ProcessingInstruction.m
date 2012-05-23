@@ -8,6 +8,14 @@
 
 #import "ProcessingInstruction.h"
 
+@interface ProcessingInstruction()
+@property(nonatomic,retain,readwrite) NSString* target;
+@property(nonatomic,retain,readwrite) NSString* data;
+@end
+
 @implementation ProcessingInstruction
+
+@synthesize target;
+@synthesize data;
 
 @end

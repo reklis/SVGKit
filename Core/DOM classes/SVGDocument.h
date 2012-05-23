@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface SVGDocument : NSObject
+#import "Document.h"
+
+@interface SVGDocument : Document
 
 @end

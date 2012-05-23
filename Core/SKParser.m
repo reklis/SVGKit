@@ -5,7 +5,7 @@
 //  Copyright Matt Rajca 2010-2011. All rights reserved.
 //
 
-#import "SVGParser.h"
+#import "SKParser.h"
 #import <libxml/parser.h>
 
 #import "SVGParserSVG.h"

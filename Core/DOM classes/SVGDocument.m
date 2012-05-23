@@ -8,9 +8,9 @@
 
 #import "SVGDocument.h"
 
-#import "SVGBasicDataTypes.h"
+#import "SKBasicDataTypes.h"
 
-@implementation SVGDocument : Document
+@implementation SVGDocument
 
 
 @property (nonatomic, retain, readonly) NSString* title;

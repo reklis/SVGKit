@@ -1,4 +1,4 @@
-#import "SVGImage.h"
+#import "SKSvgImage.h"
 
 #import "SVGDefsElement.h"
 #import "SVGDescriptionElement.h"
@@ -8,7 +8,7 @@
 
 #import "SVGParserSVG.h"
 
-@interface SVGImage ()
+@interface SKSvgImage ()
 
 /*! Only preserved for temporary backwards compatibility */
 - (SVGSVGElement*)parseFileAtPath:(NSString *)aPath;

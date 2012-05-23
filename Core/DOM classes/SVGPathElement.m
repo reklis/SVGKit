@@ -8,7 +8,7 @@
 #import "SVGPathElement.h"
 
 #import "SVGUtils.h"
-#import "SVGPointsAndPathsParser.h"
+#import "SKSvgPointsAndPathsParser.h"
 
 @interface SVGPathElement ()
 

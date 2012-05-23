@@ -14,7 +14,7 @@
 
 #import "SVGElement.h"
 
-#import "SVGBasicDataTypes.h"
+#import "SKBasicDataTypes.h"
 
 @interface SVGSVGElement : SVGElement < SVGLayeredElement >
 
