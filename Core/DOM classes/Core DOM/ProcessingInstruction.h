@@ -13,7 +13,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class Node;
+/** objc won't allow this: @class Node;*/
 #import "Node.h"
 
 @interface ProcessingInstruction : Node

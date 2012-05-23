@@ -68,11 +68,11 @@
 #import <Foundation/Foundation.h>
 
 @class Document;
-#import "Document.h"
+/** objc won't allow this: #import "Document.h"*/
 @class NodeList;
-#import "NodeList.h"
+/** objc won't allow this: #import "NodeList.h"*/
 @class NamedNodeMap;
-#import "NamedNodeMap.h"
+/** objc won't allow this: #import "NamedNodeMap.h"*/
 
 typedef enum SKNodeType
 {

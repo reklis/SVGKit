@@ -9,7 +9,7 @@
 
 +(SKSvgSource*) sourceFromFilename:(NSString*) p
 {
-	SVGSource* d = [[[SKSvgSource alloc] init] autorelease];
+	SKSvgSource* d = [[[SKSvgSource alloc] init] autorelease];
 	
 	d.hasSourceFile = TRUE;
 	d.filePath = p;

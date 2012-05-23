@@ -16,6 +16,7 @@
 @implementation NamedNodeMap
 
 @synthesize internalDictionary;
+@synthesize internalDictionaryOfNamespaces;
 
 - (id)init {
     self = [super init];
@@ -74,7 +75,7 @@
 		return [self.internalDictionary.allValues objectAtIndex:index];
 	else
 	{
-		index -= [self.internalDictionary.count];
+		index -= self.internalDictionary.count;
 		
 		for( NSDictionary* namespaceDict in self.internalDictionaryOfNamespaces )
 		{
@@ -88,15 +89,10 @@
 	return nil;
 }
 
--(unsigned long)length
-{
-	return [self.internalDictionary count];
-}
-
 // Introduced in DOM Level 2:
 -(Node*) getNamedItemNS:(NSString*) namespaceURI localName:(NSString*) localName
 {
-	NSMutableDictionary* namespaceDict = [self.internalDictionaryOfNamespaces objectForKey:arg.namespaceURI];
+	NSMutableDictionary* namespaceDict = [self.internalDictionaryOfNamespaces objectForKey:namespaceURI];
 	
 	return [namespaceDict objectForKey:localName];
 }
@@ -120,7 +116,7 @@
 // Introduced in DOM Level 2:
 -(Node*) removeNamedItemNS:(NSString*) namespaceURI localName:(NSString*) localName
 {
-	NSMutableDictionary* namespaceDict = [self.internalDictionaryOfNamespaces objectForKey:arg.namespaceURI];
+	NSMutableDictionary* namespaceDict = [self.internalDictionaryOfNamespaces objectForKey:namespaceURI];
 	Node* oldNode = [namespaceDict objectForKey:localName];
 	
 	[namespaceDict removeObjectForKey:localName];

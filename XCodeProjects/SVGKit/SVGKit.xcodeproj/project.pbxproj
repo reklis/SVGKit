@@ -167,8 +167,12 @@
 		66614347156C4726000F3A27 /* EntityReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 66614343156C4724000F3A27 /* EntityReference.m */; };
 		6661434A156C5452000F3A27 /* NodeList+Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66614348156C544C000F3A27 /* NodeList+Mutable.h */; };
 		6661434B156C5452000F3A27 /* NodeList+Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66614348156C544C000F3A27 /* NodeList+Mutable.h */; };
-		6661434C156C5452000F3A27 /* NodeList+Mutable.m in Sources */ = {isa = PBXBuildFile; fileRef = 66614349156C544E000F3A27 /* NodeList+Mutable.m */; };
-		6661434D156C5452000F3A27 /* NodeList+Mutable.m in Sources */ = {isa = PBXBuildFile; fileRef = 66614349156C544E000F3A27 /* NodeList+Mutable.m */; };
+		66614351156C619F000F3A27 /* DocumentType.h in Headers */ = {isa = PBXBuildFile; fileRef = 6661434F156C619A000F3A27 /* DocumentType.h */; };
+		66614352156C619F000F3A27 /* DocumentType.h in Headers */ = {isa = PBXBuildFile; fileRef = 6661434F156C619A000F3A27 /* DocumentType.h */; };
+		66614353156C619F000F3A27 /* DocumentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66614350156C619D000F3A27 /* DocumentType.m */; };
+		66614354156C619F000F3A27 /* DocumentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66614350156C619D000F3A27 /* DocumentType.m */; };
+		66614357156C6263000F3A27 /* Node+Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66614355156C625E000F3A27 /* Node+Mutable.h */; };
+		66614358156C6263000F3A27 /* Node+Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66614355156C625E000F3A27 /* Node+Mutable.h */; };
 		6684CD451566CF1300A46247 /* SVGImage+SVGPathView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6684CD431566CF1300A46247 /* SVGImage+SVGPathView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6684CD471566CF1300A46247 /* SVGImage+SVGPathView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6684CD441566CF1300A46247 /* SVGImage+SVGPathView.m */; };
 		6684CD481566CF1300A46247 /* SVGImage+SVGPathView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6684CD441566CF1300A46247 /* SVGImage+SVGPathView.m */; };
@@ -290,7 +294,9 @@
 		66614342156C4722000F3A27 /* EntityReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EntityReference.h; sourceTree = "<group>"; };
 		66614343156C4724000F3A27 /* EntityReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EntityReference.m; sourceTree = "<group>"; };
 		66614348156C544C000F3A27 /* NodeList+Mutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NodeList+Mutable.h"; sourceTree = "<group>"; };
-		66614349156C544E000F3A27 /* NodeList+Mutable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NodeList+Mutable.m"; sourceTree = "<group>"; };
+		6661434F156C619A000F3A27 /* DocumentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocumentType.h; sourceTree = "<group>"; };
+		66614350156C619D000F3A27 /* DocumentType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentType.m; sourceTree = "<group>"; };
+		66614355156C625E000F3A27 /* Node+Mutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Node+Mutable.h"; sourceTree = "<group>"; };
 		6684CD431566CF1300A46247 /* SVGImage+SVGPathView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SVGImage+SVGPathView.h"; path = "../../Core/SVGImage+SVGPathView.h"; sourceTree = "<group>"; };
 		6684CD441566CF1300A46247 /* SVGImage+SVGPathView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SVGImage+SVGPathView.m"; path = "../../Core/SVGImage+SVGPathView.m"; sourceTree = "<group>"; };
 		6684CD491566D07400A46247 /* SKSvgView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSvgView.h; sourceTree = "<group>"; };
@@ -456,6 +462,7 @@
 			isa = PBXGroup;
 			children = (
 				666142F9156C2F0C000F3A27 /* Core DOM */,
+				6661434E156C5FE5000F3A27 /* SVG-DOM */,
 				6661427D156C2E69000F3A27 /* SVGCircleElement.h */,
 				6661427E156C2E69000F3A27 /* SVGCircleElement.m */,
 				6661427F156C2E69000F3A27 /* SVGDefsElement.h */,
@@ -521,16 +528,18 @@
 				6661431F156C43BA000F3A27 /* Comment.m */,
 				66614330156C45EF000F3A27 /* DocumentFragment.h */,
 				66614331156C45F1000F3A27 /* DocumentFragment.m */,
+				6661434F156C619A000F3A27 /* DocumentType.h */,
+				66614350156C619D000F3A27 /* DocumentType.m */,
 				66614342156C4722000F3A27 /* EntityReference.h */,
 				66614343156C4724000F3A27 /* EntityReference.m */,
 				6661430C156C3DC6000F3A27 /* NamedNodeMap.h */,
 				6661430D156C3DC6000F3A27 /* NamedNodeMap.m */,
 				66614300156C3A0B000F3A27 /* Node.h */,
 				66614301156C3A0B000F3A27 /* Node.m */,
+				66614355156C625E000F3A27 /* Node+Mutable.h */,
 				66614306156C3B95000F3A27 /* NodeList.h */,
 				66614307156C3B95000F3A27 /* NodeList.m */,
 				66614348156C544C000F3A27 /* NodeList+Mutable.h */,
-				66614349156C544E000F3A27 /* NodeList+Mutable.m */,
 				666142FA156C2F14000F3A27 /* Document.h */,
 				666142FB156C2F14000F3A27 /* Document.m */,
 				66614312156C3F60000F3A27 /* Element.h */,
@@ -541,6 +550,13 @@
 				66614337156C463C000F3A27 /* Text.m */,
 			);
 			path = "Core DOM";
+			sourceTree = "<group>";
+		};
+		6661434E156C5FE5000F3A27 /* SVG-DOM */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "SVG-DOM";
 			sourceTree = "<group>";
 		};
 		C952623F12711D8600434805 /* Framework */ = {
@@ -649,6 +665,8 @@
 				6661433F156C46DF000F3A27 /* CDATASection.h in Headers */,
 				66614345156C4726000F3A27 /* EntityReference.h in Headers */,
 				6661434B156C5452000F3A27 /* NodeList+Mutable.h in Headers */,
+				66614352156C619F000F3A27 /* DocumentType.h in Headers */,
+				66614358156C6263000F3A27 /* Node+Mutable.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -704,6 +722,8 @@
 				6661433E156C46DF000F3A27 /* CDATASection.h in Headers */,
 				66614344156C4726000F3A27 /* EntityReference.h in Headers */,
 				6661434A156C5452000F3A27 /* NodeList+Mutable.h in Headers */,
+				66614351156C619F000F3A27 /* DocumentType.h in Headers */,
+				66614357156C6263000F3A27 /* Node+Mutable.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -854,7 +874,7 @@
 				6661433B156C463D000F3A27 /* Text.m in Sources */,
 				66614341156C46DF000F3A27 /* CDATASection.m in Sources */,
 				66614347156C4726000F3A27 /* EntityReference.m in Sources */,
-				6661434D156C5452000F3A27 /* NodeList+Mutable.m in Sources */,
+				66614354156C619F000F3A27 /* DocumentType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -907,7 +927,7 @@
 				6661433A156C463D000F3A27 /* Text.m in Sources */,
 				66614340156C46DF000F3A27 /* CDATASection.m in Sources */,
 				66614346156C4726000F3A27 /* EntityReference.m in Sources */,
-				6661434C156C5452000F3A27 /* NodeList+Mutable.m in Sources */,
+				66614353156C619F000F3A27 /* DocumentType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

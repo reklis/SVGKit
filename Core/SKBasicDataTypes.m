@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "SVGBasicDataTypes.h"
+#import "SKBasicDataTypes.h"
 
 const SVGLength SVGLengthZero = { 0.0, SVGLengthTypeUnknown };
 

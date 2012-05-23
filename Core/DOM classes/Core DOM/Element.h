@@ -48,7 +48,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class Node;
+/** objc won't allow this: @class Node;*/
 #import "Node.h"
 @class Attr;
 #import "Attr.h"

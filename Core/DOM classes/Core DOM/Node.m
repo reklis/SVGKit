@@ -7,37 +7,9 @@
 //
 
 #import "Node.h"
+#import "Node+Mutable.h"
 
 #import "NodeList+Mutable.h"
-
-@interface Node()
-@property(nonatomic,retain,readonly) NSString* nodeName;
-@property(nonatomic,retain,readonly) NSString* nodeValue;
-
-@property(nonatomic,retain,readonly) SKNodeType nodeType;
-@property(nonatomic,retain,readonly) Node* parentNode;
-@property(nonatomic,retain,readonly) NodeList* childNodes;
-@property(nonatomic,retain,readonly) Node* firstChild;
-@property(nonatomic,retain,readonly) Node* lastChild;
-@property(nonatomic,retain,readonly) Node* previousSibling;
-@property(nonatomic,retain,readonly) Node* nextSibling;
-@property(nonatomic,retain,readonly) NamedNodeMap* attributes;
- 
- @property(nonatomic,retain,readonly) Document* ownerDocument;
- 
- // Introduced in DOM Level 2:
- @property(nonatomic,retain,readonly) NSString* namespaceURI;
- 
- // Introduced in DOM Level 2:
- @property(nonatomic,retain,readonly) NSString* prefix;
- 
- // Introduced in DOM Level 2:
- @property(nonatomic,retain,readonly) NSString* localName;
- 
- // Introduced in DOM Level 2:
- @property(nonatomic) BOOL hasAttributes;
-
-@end
 
 @implementation Node
 

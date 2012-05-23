@@ -9,6 +9,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CharacterData.h"
+
 @interface Comment : CharacterData
 
 @end
