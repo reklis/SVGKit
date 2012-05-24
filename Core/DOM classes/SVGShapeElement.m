@@ -9,7 +9,7 @@
 
 #import "CGPathAdditions.h"
 #import "SVGDefsElement.h"
-#import "SVGPattern.h"
+#import "SVGKPattern.h"
 #import "CAShapeLayerWithHitTest.h"
 
 #define ADAM_IS_FIXING_THE_TRANSFORM_AND_VIEW_BOX_CODE 0

@@ -13,10 +13,10 @@
 @implementation SVGDocument
 
 
-@property (nonatomic, retain, readonly) NSString* title;
-@property (nonatomic, retain, readonly) NSString* referrer;
-@property (nonatomic, retain, readonly) NSString* domain;
-@property (nonatomic, retain, readonly) NSString* URL;
-@property (nonatomic, retain, readonly) SVGSVGElement* rootElement;
+@synthesize title;
+@synthesize referrer;
+@synthesize domain;
+@synthesize URL;
+@synthesize rootElement;
 
 @end

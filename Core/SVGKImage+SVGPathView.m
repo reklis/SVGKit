@@ -1,6 +1,6 @@
-#import "SVGImage+SVGPathView.h"
+#import "SVGKImage+SVGPathView.h"
 
-@implementation SVGImage (SVGPathView)
+@implementation SVGKImage (SVGPathView)
 
 #if NS_BLOCKS_AVAILABLE
 
@@ -25,7 +25,7 @@
 
 - (void) applyAggregator:(SVGElementAggregationBlock)aggregator
 {
-    [self applyAggregator:aggregator toElement:self.rootElement];
+    [self applyAggregator:aggregator toElement:self.DOMTree];
 }
 
 #endif

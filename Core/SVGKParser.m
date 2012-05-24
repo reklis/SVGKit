@@ -1,22 +1,22 @@
 //
-//  SVGParser.m
+//  SVGKParser.m
 //  SVGKit
 //
 //  Copyright Matt Rajca 2010-2011. All rights reserved.
 //
 
-#import "SKParser.h"
+#import "SVGKParser.h"
 #import <libxml/parser.h>
 
-#import "SVGParserSVG.h"
+#import "SVGKParserSVG.h"
 
-@interface SVGParserStackItem : NSObject
-@property(nonatomic,retain) NSObject<SVGParserExtension>* parserForThisItem;
+@interface SVGKParserStackItem : NSObject
+@property(nonatomic,retain) NSObject<SVGKParserExtension>* parserForThisItem;
 @property(nonatomic,retain) NSObject* item;
 
 @end
 
-@implementation SVGParserStackItem
+@implementation SVGKParserStackItem
 @synthesize item;
 @synthesize parserForThisItem;
 
@@ -29,12 +29,12 @@
 
 @end
 
-@interface SVGParser()
-@property(nonatomic,retain, readwrite) SVGSource* source;
-@property(nonatomic,retain, readwrite) SVGParseResult* currentParseRun;
+@interface SVGKParser()
+@property(nonatomic,retain, readwrite) SVGKSource* source;
+@property(nonatomic,retain, readwrite) SVGKParseResult* currentParseRun;
 @end
 
-@implementation SVGParser
+@implementation SVGKParser
 
 @synthesize source;
 @synthesize currentParseRun;
@@ -52,15 +52,15 @@ static void errorEncounteredSAX(void * ctx, const char * msg, ...);
 static NSString *NSStringFromLibxmlString (const xmlChar *string);
 static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **attrs, int attr_ct);
 
-+ (SVGParseResult*) parseSourceUsingDefaultSVGParser:(SVGSource*) source;
++ (SVGKParseResult*) parseSourceUsingDefaultSVGKParser:(SVGKSource*) source;
 {
-	SVGParser *parser = [[[SVGParser alloc] initWithSource:source] autorelease];
+	SVGKParser *parser = [[[SVGKParser alloc] initWithSource:source] autorelease];
 	
-	SVGParserSVG *subParserSVG = [[[SVGParserSVG alloc] init] autorelease];
+	SVGKParserSVG *subParserSVG = [[[SVGKParserSVG alloc] init] autorelease];
 	
 	[parser.parserExtensions addObject:subParserSVG];
 	
-	SVGParseResult* result = [parser parseSynchronously];
+	SVGKParseResult* result = [parser parseSynchronously];
 	
 	return result;
 }
@@ -68,7 +68,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 
 #define READ_CHUNK_SZ 1024*10
 
-- (id)initWithSource:(SVGSource *) s {
+- (id)initWithSource:(SVGKSource *) s {
 	self = [super init];
 	if (self) {
 		self.parserExtensions = [NSMutableArray array];
@@ -90,7 +90,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	[super dealloc];
 }
 
-- (void) addSVGParserExtension:(NSObject<SVGParserExtension>*) extension
+- (void) addParserExtension:(NSObject<SVGKParserExtension>*) extension
 {
 	if( self.parserExtensions == nil )
 	{
@@ -100,9 +100,9 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	[self.parserExtensions addObject:extension];
 }
 
-- (SVGParseResult*) parseSynchronously
+- (SVGKParseResult*) parseSynchronously
 {
-	self.currentParseRun = [[SVGParseResult new] autorelease];
+	self.currentParseRun = [[SVGKParseResult new] autorelease];
 	
 	/*
 	// 1. while (source has chunks of BYTES)
@@ -172,7 +172,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 
 - (void)handleStartElement:(NSString *)name xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes {
 	
-		for( NSObject<SVGParserExtension>* subParser in self.parserExtensions )
+		for( NSObject<SVGKParserExtension>* subParser in self.parserExtensions )
 		{
 			if( [[subParser supportedNamespaces] containsObject:prefix]
 			&& [[subParser supportedTags] containsObject:name] )
@@ -183,7 +183,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 			{
 				NSLog(@"[%@] tag: <%@:%@> -- handled by subParser: %@", [self class], prefix, name, subParser );
 				
-				SVGParserStackItem* stackItem = [[[SVGParserStackItem alloc] init] autorelease];;
+				SVGKParserStackItem* stackItem = [[[SVGKParserStackItem alloc] init] autorelease];;
 				stackItem.parserForThisItem = subParser;
 				stackItem.item = subParserResult;
 				
@@ -204,7 +204,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	
 	NSLog(@"[%@] ERROR: could not find a parser for tag: <%@:%@>; adding empty placeholder", [self class], prefix, name );
 	
-	SVGParserStackItem* emptyItem = [[[SVGParserStackItem alloc] init] autorelease];
+	SVGKParserStackItem* emptyItem = [[[SVGKParserStackItem alloc] init] autorelease];
 	[_elementStack addObject:emptyItem];
 }
 
@@ -213,7 +213,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 							 const xmlChar *URI, int nb_namespaces, const xmlChar **namespaces,
 							 int nb_attributes, int nb_defaulted, const xmlChar **attributes) {
 	
-	SVGParser *self = (SVGParser *) ctx;
+	SVGKParser *self = (SVGKParser *) ctx;
 	
 	NSString *name = NSStringFromLibxmlString(localname);
 	NSMutableDictionary *attrs = NSDictionaryFromLibxmlAttributes(attributes, nb_attributes);
@@ -266,7 +266,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 - (void)handleEndElement:(NSString *)name {
 	//DELETE DEBUG NSLog(@"ending element, name = %@", name);
 	
-	SVGParserStackItem* stackItem = [_elementStack lastObject];
+	SVGKParserStackItem* stackItem = [_elementStack lastObject];
 	
 	[_elementStack removeLastObject];
 	
@@ -277,9 +277,9 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	}
 	else
 	{
-		SVGParserStackItem* parentStackItem = [_elementStack lastObject];
+		SVGKParserStackItem* parentStackItem = [_elementStack lastObject];
 		
-		NSObject<SVGParserExtension>* parserHandlingTheParentItem = parentStackItem.parserForThisItem;
+		NSObject<SVGKParserExtension>* parserHandlingTheParentItem = parentStackItem.parserForThisItem;
 
 		BOOL closingRootTag = FALSE;
 		if( parentStackItem.item == nil )
@@ -314,7 +314,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 }
 
 static void	endElementSAX (void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI) {
-	SVGParser *self = (SVGParser *) ctx;
+	SVGKParser *self = (SVGKParser *) ctx;
 	[self handleEndElement:NSStringFromLibxmlString(localname)];
 }
 
@@ -329,13 +329,13 @@ static void	endElementSAX (void *ctx, const xmlChar *localname, const xmlChar *p
 }
 
 static void	charactersFoundSAX (void *ctx, const xmlChar *chars, int len) {
-	SVGParser *self = (SVGParser *) ctx;
+	SVGKParser *self = (SVGKParser *) ctx;
 	[self handleFoundCharacters:chars length:len];
 }
 
 static void errorEncounteredSAX (void *ctx, const char *msg, ...) {
 	NSLog(@"Error encountered during parse: %s", msg);
-	SVGParseResult* parseResult = ((SVGParser*) ctx).currentParseRun;
+	SVGKParseResult* parseResult = ((SVGKParser*) ctx).currentParseRun;
 	[parseResult addSAXError:[NSError errorWithDomain:@"SVG-SAX" code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 																				  (NSString*) msg, NSLocalizedDescriptionKey,
 																				nil]]];
@@ -375,7 +375,7 @@ static void structuredError		(void * userData,
 	
 	NSError* objcError = [NSError errorWithDomain:[[NSNumber numberWithInt:error->domain] stringValue] code:error->code userInfo:details];
 	
-	SVGParseResult* parseResult = ((SVGParser*) userData).currentParseRun;
+	SVGKParseResult* parseResult = ((SVGKParser*) userData).currentParseRun;
 	switch( errorLevel )
 	{
 		case XML_ERR_WARNING:

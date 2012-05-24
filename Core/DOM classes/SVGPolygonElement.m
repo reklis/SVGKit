@@ -7,7 +7,7 @@
 
 #import "SVGPolygonElement.h"
 
-#import "SKPointsAndPathsParser.h"
+#import "SVGKPointsAndPathsParser.h"
 
 @interface SVGPolygonElement()
 
@@ -49,13 +49,13 @@
 	NSScanner* commandScanner = [NSScanner scannerWithString:commandWithParameters];
 	
 	
-	lastCoordinate = [SKPointsAndPathsParser readMovetoDrawtoCommandGroups:commandScanner
+	lastCoordinate = [SVGKPointsAndPathsParser readMovetoDrawtoCommandGroups:commandScanner
 													path:path
 											  relativeTo:CGPointZero
 											  isRelative:FALSE];
 	
     
-	lastCoordinate = [SKPointsAndPathsParser readCloseCommand:[NSScanner scannerWithString:@"z"]
+	lastCoordinate = [SVGKPointsAndPathsParser readCloseCommand:[NSScanner scannerWithString:@"z"]
 									   path:path
 								 relativeTo:lastCoordinate];
 	

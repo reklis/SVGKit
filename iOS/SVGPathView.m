@@ -5,11 +5,11 @@
 
 #import "SVGPathView.h"
 
-#import "SVGImage+SVGPathView.h"
-#import "SVGImage.h"
+#import "SVGKImage+SVGPathView.h"
+#import "SVGKImage.h"
 #import "SVGPathElement.h"
 #import "CGPathAdditions.h"
-#import "SVGImage+CA.h"
+#import "SVGKImage+CA.h"
 
 #if ENABLE_SVGPATHVIEW_CLASS
 
@@ -46,7 +46,7 @@
 
         _pathElement = newPathElement;
         
-        SVGImage* doc = [[SVGImage alloc] initWithFrame:viewRect];
+        SVGKImage* doc = [[SVGKImage alloc] initWithFrame:viewRect];
         [doc addChild:newPathElement];
         
         [self setDocument:doc];

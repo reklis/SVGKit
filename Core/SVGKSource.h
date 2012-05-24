@@ -1,7 +1,7 @@
 /**
- SKSvgSource.h
+ SKSVGKSource.h
   
- SKSvgSource represents the info about a file that was read from disk or over the web during parsing.
+ SKSVGKSource represents the info about a file that was read from disk or over the web during parsing.
  
  Once it has been parsed / loaded, that info is NOT PART OF the in-memory SVG any more - if you were to save the file, you could
  save it in a different location, with a different SVG Spec, etc.
@@ -15,15 +15,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface SKSvgSource : NSObject
+@interface SVGKSource : NSObject
 
 @property(nonatomic,retain) NSString* svgLanguageVersion; /*< <svg version=""> */
 @property(nonatomic) BOOL hasSourceFile, hasSourceURL;
 @property(nonatomic,retain) NSString* filePath;
 @property(nonatomic,retain) NSURL* URL;
 
-+(SKSvgSource*) sourceFromFilename:(NSString*) p;
-+(SKSvgSource*) sourceFromURL:(NSURL*) u;
++(SVGKSource*) sourceFromFilename:(NSString*) p;
++(SVGKSource*) sourceFromURL:(NSURL*) u;
 
 -(id) newHandle:(NSError**) error;
 -(void) closeHandle:(id) handle;

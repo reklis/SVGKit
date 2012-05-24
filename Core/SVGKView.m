@@ -4,17 +4,17 @@
 //
 //
 
-#import "SVGView.h"
+#import "SVGKView.h"
 
-#import "SVGImage.h"
-#import "SVGImage+CA.h"
+#import "SVGKImage.h"
+#import "SVGKImage+CA.h"
 
-@implementation SVGView
+@implementation SVGKView
 
 @synthesize image = _image;
 
-- (id)initWithImage:(SVGImage *) im {
-	NSAssert( im != nil, @"Cannot init with a nil SVGImage; this class requires a pre-loaded SVGImage instance" );
+- (id)initWithImage:(SVGKImage *) im {
+	NSAssert( im != nil, @"Cannot init with a nil SVGKImage; this class requires a pre-loaded SVGKImage instance" );
 	
 	self = [self initWithFrame:CGRectMake(0.0f, 0.0f, im.size.width, im.size.height)];
 	if (self) {
@@ -38,7 +38,7 @@
 #endif
 
 
-- (void)setImage:(SVGImage *) newImage {
+- (void)setImage:(SVGKImage *) newImage {
 	if (_image != newImage) {
 		[_image release];
 		_image = [newImage retain];

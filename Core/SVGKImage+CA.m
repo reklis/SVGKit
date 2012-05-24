@@ -1,8 +1,8 @@
-#import "SVGImage+CA.h"
+#import "SVGKImage+CA.h"
 
 #import <objc/runtime.h>
 
-@implementation SVGImage (CA)
+@implementation SVGKImage (CA)
 
 static const char *kLayerTreeKey = "svgkit.layertree";
 
@@ -11,7 +11,8 @@ static const char *kLayerTreeKey = "svgkit.layertree";
 }
 
 - (CALayer *)layerWithIdentifier:(NSString *)identifier layer:(CALayer *)layer {
-	if ([layer.name isEqualToString:identifier]) {
+	
+	if ([[layer valueForKey:kSVGElementIdentifier] isEqualToString:identifier]) {
 		return layer;
 	}
 	
@@ -38,7 +39,7 @@ static const char *kLayerTreeKey = "svgkit.layertree";
 
 -(CALayer *)newLayerTree
 {
-	return [self newLayerWithElement:self.rootElement];
+	return [self newLayerWithElement:self.DOMTree];
 }
 
 - (CALayer *)newLayerWithElement:(SVGElement <SVGLayeredElement> *)element {
@@ -62,7 +63,7 @@ static const char *kLayerTreeKey = "svgkit.layertree";
 		}
 	}
 	
-	if (element != self.rootElement) {
+	if (element != self.DOMTree) {
 		[element layoutLayer:layer];
 	}
 
@@ -100,9 +101,9 @@ static const char *kLayerTreeKey = "svgkit.layertree";
 	
 	CALayer* rootLayer = [self layerTreeCached];
 	
-	[self addSVGLayerTree:rootLayer withIdentifier:self.rootElement.identifier toDictionary:layersByElementId];
+	[self addSVGLayerTree:rootLayer withIdentifier:self.DOMTree.identifier toDictionary:layersByElementId];
 	
-	NSLog(@"[%@] ROOT element id: %@ => layer: %@", [self class], self.rootElement.identifier, rootLayer);
+	NSLog(@"[%@] ROOT element id: %@ => layer: %@", [self class], self.DOMTree.identifier, rootLayer);
 	
     return layersByElementId;
 }

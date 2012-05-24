@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/CAShapeLayer.h>
 
-#import "SKSvgView.h"
+#import "SVGKView.h"
 
 #define ENABLE_SVGPATHVIEW_CLASS 0
 

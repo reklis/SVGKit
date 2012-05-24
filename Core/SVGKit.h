@@ -11,34 +11,34 @@
 	#import "SVGCircleElement.h"
 	#import "SVGDefsElement.h"
 	#import "SVGDescriptionElement.h"
-	#import "SVGImage.h"
-	#import "SVGImage+CA.h"
+	#import "SVGKImage.h"
+	#import "SVGKImage+CA.h"
 	#import "SVGElement.h"
 	#import "SVGEllipseElement.h"
 	#import "SVGGroupElement.h"
-    #import "SVGImageElement.h"
+    #import "SVGKImageElement.h"
 	#import "SVGLineElement.h"
 	#import "SVGPathElement.h"
 	#import "SVGPolygonElement.h"
 	#import "SVGPolylineElement.h"
 	#import "SVGRectElement.h"
 	#import "SVGShapeElement.h"
-#import "SVGSource.h"
+#import "SVGKSource.h"
 	#import "SVGTitleElement.h"
 	#import "SVGUtils.h"
 	#import "SVGView.h"
     #import "SVGPathView.h"
-    #import "SVGPattern.h"
+    #import "SVGKPattern.h"
 #else
 	#import <SVGKit/SVGCircleElement.h>
 	#import <SVGKit/SVGDefsElement.h>
 	#import <SVGKit/SVGDescriptionElement.h>
-	#import <SVGKit/SVGSource.h>
-	#import <SVGKit/SVGSource+CA.h>
+	#import <SVGKit/SVGKSource.h>
+	#import <SVGKit/SVGKSource+CA.h>
 	#import <SVGKit/SVGElement.h>
 	#import <SVGKit/SVGEllipseElement.h>
 	#import <SVGKit/SVGGroupElement.h>
-    #import <SVGKit/SVGImageElement.h>
+    #import <SVGKit/SVGKImageElement.h>
 	#import <SVGKit/SVGLineElement.h>
 	#import <SVGKit/SVGPathElement.h>
 	#import <SVGKit/SVGPolygonElement.h>

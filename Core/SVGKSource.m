@@ -1,15 +1,15 @@
 
-#import "SKSvgSource.h"
+#import "SVGKSource.h"
 
-@implementation SKSvgSource
+@implementation SVGKSource
 
 @synthesize svgLanguageVersion;
 @synthesize hasSourceFile, hasSourceURL;
 @synthesize filePath, URL;
 
-+(SKSvgSource*) sourceFromFilename:(NSString*) p
++(SVGKSource*) sourceFromFilename:(NSString*) p
 {
-	SKSvgSource* d = [[[SKSvgSource alloc] init] autorelease];
+	SVGKSource* d = [[[SVGKSource alloc] init] autorelease];
 	
 	d.hasSourceFile = TRUE;
 	d.filePath = p;
@@ -17,9 +17,9 @@
 	return d;
 }
 
-+(SKSvgSource*) sourceFromURL:(NSURL*) u
++(SVGKSource*) sourceFromURL:(NSURL*) u
 {
-	SKSvgSource* d = [[[SKSvgSource alloc] init] autorelease];
+	SVGKSource* d = [[[SVGKSource alloc] init] autorelease];
 	
 	d.hasSourceURL = TRUE;
 	d.URL = u;

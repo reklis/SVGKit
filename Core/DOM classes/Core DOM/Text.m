@@ -10,4 +10,10 @@
 
 @implementation Text
 
+-(Text*) splitText:(unsigned long) offset;
+{
+	NSAssert( FALSE, @"Not implemented yet" );
+	return nil;
+}
+
 @end

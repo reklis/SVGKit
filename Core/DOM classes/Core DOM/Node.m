@@ -10,6 +10,7 @@
 #import "Node+Mutable.h"
 
 #import "NodeList+Mutable.h"
+#import "NamedNodeMap.h"
 
 @implementation Node
 
@@ -27,6 +28,8 @@
 
 // Modified in DOM Level 2:
 @synthesize ownerDocument;
+
+@synthesize hasAttributes, hasChildNodes;
 
 - (id)initType:(SKNodeType) nt
 {
@@ -220,12 +223,13 @@
 
 -(BOOL)hasChildNodes
 {
-	return [self.childNodes.length > 0];
+	return (self.childNodes.length > 0);
 }
 
 -(Node*) cloneNode:(BOOL) deep
 {
 	NSAssert( FALSE, @"Not implemented yet - read the spec. Sounds tricky. I'm too tired, and would probably screw it up right now" );
+	return nil;
 }
 
 // Modified in DOM Level 2:
@@ -238,6 +242,7 @@
 -(BOOL) isSupportedFeature:(NSString*) feature version:(NSString*) version
 {
 	NSAssert( FALSE, @"Not implemented yet - read the spec. I have literally no idea what this is supposed to do." );
+	return FALSE;
 }
 
 // Introduced in DOM Level 2:

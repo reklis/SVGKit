@@ -18,7 +18,7 @@
  
  SVGShapeElement
  SVGGroupElement
- SVGImageElement
+ SVGKImageElement
  SVGLineElement
  SVGPathElement
  ...etc

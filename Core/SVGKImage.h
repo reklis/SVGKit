@@ -1,17 +1,21 @@
 /*
- SVGImage
+ SVGKImage
  
  The main class in SVGKit - this is the one you'll normally interact with
  
- An SVGImage is as close to "the SVG version of a UIImage" as we could possibly get. We cannot
+ An SVGKImage is as close to "the SVG version of a UIImage" as we could possibly get. We cannot
  subclass UIImage because Apple has defined UIImage as immutable - and SVG images actually change
  (each time you zoom in, we want to re-render the SVG as a higher-resolution set of pixels)
  
  We use the exact same method names as UIImage, and try to be literally as identical as possible.
  
  Data:
-  - uiImage: not supported yet: will be a cached UIImage that is re-generated on demand. Will enable us to implement an SVGImageView
+  - UIImage: not supported yet: will be a cached UIImage that is re-generated on demand. Will enable us to implement an SVGKImageView
  that works as a drop-in replacement for UIImageView
+ 
+  - DOMTree: the SVG DOM spec, the root element of a tree of SVGElement subclasses
+  - CALayerTree: the root element of a tree of CALayer subclasses
+ 
   - size: as per the UIImage.size, returns a size in Apple Points (i.e. 320 == width of iPhone, irrespective of Retina)
   - scale: ??? unknown how we'll define this, but could be useful when doing auto-re-render-on-zoom
   - svgWidth: the internal SVGLength used to generate the correct .size
@@ -28,12 +32,13 @@
 #import "SVGSVGElement.h"
 #import "SVGGroupElement.h"
 
-#import "SKParser.h"
-#import "SVGSource.h"
+#import "SVGKParser.h"
+#import "SVGKSource.h"
+#import "SVGKParseResult.h"
 
 @class SVGDefsElement;
 
-@interface SVGImage : NSObject // doesn't extend UIImage because Apple made UIImage immutable
+@interface SVGKImage : NSObject // doesn't extend UIImage because Apple made UIImage immutable
 {
 }
 
@@ -43,8 +48,8 @@
 
 @property (nonatomic, readonly) SVGLength svgWidth;
 @property (nonatomic, readonly) SVGLength svgHeight;
-@property (nonatomic, readonly) SVGSource* source;
-@property (nonatomic, readonly) SVGParseResult* parseErrorsAndWarnings;
+@property (nonatomic, readonly) SVGKSource* source;
+@property (nonatomic, readonly) SVGKParseResult* parseErrorsAndWarnings;
 
 // convenience accessors to parsed children
 @property (nonatomic, readonly) NSString *title;
@@ -56,10 +61,10 @@
 
 
 #pragma mark - methods to quick load an SVG as an image
-+ (SVGImage *)imageNamed:(NSString *)name;      // load from main bundle
-+ (SVGImage *)imageWithContentsOfFile:(NSString *)path;
++ (SVGKImage *)imageNamed:(NSString *)name;      // load from main bundle
++ (SVGKImage *)imageWithContentsOfFile:(NSString *)path;
 #if TARGET_OS_IPHONE // doesn't exist on OS X's Image class
-+ (SVGImage *)imageWithData:(NSData *)data;
++ (SVGKImage *)imageWithData:(NSData *)data;
 #endif
 
 - (id)initWithContentsOfFile:(NSString *)path;
@@ -106,7 +111,7 @@
  */
 #pragma mark ---------end of unsupported items
 
-+ (id)documentFromURL:(NSURL *)url;
++ (SVGKImage*)imageWithContentsOfURL:(NSURL *)url;
 
 - (id)initWithContentsOfFile:(NSString *)aPath;
 - (id)initWithFrame:(CGRect)frame;

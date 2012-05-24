@@ -1,5 +1,5 @@
 //
-//  SVGImageElement.m
+//  SVGKImageElement.m
 //  SvgLoader
 //
 //  Created by Joshua May on 24/06/11.

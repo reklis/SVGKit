@@ -1,14 +1,14 @@
-#import "SKSvgImage.h"
+#import "SVGKImage.h"
 
 #import "SVGDefsElement.h"
 #import "SVGDescriptionElement.h"
-#import "SVGParser.h"
+#import "SVGKParser.h"
 #import "SVGTitleElement.h"
 #import "SVGPathElement.h"
 
-#import "SVGParserSVG.h"
+#import "SVGKParserSVG.h"
 
-@interface SKSvgImage ()
+@interface SVGKImage ()
 
 /*! Only preserved for temporary backwards compatibility */
 - (SVGSVGElement*)parseFileAtPath:(NSString *)aPath;
@@ -18,21 +18,22 @@
 - (SVGSVGElement*)parseFileAtPath:(NSString *)aPath error:(NSError**) error;
 - (SVGSVGElement*)parseFileAtURL:(NSURL *)url error:(NSError**) error;
 
-@property (nonatomic, readwrite) SVGSVGElement* rootElement;
 @property (nonatomic, readwrite) SVGLength svgWidth;
 @property (nonatomic, readwrite) SVGLength svgHeight;
-@property (nonatomic, readwrite) SVGParseResult* parseErrorsAndWarnings;
+@property (nonatomic, readwrite) SVGKParseResult* parseErrorsAndWarnings;
 
 @property (nonatomic, retain, readwrite) SVGSVGElement* DOMTree; // needs renaming + (possibly) refactoring
 @property (nonatomic, retain, readwrite) CALayer* CALayerTree;
 
 #pragma mark - UIImage methods cloned and re-implemented as SVG intelligent methods
-//NOT DEFINED: what is the scale for a SVGImage? @property(nonatomic,readwrite) CGFloat            scale __OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_4_0);
+//NOT DEFINED: what is the scale for a SVGKImage? @property(nonatomic,readwrite) CGFloat            scale __OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_4_0);
 
 @end
 
 #pragma mark - main class
-@implementation SVGImage
+@implementation SVGKImage
+
+@synthesize DOMTree, CALayerTree;
 
 @synthesize svgWidth = _width;
 @synthesize svgHeight = _height;
@@ -41,7 +42,7 @@
 
 @dynamic title, svgDescription, defs;
 
-+ (SVGImage *)imageNamed:(NSString *)name {
++ (SVGKImage *)imageNamed:(NSString *)name {
 	NSParameterAssert(name != nil);
 	
 	NSBundle *bundle = [NSBundle mainBundle];
@@ -66,13 +67,13 @@
 	return [self imageWithContentsOfFile:path];
 }
 
-+ (id)documentFromURL:(NSURL *)url {
++ (id)imageWithContentsOfURL:(NSURL *)url {
 	NSParameterAssert(url != nil);
 	
 	return [[[[self class] alloc] initWithContentsOfURL:url] autorelease];
 }
 
-+ (SVGImage*)imageWithContentsOfFile:(NSString *)aPath {
++ (SVGKImage*)imageWithContentsOfFile:(NSString *)aPath {
 	return [[[[self class] alloc] initWithContentsOfFile:aPath] autorelease];
 }
 
@@ -91,8 +92,8 @@
 			
 		}
 		else {
-			self.svgWidth = self.rootElement.documentWidth;
-			self.svgHeight = self.rootElement.documentHeight;
+			self.svgWidth = self.DOMTree.documentWidth;
+			self.svgHeight = self.DOMTree.documentHeight;
 		}
 		
 		
@@ -114,8 +115,8 @@
 		}
 		else
 		{
-			self.svgWidth = self.rootElement.documentWidth;
-			self.svgHeight = self.rootElement.documentHeight;
+			self.svgWidth = self.DOMTree.documentWidth;
+			self.svgHeight = self.DOMTree.documentHeight;
 		}
 	}
 	return self;
@@ -163,14 +164,14 @@
 
 -(CGFloat)scale
 {
-	NSAssert( FALSE, @"image.scale is currently UNDEFINED for an SVGImage (nothing implemented by SVGKit)" );
+	NSAssert( FALSE, @"image.scale is currently UNDEFINED for an SVGKImage (nothing implemented by SVGKit)" );
 	return 0.0;
 }
 
 #if TARGET_OS_IPHONE
 -(UIImage *)UIImage
 {
-	NSAssert( FALSE, @"Auto-converting SVGImage to a rasterized UIImage is not yet implemented by SVGKit" );
+	NSAssert( FALSE, @"Auto-converting SVGKImage to a rasterized UIImage is not yet implemented by SVGKit" );
 	return nil;
 }
 #endif
@@ -222,8 +223,8 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 
 - (SVGSVGElement*)parseFileAtPath:(NSString *)aPath error:(NSError**) error {
 	
-	SVGSource* parsedDocument = [SVGSource sourceFromFilename:aPath];
-	self.parseErrorsAndWarnings = [SVGParser parseSourceUsingDefaultSVGParser:parsedDocument];
+	SVGKSource* parsedDocument = [SVGKSource sourceFromFilename:aPath];
+	self.parseErrorsAndWarnings = [SVGKParser parseSourceUsingDefaultSVGKParser:parsedDocument];
 	
 	if( parseErrorsAndWarnings.rootOfSVGTree != nil )
 		return (SVGSVGElement*) parseErrorsAndWarnings.rootOfSVGTree;
@@ -237,8 +238,8 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 
 
 -(SVGSVGElement*)parseFileAtURL:(NSURL *)url error:(NSError**) error {
-	SVGSource* parsedDocument = [SVGSource sourceFromURL:url];
-	self.parseErrorsAndWarnings = [SVGParser parseSourceUsingDefaultSVGParser:parsedDocument];
+	SVGKSource* parsedDocument = [SVGKSource sourceFromURL:url];
+	self.parseErrorsAndWarnings = [SVGKParser parseSourceUsingDefaultSVGKParser:parsedDocument];
 	
 	if( parseErrorsAndWarnings.rootOfSVGTree != nil )
 		return (SVGSVGElement*) parseErrorsAndWarnings.rootOfSVGTree;

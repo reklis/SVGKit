@@ -26,7 +26,7 @@
 #import "SVGUtils.h"
 
 @class SVGGradientElement;
-@class SVGPattern;
+@class SVGKPattern;
 
 typedef enum {
 	SVGFillTypeNone = 0,
@@ -39,7 +39,7 @@ typedef enum {
 
 @property (nonatomic, readwrite) SVGFillType fillType;
 @property (nonatomic, readwrite) SVGColor fillColor;
-@property (nonatomic, readwrite, retain) SVGPattern* fillPattern;
+@property (nonatomic, readwrite, retain) SVGKPattern* fillPattern;
 
 @property (nonatomic, readwrite) CGFloat strokeWidth;
 @property (nonatomic, readwrite) SVGColor strokeColor;

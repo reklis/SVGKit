@@ -1,8 +1,8 @@
 
-#import "SVGImage.h"
+#import "SVGKImage.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface SVGImage (CA)
+@interface SVGKImage (CA)
 
 - (CALayer *)layerWithIdentifier:(NSString *)identifier;
 

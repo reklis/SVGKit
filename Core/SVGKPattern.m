@@ -1,4 +1,4 @@
-#import "SKPattern.h"
+#import "SVGKPattern.h"
 
 @implementation SKPattern
 
