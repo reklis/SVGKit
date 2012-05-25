@@ -9,7 +9,6 @@
 #import "SVGKImage.h"
 #import "SVGPathElement.h"
 #import "CGPathAdditions.h"
-#import "SVGKImage+CA.h"
 
 #if ENABLE_SVGPATHVIEW_CLASS
 

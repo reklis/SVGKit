@@ -10,17 +10,11 @@
 
 @interface SVGKImage ()
 
-/*! Only preserved for temporary backwards compatibility */
-- (SVGSVGElement*)parseFileAtPath:(NSString *)aPath;
-/*! Only preserved for temporary backwards compatibility */
--(SVGSVGElement*)parseFileAtURL:(NSURL *)url;
-
-- (SVGSVGElement*)parseFileAtPath:(NSString *)aPath error:(NSError**) error;
-- (SVGSVGElement*)parseFileAtURL:(NSURL *)url error:(NSError**) error;
-
 @property (nonatomic, readwrite) SVGLength svgWidth;
 @property (nonatomic, readwrite) SVGLength svgHeight;
-@property (nonatomic, readwrite) SVGKParseResult* parseErrorsAndWarnings;
+@property (nonatomic, retain, readwrite) SVGKParseResult* parseErrorsAndWarnings;
+
+@property (nonatomic, retain, readwrite) SVGKSource* source;
 
 @property (nonatomic, retain, readwrite) SVGSVGElement* DOMTree; // needs renaming + (possibly) refactoring
 @property (nonatomic, retain, readwrite) CALayer* CALayerTree;
@@ -39,8 +33,6 @@
 @synthesize svgHeight = _height;
 @synthesize source;
 @synthesize parseErrorsAndWarnings;
-
-@dynamic title, svgDescription, defs;
 
 + (SVGKImage *)imageNamed:(NSString *)name {
 	NSParameterAssert(name != nil);
@@ -67,51 +59,34 @@
 	return [self imageWithContentsOfFile:path];
 }
 
-+ (id)imageWithContentsOfURL:(NSURL *)url {
++ (SVGKImage*) imageWithContentsOfURL:(NSURL *)url {
 	NSParameterAssert(url != nil);
 	
 	return [[[[self class] alloc] initWithContentsOfURL:url] autorelease];
 }
 
-+ (SVGKImage*)imageWithContentsOfFile:(NSString *)aPath {
++ (SVGKImage*) imageWithContentsOfFile:(NSString *)aPath {
 	return [[[[self class] alloc] initWithContentsOfFile:aPath] autorelease];
 }
 
-- (id)initWithContentsOfFile:(NSString *)aPath {
-	NSParameterAssert(aPath != nil);
-	
+- (id)initWithSource:(SVGKSource *)source {
 	self = [super init];
 	if (self) {
 		self.svgWidth = SVGLengthZero;
 		self.svgHeight = SVGLengthZero;
+		self.source = source;
 		
-		NSError* parseError = nil;
-		self.DOMTree = [self parseFileAtPath:aPath error:&parseError];
+		self.parseErrorsAndWarnings = [SVGKParser parseSourceUsingDefaultSVGKParser:self.source];
 		
-		if ( self.DOMTree == nil ) {
-			
-		}
-		else {
-			self.svgWidth = self.DOMTree.documentWidth;
-			self.svgHeight = self.DOMTree.documentHeight;
-		}
+		if( parseErrorsAndWarnings.rootOfSVGTree != nil )
+			self.DOMTree = (SVGSVGElement*) parseErrorsAndWarnings.rootOfSVGTree;
+		else
+			self.DOMTree = nil;
 		
-		
-	}
-	return self;
-}
-
-- (id)initWithContentsOfURL:(NSURL *)url {
-	NSParameterAssert(url != nil);
-	
-	self = [super init]; 
-	if (self) {
-		_width = SVGLengthZero;
-		_height = SVGLengthZero;
-		
-		self.DOMTree = [self parseFileAtURL:url];
-		if ( self.DOMTree == nil ) {
-			
+		if ( self.DOMTree == nil )
+		{
+			NSLog(@"[%@] ERROR: failed to init SVGKImage with source = %@, returning nil from init methods", [self class], source );
+			self = nil;
 		}
 		else
 		{
@@ -122,20 +97,23 @@
 	return self;
 }
 
-- (id) initWithFrame:(CGRect)frame
-{
-	self = [super init];
-	if (self) {
-		self.DOMTree = [[[SVGSVGElement alloc] initWithName:@"svg"] autorelease];
-		
-        _width = SVGLengthGetWidth(frame);
-        _height = SVGLengthGetHeight(frame);
-    }
-	return self;
+- (id)initWithContentsOfFile:(NSString *)aPath {
+	NSParameterAssert(aPath != nil);
+	
+	return [self initWithSource:[SVGKSource sourceFromFilename:aPath]];
+}
+
+- (id)initWithContentsOfURL:(NSURL *)url {
+	NSParameterAssert(url != nil);
+	
+	return [self initWithSource:[SVGKSource sourceFromURL:url]];
 }
 
 - (void)dealloc {
 	self.DOMTree = nil;
+	self.CALayerTree = nil;
+	self.source = nil;
+	self.parseErrorsAndWarnings = nil;
 	[super dealloc];
 }
 
@@ -221,56 +199,115 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 }
 #endif
 
-- (SVGSVGElement*)parseFileAtPath:(NSString *)aPath error:(NSError**) error {
+#pragma mark - CALayer methods: generate the CALayerTree
+
+- (CALayer *)layerWithIdentifier:(NSString *)identifier
+{
+	return [self layerWithIdentifier:identifier layer:self.CALayerTree];
+}
+
+- (CALayer *)layerWithIdentifier:(NSString *)identifier layer:(CALayer *)layer {
 	
-	SVGKSource* parsedDocument = [SVGKSource sourceFromFilename:aPath];
-	self.parseErrorsAndWarnings = [SVGKParser parseSourceUsingDefaultSVGKParser:parsedDocument];
+	if ([[layer valueForKey:kSVGElementIdentifier] isEqualToString:identifier]) {
+		return layer;
+	}
 	
-	if( parseErrorsAndWarnings.rootOfSVGTree != nil )
-		return (SVGSVGElement*) parseErrorsAndWarnings.rootOfSVGTree;
-	else
+	for (CALayer *child in layer.sublayers) {
+		CALayer *resultingLayer = [self layerWithIdentifier:identifier layer:child];
+		
+		if (resultingLayer)
+			return resultingLayer;
+	}
+	
+	return nil;
+}
+
+- (CALayer *)newLayerWithElement:(SVGElement <SVGLayeredElement> *)element {
+	CALayer *layer = [element newLayer];
+	
+	NSLog(@"[%@] DEBUG: converted SVG element (class:%@) to CALayer (class:%@) for id = %@", [self class], NSStringFromClass([element class]), NSStringFromClass([layer class]), element.identifier);
+	
+	if (![element.children count]) {
+		return layer;
+	}
+	
+	for (SVGElement *child in element.children) {
+		if ([child conformsToProtocol:@protocol(SVGLayeredElement)]) {
+			CALayer *sublayer = [self newLayerWithElement:(id<SVGLayeredElement>)child];
+			
+			if (!sublayer) {
+				continue;
+            }
+			
+			[layer addSublayer:sublayer];
+		}
+	}
+	
+	if (element != self.DOMTree) {
+		[element layoutLayer:layer];
+	}
+	
+    [layer setNeedsDisplay];
+	
+	return layer;
+}
+
+-(CALayer *)newLayerTree
+{
+	if( self.DOMTree == nil )
 		return nil;
-}
-
-- (SVGSVGElement*)parseFileAtPath:(NSString *)aPath {
-	return [self parseFileAtPath:aPath error:nil];
-}
-
-
--(SVGSVGElement*)parseFileAtURL:(NSURL *)url error:(NSError**) error {
-	SVGKSource* parsedDocument = [SVGKSource sourceFromURL:url];
-	self.parseErrorsAndWarnings = [SVGKParser parseSourceUsingDefaultSVGKParser:parsedDocument];
-	
-	if( parseErrorsAndWarnings.rootOfSVGTree != nil )
-		return (SVGSVGElement*) parseErrorsAndWarnings.rootOfSVGTree;
 	else
-		return nil;
+		return [self newLayerWithElement:self.DOMTree];
 }
 
--(SVGSVGElement*)parseFileAtURL:(NSURL *)url {
-	return [self parseFileAtURL:url error:nil];
-}
-
-- (CALayer *)newLayer {
+-(CALayer *)CALayerTree
+{
+	if( CALayerTree == nil )
+	{
+		self.CALayerTree = [[self newLayerTree] autorelease];
+	}
 	
-	CALayer* _layer = [[CALayer layer] retain];
-		_layer.frame = CGRectMake(0.0f, 0.0f, SVGLengthAsPixels(self.svgWidth), SVGLengthAsPixels(self.svgHeight));
+	return CALayerTree;
+}
+
+
+- (void) addSVGLayerTree:(CALayer*) layer withIdentifier:(NSString*) layerID toDictionary:(NSMutableDictionary*) layersByID
+{
+	// TODO: consider removing this method: it caches the lookup of individual items in the CALayerTree. It's a performance boost, but is it enough to be worthwhile?
+	[layersByID setValue:layer forKey:layerID];
 	
-	return _layer;
+	if ( [layer.sublayers count] < 1 )
+	{
+		return;
+	}
+	
+	for (CALayer *subLayer in layer.sublayers)
+	{
+		NSString* subLayerID = [subLayer valueForKey:kSVGElementIdentifier];
+		
+		if( subLayerID != nil )
+		{
+			NSLog(@"[%@] element id: %@ => layer: %@", [self class], subLayerID, subLayer);
+			
+			[self addSVGLayerTree:subLayer withIdentifier:subLayerID toDictionary:layersByID];
+			
+		}
+	}
 }
 
-- (void)layoutLayer:(CALayer *)layer { }
-
-- (NSString *)title {
-	return [self.DOMTree findFirstElementOfClass:[SVGTitleElement class]].stringValue;
-}
-
-- (NSString *)desc {
-	return [self.DOMTree findFirstElementOfClass:[SVGDescriptionElement class]].stringValue;
-}
-
-- (SVGDefsElement *)defs {
-	return (SVGDefsElement *) [self.DOMTree findFirstElementOfClass:[SVGDefsElement class]];
+- (NSDictionary*) dictionaryOfLayers
+{
+	// TODO: consider removing this method: it caches the lookup of individual items in the CALayerTree. It's a performance boost, but is it enough to be worthwhile?
+	NSMutableDictionary* layersByElementId = [NSMutableDictionary dictionary];
+	
+	CALayer* rootLayer = self.CALayerTree;
+	
+	[self addSVGLayerTree:rootLayer withIdentifier:self.DOMTree.identifier toDictionary:layersByElementId];
+	
+	NSLog(@"[%@] ROOT element id: %@ => layer: %@", [self class], self.DOMTree.identifier, rootLayer);
+	
+    return layersByElementId;
 }
 
 @end
+

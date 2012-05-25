@@ -68,16 +68,15 @@
 		}
 	}
 	
-	mainRect = CGRectIntegral(mainRect); // round values to integers
-	
 	layer.frame = mainRect;
 	
+	// TODO: this code looks insanely wrong to me. WTF is it doing? Why? WHY?
 	for (CALayer *currentLayer in sublayers) {
 		CGRect frame = currentLayer.frame;
 		frame.origin.x -= mainRect.origin.x;
 		frame.origin.y -= mainRect.origin.y;
 		
-		currentLayer.frame = CGRectIntegral(frame);
+		currentLayer.frame = frame;
 	}
 }
 

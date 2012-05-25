@@ -21,9 +21,6 @@
   - svgWidth: the internal SVGLength used to generate the correct .size
   - svgHeight: the internal SVGLength used to generate the correct .size
   - rootElement: the SVGSVGElement instance that is the root of the parse SVG tree. Use this to access the full SVG document
-  - svgDescription: ???
-  - title: ???
-  - defs: the root <svg:defs> element
  
  */
 
@@ -48,13 +45,8 @@
 
 @property (nonatomic, readonly) SVGLength svgWidth;
 @property (nonatomic, readonly) SVGLength svgHeight;
-@property (nonatomic, readonly) SVGKSource* source;
-@property (nonatomic, readonly) SVGKParseResult* parseErrorsAndWarnings;
-
-// convenience accessors to parsed children
-@property (nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) NSString *svgDescription; // 'description' is reserved by NSObject
-@property (nonatomic, readonly) SVGDefsElement *defs; // needs renaming + (possibly) refactoring
+@property (nonatomic, retain, readonly) SVGKSource* source;
+@property (nonatomic, retain, readonly) SVGKParseResult* parseErrorsAndWarnings;
 
 @property (nonatomic, retain, readonly) SVGSVGElement* DOMTree;
 @property (nonatomic, retain, readonly) CALayer* CALayerTree;
@@ -113,9 +105,19 @@
 
 + (SVGKImage*)imageWithContentsOfURL:(NSURL *)url;
 
-- (id)initWithContentsOfFile:(NSString *)aPath;
-- (id)initWithFrame:(CGRect)frame;
-
 #pragma mark - core methods for interacting with an SVG image usefully (not from UIImage)
+
+/*! This is used internally by the main UIImage cloned methods anyway, so we might as well expose it */
+- (id)initWithSource:(SVGKSource *)source;
+
+
+/*! Creates a new instance each time you call it */
+- (CALayer *)newLayerTree;
+
+- (CALayer *)layerWithIdentifier:(NSString *)identifier;
+- (CALayer *)layerWithIdentifier:(NSString *)identifier layer:(CALayer *)layer;
+
+/*! returns all the individual CALayer's in the full layer tree, indexed by the SVG identifier of the SVG node that created that layer */
+- (NSDictionary*) dictionaryOfLayers;
 
 @end

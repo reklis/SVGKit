@@ -22,7 +22,6 @@
 		666141D815697534000F3A27 /* SKBasicDataTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AD515475254002F99FF /* SKBasicDataTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		666141E015697534000F3A27 /* SVGKSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79ADD15475254002F99FF /* SVGKSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		666141E815697534000F3A27 /* SVGKImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AE515475254002F99FF /* SVGKImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		666141EA15697534000F3A27 /* SVGKImage+CA.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AE715475254002F99FF /* SVGKImage+CA.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		666141EE15697534000F3A27 /* SVGKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AEB15475254002F99FF /* SVGKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		666141F115697534000F3A27 /* SVGKParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AEE15475254002F99FF /* SVGKParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		666141FA15697534000F3A27 /* SVGKPattern.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AF515475254002F99FF /* SVGKPattern.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -195,9 +194,6 @@
 		66B79B2D15475254002F99FF /* SVGKImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AE515475254002F99FF /* SVGKImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66B79B2F15475254002F99FF /* SVGKImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66B79AE615475254002F99FF /* SVGKImage.m */; };
 		66B79B3015475254002F99FF /* SVGKImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66B79AE615475254002F99FF /* SVGKImage.m */; };
-		66B79B3115475254002F99FF /* SVGKImage+CA.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AE715475254002F99FF /* SVGKImage+CA.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66B79B3315475254002F99FF /* SVGKImage+CA.m in Sources */ = {isa = PBXBuildFile; fileRef = 66B79AE815475254002F99FF /* SVGKImage+CA.m */; };
-		66B79B3415475254002F99FF /* SVGKImage+CA.m in Sources */ = {isa = PBXBuildFile; fileRef = 66B79AE815475254002F99FF /* SVGKImage+CA.m */; };
 		66B79B3915475254002F99FF /* SVGKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AEB15475254002F99FF /* SVGKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66B79B3F15475254002F99FF /* SVGKParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 66B79AEE15475254002F99FF /* SVGKParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66B79B4115475254002F99FF /* SVGKParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 66B79AEF15475254002F99FF /* SVGKParser.m */; };
@@ -315,8 +311,6 @@
 		66B79ADE15475254002F99FF /* SVGKSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGKSource.m; sourceTree = "<group>"; };
 		66B79AE515475254002F99FF /* SVGKImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGKImage.h; sourceTree = "<group>"; };
 		66B79AE615475254002F99FF /* SVGKImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGKImage.m; sourceTree = "<group>"; };
-		66B79AE715475254002F99FF /* SVGKImage+CA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVGKImage+CA.h"; sourceTree = "<group>"; };
-		66B79AE815475254002F99FF /* SVGKImage+CA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SVGKImage+CA.m"; sourceTree = "<group>"; };
 		66B79AEB15475254002F99FF /* SVGKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGKit.h; sourceTree = "<group>"; };
 		66B79AEE15475254002F99FF /* SVGKParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGKParser.h; sourceTree = "<group>"; };
 		66B79AEF15475254002F99FF /* SVGKParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGKParser.m; sourceTree = "<group>"; };
@@ -594,8 +588,6 @@
 				66B79ADE15475254002F99FF /* SVGKSource.m */,
 				66B79AE515475254002F99FF /* SVGKImage.h */,
 				66B79AE615475254002F99FF /* SVGKImage.m */,
-				66B79AE715475254002F99FF /* SVGKImage+CA.h */,
-				66B79AE815475254002F99FF /* SVGKImage+CA.m */,
 				66B79AEB15475254002F99FF /* SVGKit.h */,
 				66B79AEE15475254002F99FF /* SVGKParser.h */,
 				66B79AEF15475254002F99FF /* SVGKParser.m */,
@@ -629,7 +621,6 @@
 				666141D815697534000F3A27 /* SKBasicDataTypes.h in Headers */,
 				666141E015697534000F3A27 /* SVGKSource.h in Headers */,
 				666141E815697534000F3A27 /* SVGKImage.h in Headers */,
-				666141EA15697534000F3A27 /* SVGKImage+CA.h in Headers */,
 				666141EE15697534000F3A27 /* SVGKit.h in Headers */,
 				666141F115697534000F3A27 /* SVGKParser.h in Headers */,
 				666141FA15697534000F3A27 /* SVGKPattern.h in Headers */,
@@ -689,7 +680,6 @@
 				66B79B0D15475254002F99FF /* SKBasicDataTypes.h in Headers */,
 				66B79B1D15475254002F99FF /* SVGKSource.h in Headers */,
 				66B79B2D15475254002F99FF /* SVGKImage.h in Headers */,
-				66B79B3115475254002F99FF /* SVGKImage+CA.h in Headers */,
 				66B79B3915475254002F99FF /* SVGKit.h in Headers */,
 				66B79B3F15475254002F99FF /* SVGKParser.h in Headers */,
 				66B79B4D15475254002F99FF /* SVGKPattern.h in Headers */,
@@ -845,7 +835,6 @@
 				66B79B1015475254002F99FF /* SKBasicDataTypes.m in Sources */,
 				66B79B2015475254002F99FF /* SVGKSource.m in Sources */,
 				66B79B3015475254002F99FF /* SVGKImage.m in Sources */,
-				66B79B3415475254002F99FF /* SVGKImage+CA.m in Sources */,
 				66B79B4215475254002F99FF /* SVGKParser.m in Sources */,
 				66B79B5015475254002F99FF /* SVGKPattern.m in Sources */,
 				66B79B7415475254002F99FF /* SVGUtils.m in Sources */,
@@ -899,7 +888,6 @@
 				66B79B0F15475254002F99FF /* SKBasicDataTypes.m in Sources */,
 				66B79B1F15475254002F99FF /* SVGKSource.m in Sources */,
 				66B79B2F15475254002F99FF /* SVGKImage.m in Sources */,
-				66B79B3315475254002F99FF /* SVGKImage+CA.m in Sources */,
 				66B79B4115475254002F99FF /* SVGKParser.m in Sources */,
 				66B79B4F15475254002F99FF /* SVGKPattern.m in Sources */,
 				66B79B7315475254002F99FF /* SVGUtils.m in Sources */,

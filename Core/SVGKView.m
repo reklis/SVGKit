@@ -7,7 +7,6 @@
 #import "SVGKView.h"
 
 #import "SVGKImage.h"
-#import "SVGKImage+CA.h"
 
 @implementation SVGKView
 
@@ -57,7 +56,7 @@
             [sublayer removeFromSuperlayer];
         }
 
-		[self.layer addSublayer:[_image layerTreeCached]];
+		[self.layer addSublayer:_image.CALayerTree];
 	}
 }
 
