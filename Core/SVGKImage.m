@@ -222,8 +222,8 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 	return nil;
 }
 
-- (CALayer *)newLayerWithElement:(SVGElement <SVGLayeredElement> *)element {
-	CALayer *layer = [element newLayer];
+- (CALayer *)newLayerWithElement:(SVGElement <SVGLayeredElement> *)element preTransform:(CGAffineTransform) preTransform {
+	CALayer *layer = [element newLayerPreTransformed:preTransform];
 	
 	NSLog(@"[%@] DEBUG: converted SVG element (class:%@) to CALayer (class:%@) for id = %@", [self class], NSStringFromClass([element class]), NSStringFromClass([layer class]), element.identifier);
 	
@@ -233,7 +233,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 	
 	for (SVGElement *child in element.children) {
 		if ([child conformsToProtocol:@protocol(SVGLayeredElement)]) {
-			CALayer *sublayer = [self newLayerWithElement:(id<SVGLayeredElement>)child];
+			CALayer *sublayer = [self newLayerWithElement:(id<SVGLayeredElement>)child preTransform:preTransform];
 			
 			if (!sublayer) {
 				continue;
@@ -257,7 +257,18 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 	if( self.DOMTree == nil )
 		return nil;
 	else
-		return [self newLayerWithElement:self.DOMTree];
+	{
+		CGAffineTransform preTransform = CGAffineTransformIdentity;
+		
+		// TODO: calc the correct transform!
+		CGRect frameViewBox = self.DOMTree.viewBoxFrame;
+		CGRect frameImage = CGRectMake(0,0, SVGLengthAsPixels( self.DOMTree.documentWidth), SVGLengthAsPixels( self.DOMTree.documentHeight ) );
+		
+		if( ! CGRectIsEmpty( frameViewBox ) )
+			preTransform = CGAffineTransformMakeScale( frameImage.size.width / frameViewBox.size.width, frameImage.size.height / frameViewBox.size.height);
+		
+		return [self newLayerWithElement:self.DOMTree preTransform:preTransform];
+	}
 }
 
 -(CALayer *)CALayerTree

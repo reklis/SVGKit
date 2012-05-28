@@ -55,13 +55,13 @@
 {
     [self.contentView removeFromSuperview];
     
-	SVGImage *document = [SVGImage imageNamed:[name stringByAppendingPathExtension:@"svg"]];
+	SVGKImage *document = [SVGKImage imageNamed:[name stringByAppendingPathExtension:@"svg"]];
 	
 	if( document.parseErrorsAndWarnings.rootOfSVGTree != nil )
 	{
 		NSLog(@"[%@] Freshly loaded document (name = %@) has size = %@", [self class], name, NSStringFromCGSize(document.size) );
 		
-		self.contentView = [[[SVGView alloc] initWithImage:document] autorelease];
+		self.contentView = [[[SVGKView alloc] initWithImage:document] autorelease];
 		
 		if (_name) {
 			[_name release];

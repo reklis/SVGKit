@@ -18,7 +18,7 @@
 
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (nonatomic, retain) IBOutlet SVGView *contentView;
+@property (nonatomic, retain) IBOutlet SVGKView *contentView;
 
 @property (nonatomic, retain) id detailItem;
 

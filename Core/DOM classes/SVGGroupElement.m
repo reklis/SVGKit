@@ -37,7 +37,8 @@
 	}
 }
 
-- (CALayer *)newLayer {
+- (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform
+{
 	
 	CALayer* _layer = [[CALayerWithChildHitTest layer] retain];
 		

@@ -32,7 +32,7 @@
 
 -(void) setAttribute:(NSString*) name value:(NSString*) value
 {
-	Attr* att = [[Attr alloc] initAttr:name value:value];
+	Attr* att = [[[Attr alloc] initAttr:name value:value] autorelease];
 	
 	[self.attributesByName setValue:att forKey:name];
 }

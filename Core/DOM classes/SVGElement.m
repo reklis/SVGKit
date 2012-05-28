@@ -160,6 +160,23 @@
 				self.transformRelative = CGAffineTransformConcat( self.transformRelative, nt );
 				
 			}
+			else if( [command isEqualToString:@"matrix"] )
+			{
+				CGFloat a = [(NSString*)[parameterStrings objectAtIndex:0] floatValue];
+				CGFloat b = [(NSString*)[parameterStrings objectAtIndex:1] floatValue];
+				CGFloat c = [(NSString*)[parameterStrings objectAtIndex:2] floatValue];
+				CGFloat d = [(NSString*)[parameterStrings objectAtIndex:3] floatValue];
+				CGFloat tx = [(NSString*)[parameterStrings objectAtIndex:4] floatValue];
+				CGFloat ty = [(NSString*)[parameterStrings objectAtIndex:5] floatValue];
+				
+				CGAffineTransform nt = CGAffineTransformMake(a, b, c, d, tx, ty );
+				self.transformRelative = CGAffineTransformConcat( self.transformRelative, nt );
+				
+			}
+			else
+			{
+				NSLog(@"[%@] ERROR: unsupported SVG transform command (probably legal, but not implemented yet by SVGKit): %@", [self class], command );
+			}
 		}];
 		
 		NSLog(@"[%@] Set local / relative transform = (%2.2f, %2.2f // %2.2f, %2.2f) + (%2.2f, %2.2f translate)", [self class], self.transformRelative.a, self.transformRelative.b, self.transformRelative.c, self.transformRelative.d, self.transformRelative.tx, self.transformRelative.ty );

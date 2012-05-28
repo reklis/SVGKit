@@ -82,12 +82,16 @@ CGImageRef SVGImageCGImage(SVGImageRef img)
 	}
 }
 
-- (CALayer *)newLayer {
+- (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform
+{
 	__block CALayer *layer = [[CALayer layer] retain];
 
 	layer.name = self.identifier;
 	[layer setValue:self.identifier forKey:kSVGElementIdentifier];
-    layer.frame = CGRectMake(_x, _y, _width, _height);
+	
+	CGRect frame = CGRectMake(_x, _y, _width, _height);
+	frame = CGRectApplyAffineTransform(frame, preTransform);
+	layer.frame = frame;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:_href]];

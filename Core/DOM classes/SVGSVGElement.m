@@ -20,6 +20,7 @@
 {
 	self.graphicsGroups = nil;
 	self.anonymousGraphicsGroups = nil;
+	self.viewBoxFrame = CGRectNull;
 	[super dealloc];	
 }
 
@@ -61,7 +62,7 @@
 	return nil;
 }
 
-- (CALayer *)newLayer
+- (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform
 {
 	
 	CALayer* _layer = [[CALayerWithChildHitTest layer] retain];

@@ -50,7 +50,7 @@
 		
 		NSURLRequest* request = [NSURLRequest requestWithURL:self.URL];
 		
-		httpData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
+		httpData = [[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error] retain];
 		
 		if( error != nil )
 		{
@@ -67,11 +67,14 @@
 		file = fopen(cPath, "r");
 		
 		if (!file)
-			*error = [NSError errorWithDomain:@"SVGKit" code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+		{
+			if( error != nil )
+				*error = [NSError errorWithDomain:@"SVGKit" code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 																		 [NSString stringWithFormat:@"Couldn't open the file %@ for reading", self.filePath], NSLocalizedDescriptionKey,
 																		 nil]];
+		}
 		
-		return [NSValue valueWithPointer:file]; // objc cannot cope with using C-pointers as pointers, without some help
+		return [[NSValue valueWithPointer:file] retain]; // objc cannot cope with using C-pointers as pointers, without some help
 	}
 
 }

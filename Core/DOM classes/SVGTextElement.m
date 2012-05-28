@@ -73,7 +73,8 @@
 
 }
 
-- (CALayer *) newLayer {
+- (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform
+{
 #if TARGET_OS_IPHONE
     NSString* textToDraw = self.stringValue;
     
@@ -85,7 +86,7 @@
     [label setName:self.identifier];
     [label setFont:_fontFamily];
     [label setFontSize:_fontSize];  
-    [label setFrame:CGRectMake(_x, _y, sizeOfTextRect.width, sizeOfTextRect.height)];
+    [label setFrame:CGRectApplyAffineTransform( CGRectMake(_x, _y, sizeOfTextRect.width, sizeOfTextRect.height), preTransform ) ];
     [label setString:textToDraw];
     [label setAlignmentMode:kCAAlignmentLeft];
     [label setForegroundColor:[[UIColor blackColor] CGColor]];
