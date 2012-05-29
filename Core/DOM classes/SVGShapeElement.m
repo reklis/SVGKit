@@ -12,8 +12,6 @@
 #import "SVGKPattern.h"
 #import "CAShapeLayerWithHitTest.h"
 
-#define ADAM_IS_FIXING_THE_TRANSFORM_AND_VIEW_BOX_CODE 1
-
 @implementation SVGShapeElement
 
 #define IDENTIFIER_LEN 256
@@ -117,9 +115,7 @@
 		[_shapeLayer setValue:self.identifier forKey:kSVGElementIdentifier];
 	_shapeLayer.opacity = _opacity;
 	
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 	CGAffineTransform svgEffectiveTransform = [self transformAbsolute];
-#endif
 	
 #if OUTLINE_SHAPES
 	
@@ -165,21 +161,21 @@
 	CGPathRelease(finalPath);
 	CGPathRelease(pathToPlaceInLayer);
 
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 	/**
 	 NB: this line, by changing the FRAME of the layer, has the side effect of also changing the CGPATH's position in absolute
 	 space! This is why we needed the "CGPathRef finalPath =" line a few lines above...
 	 */
 	_shapeLayer.frame = CGRectApplyAffineTransform( rect, CGAffineTransformConcat( svgEffectiveTransform, preTransform ) );
 		
-#else
-	_shapeLayer.frame = rect;
-#endif
-	
 	CGRect shapeLayerFrame = _shapeLayer.frame;
 	
 	if (_strokeWidth) {
-		_shapeLayer.lineWidth = _strokeWidth;
+		/*
+		 We have to apply any scale-factor part of the affine transform to the stroke itself (this is bizarre and horrible, yes, but that's the spec for you!)
+		 */
+		CGPoint fakePoint = CGPointMake( _strokeWidth, 0);
+		fakePoint = CGPointApplyAffineTransform( fakePoint, preTransform );
+		_shapeLayer.lineWidth = fakePoint.x;
 		_shapeLayer.strokeColor = CGColorWithSVGColor(_strokeColor);
 	}
 	

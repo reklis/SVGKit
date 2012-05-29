@@ -18,8 +18,6 @@
  */
 #import <QuartzCore/QuartzCore.h>
 
-#define EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES 1
-
 @interface SVGElement : NSObject {
   @private
 	NSMutableArray *_children;
@@ -36,12 +34,10 @@
 
 @property (nonatomic, retain) NSMutableArray* metadataChildren;
 
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 /*! Transform to be applied to this node and all sub-nodes; does NOT take account of any transforms applied by parent / ancestor nodes */
 @property (nonatomic) CGAffineTransform transformRelative;
 /*! Required by SVG transform and SVG viewbox: you have to be able to query your parent nodes at all times to find out your actual values */
 @property (nonatomic, retain) SVGElement *parent;
-#endif
 
 #pragma mark - ORIGINALLY PACKAGE-PROTECTED
 - (void)parseAttributes:(NSDictionary *)attributes;
@@ -62,10 +58,8 @@
 /*! Overridden by sub-classes.  Be sure to call [super parseAttributes:attributes]; */
 - (void)parseAttributes:(NSDictionary *)attributes;
 
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 /*! Re-calculates the absolute transform on-demand by querying parent's absolute transform and appending self's relative transform */
 -(CGAffineTransform) transformAbsolute;
-#endif
 
 
 @end

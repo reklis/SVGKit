@@ -30,10 +30,8 @@
 @synthesize stringValue = _stringValue;
 @synthesize localName = _localName;
 
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 @synthesize parent = _parent;
 @synthesize transformRelative = _transformRelative;
-#endif
 
 @synthesize identifier = _identifier;
 
@@ -48,9 +46,7 @@
     if (self) {
 		[self loadDefaults];
         _children = [[NSMutableArray alloc] init];
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 		self.transformRelative = CGAffineTransformIdentity;
-#endif
 		self.metadataChildren = [NSMutableArray array];
     }
     return self;
@@ -60,9 +56,7 @@
 	self = [self init];
 	if (self) {
 		_localName = [name retain];
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 		self.transformRelative = CGAffineTransformIdentity;
-#endif
 	}
 	return self;
 }
@@ -83,9 +77,7 @@
 
 - (void)addChild:(SVGElement *)element {
 	[_children addObject:element];
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 	element.parent = self;
-#endif
 }
 
 -(void) addMetadataChild:(NSObject*) child
@@ -103,7 +95,7 @@
 		_identifier = [value copy];
 	}
 	
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
+
 	/**
 	 http://www.w3.org/TR/SVG/coords.html#TransformAttribute
 	 
@@ -132,7 +124,7 @@
 		 */
 		
 #if !(TARGET_OS_IPHONE) && ( !defined( __MAC_10_7 ) || __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_6_7 )
-		NSLog(@"[%@] WARNING: the transform attribute requires OS X 10.7 or above. Ignoring TRANSFORMs in SVG!", [self class] );
+		NSLog(@"[%@] WARNING: the transform attribute requires OS X 10.7 or above (we need Regular Expressions! Apple was slow to add them :( ). Ignoring TRANSFORMs in SVG!", [self class] );
 #else
 		NSError* error = nil;
 		NSRegularExpression* regexpTransformListItem = [NSRegularExpression regularExpressionWithPattern:@"[^\\(,]*\\([^\\)]*\\)" options:0 error:&error];
@@ -182,10 +174,8 @@
 		NSLog(@"[%@] Set local / relative transform = (%2.2f, %2.2f // %2.2f, %2.2f) + (%2.2f, %2.2f translate)", [self class], self.transformRelative.a, self.transformRelative.b, self.transformRelative.c, self.transformRelative.d, self.transformRelative.tx, self.transformRelative.ty );
 #endif
 	}
-#endif
 }
 
-#if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 -(CGAffineTransform) transformAbsolute
 {
 	if( self.parent == nil )
@@ -200,7 +190,6 @@
 		return absoluteTransform;
 	}
 }
-#endif
 
 - (void)parseContent:(NSString *)content {
 	self.stringValue = content;
