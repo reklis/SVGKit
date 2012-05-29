@@ -193,8 +193,11 @@
 	else
 	{
 		CGAffineTransform inheritedTransform = [self.parent transformAbsolute];
+		CGAffineTransform localTransform = self.transformRelative; // Apple's debugger is appallingly bad
 		
-		return CGAffineTransformConcat( inheritedTransform, self.transformRelative );
+		CGAffineTransform absoluteTransform = CGAffineTransformConcat( self.transformRelative, inheritedTransform );
+		
+		return absoluteTransform;
 	}
 }
 #endif

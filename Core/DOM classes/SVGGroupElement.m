@@ -61,11 +61,13 @@
 	for (NSUInteger n = 0; n < [sublayers count]; n++) {
 		CALayer *currentLayer = [sublayers objectAtIndex:n];
 		
+		CGRect subLayerFrame = currentLayer.frame;
+		
 		if (n == 0) {
-			mainRect = currentLayer.frame;
+			mainRect = subLayerFrame;
 		}
 		else {
-			mainRect = CGRectUnion(mainRect, currentLayer.frame);
+			mainRect = CGRectUnion(mainRect, subLayerFrame);
 		}
 	}
 	

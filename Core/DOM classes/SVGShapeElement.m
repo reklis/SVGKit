@@ -139,15 +139,25 @@
 	 Most SVG docs have screenspace == unit space - but some docs have an explicit "viewBox"
 	 attribute on the SVG document. As per the SVG spec, this defines an alternative
 	 conversion from unit space to screenspace
+	 
+	 NB: if you DO NOT do this, many SVG's will *crash* your system, because they use ultra-large co-ordinate systems,
+	 and "assume" you will scale them down to sane numbers before rendering. e.g. many Wikipedia maps are specified in
+	 "hundreds of thousands" of pixels (or higher) - which would lead to multi-gigabyte images in memory, enough to crash
+	 most OS's
 	 */
-	CGAffineTransform transformFromSVGUnitsToScreenUnits;
+	CGAffineTransform transformAbsoluteThenGlobalViewBoxFix = CGAffineTransformConcat(svgEffectiveTransform, preTransform);
 	
 	CGMutablePathRef pathToPlaceInLayer = CGPathCreateMutable();
-	CGPathAddPath( pathToPlaceInLayer, &preTransform, _pathRelative);	
+	CGPathAddPath( pathToPlaceInLayer, &transformAbsoluteThenGlobalViewBoxFix, _pathRelative);	
 	
-    CGRect rect = CGPathGetPathBoundingBox( pathToPlaceInLayer );
+    CGRect rect = CGPathGetPathBoundingBox( _pathRelative );
+	CGRect unTransformedPathBB = CGPathGetBoundingBox( _pathRelative );
+	CGRect transformedPathBB = CGPathGetBoundingBox( pathToPlaceInLayer );
 	
-	CGPathRef finalPath = CGPathCreateByOffsettingPath( pathToPlaceInLayer, rect.origin.x, rect.origin.y );
+	/** NB: when we set the _shapeLayer.frame, it has a *side effect* of moving the path itself - so, in order to prevent that,
+	 because Apple didn't provide a BOOL to disable that "feature", we have to pre-shift the path forwards by the amount it
+	 will be shifted backwards */
+	CGPathRef finalPath = CGPathCreateByOffsettingPath( pathToPlaceInLayer, transformedPathBB.origin.x, transformedPathBB.origin.y );
 
 	/** Can't use this - iOS 5 only! path = CGPathCreateCopyByTransformingPath(path, transformFromSVGUnitsToScreenUnits ); */
 	
@@ -158,12 +168,15 @@
 #if EXPERIMENTAL_SUPPORT_FOR_SVG_TRANSFORM_ATTRIBUTES
 	/**
 	 NB: this line, by changing the FRAME of the layer, has the side effect of also changing the CGPATH's position in absolute
-	 space!
+	 space! This is why we needed the "CGPathRef finalPath =" line a few lines above...
 	 */
-	_shapeLayer.frame = CGRectApplyAffineTransform( rect, svgEffectiveTransform );
+	_shapeLayer.frame = CGRectApplyAffineTransform( rect, CGAffineTransformConcat( svgEffectiveTransform, preTransform ) );
+		
 #else
 	_shapeLayer.frame = rect;
 #endif
+	
+	CGRect shapeLayerFrame = _shapeLayer.frame;
 	
 	if (_strokeWidth) {
 		_shapeLayer.lineWidth = _strokeWidth;
