@@ -111,10 +111,29 @@
 - (id)initWithSource:(SVGKSource *)source;
 
 
-/*! Creates a new instance each time you call it */
+/*! Creates a new instance each time you call it. This should ONLY be used if you specifically need to duplicate
+ the CALayer's (e.g. because you want to render a temporary clone of the CALayers somewhere else on screen,
+ and you're going to modify them).
+ 
+ For all other use-cases, you should probably use the .CALayerTree property, which is automatically cached between
+ calls - but MUST NOT be altered!
+ */
 - (CALayer *)newLayerTree;
 
+/*! uses the current .CALayerTree property to find the layer, recursing down the tree (or creates a new
+ CALayerTree on demand, and caches it)
+ 
+ i.e. this takes advantage of the cached CALayerTree instance, and also correctly uses the SVG.viewBox info
+ that was used when generating the original CALayerTree
+ */
 - (CALayer *)layerWithIdentifier:(NSString *)identifier;
+
+/*! uses the current .CALayerTree property to find the layer, recursing down the tree (or creates a new
+ CALayerTree on demand, and caches it)
+ 
+ i.e. this takes advantage of the cached CALayerTree instance, and also correctly uses the SVG.viewBox info
+ that was used when generating the original CALayerTree
+ */
 - (CALayer *)layerWithIdentifier:(NSString *)identifier layer:(CALayer *)layer;
 
 /*! returns all the individual CALayer's in the full layer tree, indexed by the SVG identifier of the SVG node that created that layer */
