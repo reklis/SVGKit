@@ -222,6 +222,52 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 	return nil;
 }
 
+-(CALayer*) newCopyPositionedAbsoluteLayerWithIdentifier:(NSString *)identifier
+{
+	CALayer* originalLayer = [self layerWithIdentifier:identifier];
+	CALayer* clonedLayer = [[[[originalLayer class] alloc] init] autorelease];
+	
+	clonedLayer.frame = originalLayer.frame;
+	if( [originalLayer isKindOfClass:[CAShapeLayer class]] )
+	{
+		((CAShapeLayer*)clonedLayer).path = ((CAShapeLayer*)originalLayer).path;
+		((CAShapeLayer*)clonedLayer).lineCap = ((CAShapeLayer*)originalLayer).lineCap;
+		((CAShapeLayer*)clonedLayer).lineWidth = ((CAShapeLayer*)originalLayer).lineWidth;
+		((CAShapeLayer*)clonedLayer).strokeColor = ((CAShapeLayer*)originalLayer).strokeColor;
+		((CAShapeLayer*)clonedLayer).fillColor = ((CAShapeLayer*)originalLayer).fillColor;
+	}
+	
+	if( clonedLayer == nil )
+		return nil;
+	else
+	{		
+		CGRect lFrame = clonedLayer.frame;
+		CGFloat xOffset = 0.0;
+		CGFloat yOffset = 0.0;
+		CALayer* currentLayer = originalLayer;
+		
+		if( currentLayer.superlayer == nil )
+		{
+			NSLog(@"AWOOGA: layer %@ has no superlayer!", originalLayer );
+		}
+		
+		while( currentLayer.superlayer != nil )
+		{
+			//NSLog(@"shifting (%2.2f, %2.2f) to accomodate offset of layer = %@ inside superlayer = %@", currentLayer.superlayer.frame.origin.x, currentLayer.superlayer.frame.origin.y, currentLayer, currentLayer.superlayer );
+			
+			currentLayer = currentLayer.superlayer;
+			xOffset += currentLayer.frame.origin.x;
+			yOffset += currentLayer.frame.origin.y;
+		}
+		
+		lFrame.origin = CGPointMake( lFrame.origin.x + xOffset, lFrame.origin.y + yOffset );
+		clonedLayer.frame = lFrame;
+		
+		
+		return clonedLayer;
+	}
+}
+
 - (CALayer *)newLayerWithElement:(SVGElement <SVGLayeredElement> *)element preTransform:(CGAffineTransform) preTransform {
 	CALayer *layer = [element newLayerPreTransformed:preTransform];
 	

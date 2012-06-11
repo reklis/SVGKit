@@ -136,6 +136,14 @@
  */
 - (CALayer *)layerWithIdentifier:(NSString *)identifier layer:(CALayer *)layer;
 
+/*! As for layerWithIdentifier: but works out the absolute position of the layer,
+ effectively pulling it out of the layer-tree (the newly created layer has NO SUPERLAYER,
+ because it no longer needs one)
+ 
+ Useful for extracting individual features from an SVG
+ */
+-(CALayer*) newCopyPositionedAbsoluteLayerWithIdentifier:(NSString *)identifier;
+
 /*! returns all the individual CALayer's in the full layer tree, indexed by the SVG identifier of the SVG node that created that layer */
 - (NSDictionary*) dictionaryOfLayers;
 
