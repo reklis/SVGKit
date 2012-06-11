@@ -118,7 +118,7 @@
  For all other use-cases, you should probably use the .CALayerTree property, which is automatically cached between
  calls - but MUST NOT be altered!
  */
-- (CALayer *)newLayerTree;
+-(CALayer *)newCALayerTree;
 
 /*! uses the current .CALayerTree property to find the layer, recursing down the tree (or creates a new
  CALayerTree on demand, and caches it)

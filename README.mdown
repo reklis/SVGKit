@@ -14,13 +14,22 @@ Usage - Basic (iPhone/iPad)
 
 To use this, you must:
   1. Load an SVG file
-  2. Convert the document to CALayer's which Apple can render
+  2. EITHER:
+    2a. Convert the document to CALayer's which Apple can render
+    2b. Read the SVG data directly by looking at the tree of SVGElement subclasses
 
-The easiest way to do this is:
-  1. SVGImage *im = [SVGImage imageNamed:@"my_svg_file"]; //this loads the file, parses the SVG, and outputs an SVGImage object
-  2. [self.view.layer addSublayer:[im layerTree]]; // SVGImage objects can export themselves as Apple's CALayer's
 
-NB: if you want to render the same SVG in different places on screen, you cannot do that right now. This is because the refactored code has gone back to old code that prevented you from doing this. Will be fixed in future!
+2a: The easiest way to do this is:
+  1. SVGKImage *im = [SVGKImage imageNamed:@"my_svg_file"]; //this loads the file, parses the SVG, and outputs an SVGImage object
+  2. [self.view.layer addSublayer:im.CALayerTree]; // SVGKImage can export itself as Apple's CALayer's
+
+...and if you want to display the same SVG somewhere else simultaneously, you don't have to re-parse it, you can just call:
+  3. [self.view.layer addSublayer:[im newCALayerTree]; // Creates a clone of the CALayers, you can edit without affecting originals
+
+
+2b:  The easiest way to do this is:
+  1. SVGKImage *im = [SVGKImage imageNamed:@"my_svg_file"]; //this loads the file, parses the SVG, and outputs an SVGImage object
+  2. SVGSVGElement* rootOfTree = im.DOMTree; // NB: this is a partial implementation of the official "SVG DOM" standard. See the header file for this class and its superclass to see what you can do with it
 
 
 Usage - Advanced (iPHone/iPad)
@@ -28,16 +37,16 @@ Usage - Advanced (iPHone/iPad)
 
 The big change with this branch, apart from requiring fewer lines of code, is that you can now do easy loading of different files. e.g.
 
-  - [SVGParser parse: (SVGSource*)]; // anything that's an "SVGSource" can be parsed
+  - [SVGKParser parse: (SVGKSource*)]; // anything that's an "SVGKSource" can be parsed
 
-  - [SVGSource sourceWithFile:@"monkey.svg"]; // create a source from disk...
-  - [SVGSource sourceWithURL:@"http://upload.wikimedia.org/wikipedia/commons/f/fd/Ghostscript_Tiger.svg"]; // create a source from disk...
+  - [SVGKSource sourceWithFile:@"monkey.svg"]; // create a source from disk...
+  - [SVGKSource sourceWithURL:@"http://upload.wikimedia.org/wikipedia/commons/f/fd/Ghostscript_Tiger.svg"]; // create a source from disk...
 
-  - (SVGParser*).currentParseRun.warnings; // array of NSError objects, each one a "WARNING" from the parser
-  - (SVGParser*).currentParseRun.errorsFatal; // array of NSError objects, each one a "FATAL ERROR" from the parser - if your SVG didn't render at all, this is why!
-  - (SVGParser*).currentParseRun.errorsRecoverable; // array of NSError objects, each one a "RECOVERABLE ERROR" from the parser - if your SVG didn't render correctly, this is why! (although you probably still got to see something)
+  - (SVGKParser*).currentParseRun.warnings; // array of NSError objects, each one a "WARNING" from the parser
+  - (SVGKParser*).currentParseRun.errorsFatal; // array of NSError objects, each one a "FATAL ERROR" from the parser - if your SVG didn't render at all, this is why!
+  - (SVGKParser*).currentParseRun.errorsRecoverable; // array of NSError objects, each one a "RECOVERABLE ERROR" from the parser - if your SVG didn't render correctly, this is why! (although you probably still got to see something)
 
-  - (SVGImage*).parseErrorsAndWarnings; // this is a convenience pointer to (SVGParder*).currentParseRun used above
+  - (SVGKImage*).parseErrorsAndWarnings; // this is a convenience pointer to (SVGKParser*).currentParseRun used above
 
 Usage - OS X
 -----

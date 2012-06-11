@@ -298,7 +298,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 	return layer;
 }
 
--(CALayer *)newLayerTree
+-(CALayer *)newCALayerTree
 {
 	if( self.DOMTree == nil )
 		return nil;
@@ -321,7 +321,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 {
 	if( CALayerTree == nil )
 	{
-		self.CALayerTree = [[self newLayerTree] autorelease];
+		self.CALayerTree = [[self newCALayerTree] autorelease];
 	}
 	
 	return CALayerTree;
