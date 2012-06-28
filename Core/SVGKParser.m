@@ -9,6 +9,7 @@
 #import <libxml/parser.h>
 
 #import "SVGKParserSVG.h"
+#import "SVGKParserPatternsAndGradients.h"
 
 @interface SVGKParserStackItem : NSObject
 @property(nonatomic,retain) NSObject<SVGKParserExtension>* parserForThisItem;
@@ -57,8 +58,10 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	SVGKParser *parser = [[[SVGKParser alloc] initWithSource:source] autorelease];
 	
 	SVGKParserSVG *subParserSVG = [[[SVGKParserSVG alloc] init] autorelease];
+	SVGKParserPatternsAndGradients *subParserGradients = [[[SVGKParserPatternsAndGradients alloc] init] autorelease];
 	
 	[parser.parserExtensions addObject:subParserSVG];
+	[parser.parserExtensions addObject:subParserGradients];
 	
 	SVGKParseResult* result = [parser parseSynchronously];
 	
@@ -133,12 +136,20 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 			
 			if( [currentParseRun.errorsFatal count] > 0 )
 			{
-			/** NB this old code is no longer needed - we're doing higher-quality error handling!
-			if ( (libXmlParserParseError != 0)
-			{*/
 				// 3.   if libxml failed chunk, break
+				if( libXmlParserParseError > 0 )
+				{
 				NSLog(@"[%@] libXml reported internal parser error with magic libxml code = %i (look this up on http://xmlsoft.org/html/libxml-xmlerror.html#xmlParserErrors)", [self class], libXmlParserParseError );
 				currentParseRun.libXMLFailed = YES;
+				}
+				else
+				{
+					NSLog(@"[%@] SVG parser generated one or more FATAL errors (not the XML parser), errors follow:", [self class] );
+					for( NSError* error in currentParseRun.errorsFatal )
+					{
+						NSLog(@"[%@] ... FATAL ERRRO in SVG parse: %@", [self class], error );
+					}
+				}
 				
 				break;
 			}
@@ -179,9 +190,9 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 			{
 				NSObject* subParserResult = nil;
 				
-			if( nil != (subParserResult = [subParser handleStartElement:name document:source xmlns:prefix attributes:attributes]) )
+			if( nil != (subParserResult = [subParser handleStartElement:name document:source xmlns:prefix attributes:attributes parseResult:self.currentParseRun]) )
 			{
-				NSLog(@"[%@] tag: <%@:%@> -- handled by subParser: %@", [self class], prefix, name, subParser );
+				NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([attributes objectForKey:@"id"] != nil?[attributes objectForKey:@"id"]:@"(none)"), subParser );
 				
 				SVGKParserStackItem* stackItem = [[[SVGKParserStackItem alloc] init] autorelease];;
 				stackItem.parserForThisItem = subParser;
@@ -297,7 +308,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 		}
 		
 		NSLog(@"[%@] DEBUG-PARSER: ended tag (</%@>): telling parser (%@) to add that item to tree-parent = %@", [self class], name, parserHandlingTheParentItem, parentStackItem.item );
-		[parserHandlingTheParentItem addChildObject:stackItem.item toObject:parentStackItem.item];// inDocument:_document];
+		[parserHandlingTheParentItem addChildObject:stackItem.item toObject:parentStackItem.item parseResult:self.currentParseRun];
 		
 		if ( [stackItem.parserForThisItem createdItemShouldStoreContent:stackItem.item]) {
 			[stackItem.parserForThisItem parseContent:_storedChars forItem:stackItem.item];

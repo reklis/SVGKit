@@ -30,8 +30,8 @@
  */
 -(NSArray*) supportedTags;
 
-- (NSObject*)handleStartElement:(NSString *)name document:(SVGKSource*) document xmlns:(NSString*) namespaceURI attributes:(NSMutableDictionary *)attributes;
--(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent;// NOT SURE IF THIS IS NEEDED ANYWHERE ANY MORE: inDocument:(SVGSource*) svgSource;
+- (NSObject*)handleStartElement:(NSString *)name document:(SVGKSource*) document xmlns:(NSString*) namespaceURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult*) parseResult;
+-(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult*) parseResult;// NOT SURE IF THIS IS NEEDED ANYWHERE ANY MORE: inDocument:(SVGSource*) svgSource;
 -(void) parseContent:(NSMutableString*) content forItem:(NSObject*) item;
 -(BOOL) createdItemShouldStoreContent:(NSObject*) item;
 

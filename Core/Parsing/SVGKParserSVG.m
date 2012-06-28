@@ -63,7 +63,7 @@ static NSDictionary *elementMap;
 	return [NSMutableArray arrayWithArray:[elementMap allKeys]];
 }
 
-- (NSObject*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes {
+- (NSObject*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
 	if( [[self supportedNamespaces] containsObject:prefix] )
 	{
 		Class elementClass = [elementMap objectForKey:name];
@@ -114,7 +114,7 @@ static NSDictionary *elementMap;
 		return false;
 }
 
--(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent// inDocument:(SVGKSource*) SVGKSource
+-(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult *)parseResult
 {
 	SVGElement *parentElement = (SVGElement*) parent;
 	
@@ -124,7 +124,16 @@ static NSDictionary *elementMap;
 		
 		if ( parent == nil ) // i.e. the root SVG tag
 		{
-			NSAssert( [child isKindOfClass:[SVGSVGElement class]], @"Unexpected root element: expected root tag to be an '<SVG...>' tag. Instead found an: %@", childElement.identifier );
+			if( ! [child isKindOfClass:[SVGSVGElement class]] )
+			{
+				NSError* fatalError = [NSError errorWithDomain:@"SVGKit" code:5324 userInfo:
+									   [NSDictionary dictionaryWithObjectsAndKeys:
+										[NSString stringWithFormat:@"Unexpected root element: expected root tag to be an '<SVG...>' tag. Instead found a: %@", childElement.identifier], NSLocalizedDescriptionKey,
+										nil]];
+				
+				[parseResult addParseErrorFatal:fatalError];
+				return;
+			}
 			
 			NSLog(@"[%@] PARSER_INFO: asked to add object to nil parent; i.e. we've hit the root of the tree; setting global variables on the SVG rootElement now", [self class]);
 			SVGSVGElement *rootSVGElement = (SVGSVGElement*) childElement;
