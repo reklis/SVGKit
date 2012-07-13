@@ -16,7 +16,8 @@
 
 @property (nonatomic, retain, readwrite) SVGKSource* source;
 
-@property (nonatomic, retain, readwrite) SVGSVGElement* DOMTree; // needs renaming + (possibly) refactoring
+@property (nonatomic, retain, readwrite) SVGDocument* DOMDocument;
+@property (nonatomic, retain, readwrite) SVGSVGElement* DOMTree; // needs renaming + (possibly) replacing by DOMDocument
 @property (nonatomic, retain, readwrite) CALayer* CALayerTree;
 
 #pragma mark - UIImage methods cloned and re-implemented as SVG intelligent methods
@@ -27,7 +28,7 @@
 #pragma mark - main class
 @implementation SVGKImage
 
-@synthesize DOMTree, CALayerTree;
+@synthesize DOMDocument, DOMTree, CALayerTree;
 
 @synthesize svgWidth = _width;
 @synthesize svgHeight = _height;
@@ -78,12 +79,17 @@
 		
 		self.parseErrorsAndWarnings = [SVGKParser parseSourceUsingDefaultSVGKParser:self.source];
 		
-		if( parseErrorsAndWarnings.rootOfSVGTree != nil )
-			self.DOMTree = (SVGSVGElement*) parseErrorsAndWarnings.rootOfSVGTree;
+		if( parseErrorsAndWarnings.parsedDocument != nil )
+		{
+			self.DOMDocument = parseErrorsAndWarnings.parsedDocument;
+			self.DOMTree = DOMDocument.rootElement;
+		}
 		else
-			self.DOMTree = nil;
+		{
+			self.DOMDocument = self.DOMTree = nil;
+		}
 		
-		if ( self.DOMTree == nil )
+		if ( self.DOMDocument == nil )
 		{
 			NSLog(@"[%@] ERROR: failed to init SVGKImage with source = %@, returning nil from init methods", [self class], source );
 			self = nil;

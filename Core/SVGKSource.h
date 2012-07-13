@@ -1,7 +1,7 @@
 /**
- SKSVGKSource.h
+ SVGKSource.h
   
- SKSVGKSource represents the info about a file that was read from disk or over the web during parsing.
+ SVGKSource represents the info about a file that was read from disk or over the web during parsing.
  
  Once it has been parsed / loaded, that info is NOT PART OF the in-memory SVG any more - if you were to save the file, you could
  save it in a different location, with a different SVG Spec, etc.

@@ -26,7 +26,7 @@
 #import "SVGKParseResult.h"
 
 #import "SVGKParserExtension.h"
-
+#import "SVGKParserStackItem.h"
 #import "SVGElement.h"
 
 

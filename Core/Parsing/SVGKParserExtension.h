@@ -14,7 +14,14 @@
 
 #import <Foundation/Foundation.h>
 
+@class SVGKParseResult;
+#import "SVGKParseResult.h"
+
+#import "SVGKParserStackItem.h"
 #import "SVGKSource.h"
+
+/*! Experimental: allow SVGKit parser-extensions to insert custom data into an SVGKParseResult */
+#define ENABLE_PARSER_EXTENSIONS_CUSTOM_DATA 0
 
 @protocol SVGKParserExtension <NSObject>
 
@@ -30,8 +37,8 @@
  */
 -(NSArray*) supportedTags;
 
-- (NSObject*)handleStartElement:(NSString *)name document:(SVGKSource*) document xmlns:(NSString*) namespaceURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult*) parseResult;
--(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult*) parseResult;// NOT SURE IF THIS IS NEEDED ANYWHERE ANY MORE: inDocument:(SVGSource*) svgSource;
+- (NSObject*)handleStartElement:(NSString *)name document:(SVGKSource*) document xmlns:(NSString*) namespaceURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
+-(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
 -(void) parseContent:(NSMutableString*) content forItem:(NSObject*) item;
 -(BOOL) createdItemShouldStoreContent:(NSObject*) item;
 

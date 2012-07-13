@@ -15,6 +15,8 @@
 #import "SVGRectElement.h"
 #import "SVGTitleElement.h"
 
+#import "SVGDocument_Mutable.h"
+
 @implementation SVGKParserSVG
 
 static NSDictionary *elementMap;
@@ -63,7 +65,8 @@ static NSDictionary *elementMap;
 	return [NSMutableArray arrayWithArray:[elementMap allKeys]];
 }
 
-- (NSObject*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
+- (NSObject*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem 
+{
 	if( [[self supportedNamespaces] containsObject:prefix] )
 	{
 		Class elementClass = [elementMap objectForKey:name];
@@ -90,6 +93,73 @@ static NSDictionary *elementMap;
 			if ((svgVersion = [attributes objectForKey:@"version"])) {
 				SVGKSource.svgLanguageVersion = svgVersion;
 			}
+			
+			/** According to spec, if the first XML node is an SVG node, then it
+			 becomes TWO THINGS:
+			 
+			 - An SVGSVGElement
+			 *and*
+			 - An SVGDocument
+			 - ...and that becomes "the root SVGDocument"
+			 
+			 If it's NOT the first XML node, but it's the first SVG node, then it ONLY becomes:
+			 
+			 - An SVGSVGElement
+			 
+			 If it's NOT the first SVG node, then it becomes:
+			 
+			 - An SVGSVGElement
+			 *and*
+			 - An SVGDocument
+			 
+			 Yes. It's Very confusing! Go read the SVG Spec!
+			 */
+			
+			BOOL generateAnSVGDocument = FALSE;
+			BOOL overwriteRootSVGDocument = FALSE;
+			BOOL overwriteRootOfTree = FALSE;
+			
+			if( parentStackItem == nil )
+			{
+				/** This start element is the first item in the document
+				 PS: xcode has a new bug for Lion: it can't format single-line comments with two asterisks. This line added because Xcode sucks.
+				 */
+				generateAnSVGDocument = overwriteRootSVGDocument = overwriteRootOfTree = TRUE;
+				
+			}
+			else if( parseResult.rootOfSVGTree == nil )
+			{
+				/** It's not the first XML, but it's the first SVG node */
+				overwriteRootOfTree = TRUE;
+			}
+			else
+			{
+				/** It's not the first SVG node */
+				generateAnSVGDocument = TRUE;
+			}
+			
+			/**
+			 Handle the complex stuff above about SVGDocument and SVG node
+			 */
+			if( overwriteRootOfTree )
+			{
+				parseResult.rootOfSVGTree = (SVGSVGElement*) element;
+			}
+			if( generateAnSVGDocument )
+			{
+				SVGDocument* newDocument = [[[SVGDocument alloc] init] autorelease];
+				newDocument.rootElement = (SVGSVGElement*) element;
+				
+				if( overwriteRootSVGDocument )
+				{
+					parseResult.parsedDocument = newDocument;
+				}
+				else
+				{
+					NSAssert( FALSE, @"Currently not supported: multiple SVG nodes (ie secondary Document reference) inside one file" );
+				}
+			}
+			
 		}
 		
 		

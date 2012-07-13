@@ -7,6 +7,7 @@
  */
 
 #import "SVGDocument.h"
+#import "SVGDocument_Mutable.h"
 
 #import "SKBasicDataTypes.h"
 

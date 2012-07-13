@@ -3,15 +3,11 @@
 #import "CALayerWithChildHitTest.h"
 
 @interface SVGSVGElement()
-@property (nonatomic, readwrite) SVGLength documentWidth; // FIXME: maybe can be merged with SVGElement as "boundingBoxWidth" / height ?
-@property (nonatomic, readwrite) SVGLength documentHeight; // FIXME: maybe can be merged with SVGElement as "boundingBoxWidth" / height ?
-@property (nonatomic, readwrite) CGRect viewBoxFrame; // FIXME: maybe can be merged with SVGElement ?
+@property (nonatomic, readwrite) CGRect viewBoxFrame;
 @end
 
 @implementation SVGSVGElement
 
-@synthesize documentWidth;
-@synthesize documentHeight;
 @synthesize viewBoxFrame = _viewBoxFrame;
 
 @synthesize graphicsGroups, anonymousGraphicsGroups;
@@ -23,6 +19,35 @@
 	self.viewBoxFrame = CGRectNull;
 	[super dealloc];	
 }
+
+#pragma mark - SVG Spec methods
+
+-(long) suspendRedraw:(long) maxWaitMilliseconds { NSAssert( FALSE, "Not implemented yet" ); }
+-(void) unsuspendRedraw:(long) suspendHandleID { NSAssert( FALSE, "Not implemented yet" ); }
+-(void) unsuspendRedrawAll { NSAssert( FALSE, "Not implemented yet" ); }
+-(void) forceRedraw { NSAssert( FALSE, "Not implemented yet" ); }
+-(void) pauseAnimations { NSAssert( FALSE, "Not implemented yet" ); }
+-(void) unpauseAnimations { NSAssert( FALSE, "Not implemented yet" ); }
+-(BOOL) animationsPaused { NSAssert( FALSE, "Not implemented yet" ); }
+-(float) getCurrentTime { NSAssert( FALSE, "Not implemented yet" ); }
+-(void) setCurrentTime:(float) seconds { NSAssert( FALSE, "Not implemented yet" ); }
+-(NodeList*) getIntersectionList:(SVGRect) rect referenceElement:(SVGElement*) referenceElement { NSAssert( FALSE, "Not implemented yet" ); }
+-(NodeList*) getEnclosureList:(SVGRect) rect referenceElement:(SVGElement*) referenceElement { NSAssert( FALSE, "Not implemented yet" ); }
+-(BOOL) checkIntersection:(SVGElement*) element rect:(SVGRect) rect { NSAssert( FALSE, "Not implemented yet" ); }
+-(BOOL) checkEnclosure:(SVGElement*) element rect:(SVGRect) rect { NSAssert( FALSE, "Not implemented yet" ); }
+-(void) deselectAll { NSAssert( FALSE, "Not implemented yet" ); }
+-(SVGNumber) createSVGNumber { NSAssert( FALSE, "Not implemented yet" ); }
+-(SVGLength) createSVGLength { NSAssert( FALSE, "Not implemented yet" ); }
+-(SVGAngle) createSVGAngle { NSAssert( FALSE, "Not implemented yet" ); }
+-(SVGPoint) createSVGPoint { NSAssert( FALSE, "Not implemented yet" ); }
+-(SVGMatrix) createSVGMatrix { NSAssert( FALSE, "Not implemented yet" ); }
+-(SVGRect) createSVGRect { NSAssert( FALSE, "Not implemented yet" ); }
+-(SVGTransform) createSVGTransform { NSAssert( FALSE, "Not implemented yet" ); }
+-(SVGTransform) createSVGTransformFromMatrix:(SVGMatrix) matrix { NSAssert( FALSE, "Not implemented yet" ); }
+-(Element*) getElementById:(NSString*) elementId { NSAssert( FALSE, "Not implemented yet" ); }
+
+
+#pragma mark - Objective C methods needed given our current non-compliant SVG Parser
 
 - (void)parseAttributes:(NSDictionary *)attributes {
 	[super parseAttributes:attributes];

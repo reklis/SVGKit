@@ -1,40 +1,106 @@
 /**
  SVGSVGElement.m
  
- Represents the "<svg/>" tag in an SVG document
+ Represents the "<svg>" tag in an SVG file
  
- Data:
-  - documentWidth: the <svg width=""> attribute
-  - documentHeight: the <svg height=""> attribute
-  - viewBoxFrame: ???
- ...data that might be deprecated / removed in future versions of SVGKit:
-  - graphicsGroups: the collection of all <g> tags in the doc that have "id" attributes
-  - anonymousGraphicsGroups: the collection of all <g> tags in the doc that DO NOT have "id" attributes
+ http://www.w3.org/TR/SVG/struct.html#InterfaceSVGSVGElement
+ 
+ readonly attribute SVGAnimatedLength x;
+ readonly attribute SVGAnimatedLength y;
+ readonly attribute SVGAnimatedLength width;
+ readonly attribute SVGAnimatedLength height;
+ attribute DOMString contentScriptType setraises(DOMException);
+ attribute DOMString contentStyleType setraises(DOMException);
+ readonly attribute SVGRect viewport;
+ readonly attribute float pixelUnitToMillimeterX;
+ readonly attribute float pixelUnitToMillimeterY;
+ readonly attribute float screenPixelToMillimeterX;
+ readonly attribute float screenPixelToMillimeterY;
+ readonly attribute boolean useCurrentView;
+ readonly attribute SVGViewSpec currentView;
+ attribute float currentScale;
+ readonly attribute SVGPoint currentTranslate;
+ 
+ unsigned long suspendRedraw(in unsigned long maxWaitMilliseconds);
+ void unsuspendRedraw(in unsigned long suspendHandleID);
+ void unsuspendRedrawAll();
+ void forceRedraw();
+ void pauseAnimations();
+ void unpauseAnimations();
+ boolean animationsPaused();
+ float getCurrentTime();
+ void setCurrentTime(in float seconds);
+ NodeList getIntersectionList(in SVGRect rect, in SVGElement referenceElement);
+ NodeList getEnclosureList(in SVGRect rect, in SVGElement referenceElement);
+ boolean checkIntersection(in SVGElement element, in SVGRect rect);
+ boolean checkEnclosure(in SVGElement element, in SVGRect rect);
+ void deselectAll();
+ SVGNumber createSVGNumber();
+ SVGLength createSVGLength();
+ SVGAngle createSVGAngle();
+ SVGPoint createSVGPoint();
+ SVGMatrix createSVGMatrix();
+ SVGRect createSVGRect();
+ SVGTransform createSVGTransform();
+ SVGTransform createSVGTransformFromMatrix(in SVGMatrix matrix);
+ Element getElementById(in DOMString elementId);
  */
 
 #import "SVGElement.h"
 
 #import "SKBasicDataTypes.h"
 
+#import "NodeList.h"
+#import "SVGViewSpec.h"
+
 @interface SVGSVGElement : SVGElement < SVGLayeredElement >
 
-@property (nonatomic, readonly) SVGLength documentWidth; // FIXME: maybe can be merged with SVGElement as "boundingBoxWidth" / height ?
-@property (nonatomic, readonly) SVGLength documentHeight; // FIXME: maybe can be merged with SVGElement as "boundingBoxWidth" / height ?
-@property (nonatomic, readonly) CGRect viewBoxFrame; // FIXME: maybe can be merged with SVGElement ?
 
-/*! from the SVG spec, each "g" tag in the XML is a separate "group of graphics things",
- * this dictionary contains a mapping from "value of id attribute" to "SVGGroupElement"
- *
- * see also: anonymousGraphicsGroups (for groups that have no "id=" attribute)
- */
-@property (nonatomic, retain) NSDictionary *graphicsGroups;
-/*! from the SVG spec, each "g" tag in the XML is a separate "group of graphics things",
- * this array contains all the groups that had no "id=" attribute
- *
- * see also: graphicsGroups (for groups that have an "id=" attribute)
- */
-@property (nonatomic, retain) NSArray *anonymousGraphicsGroups;
 
-- (SVGElement *)findFirstElementOfClass:(Class)class;
+@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength x;
+@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength y;
+@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength width;
+@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength height;
+@property (nonatomic, readonly) NSString* contentScriptType;
+@property (nonatomic, readonly) NSString* contentStyleType;
+@property (nonatomic, readonly) SVGRect viewport;
+@property (nonatomic, readonly) float pixelUnitToMillimeterX;
+@property (nonatomic, readonly) float pixelUnitToMillimeterY;
+@property (nonatomic, readonly) float screenPixelToMillimeterX;
+@property (nonatomic, readonly) float screenPixelToMillimeterY;
+@property (nonatomic, readonly) BOOL useCurrentView;
+@property (nonatomic, readonly) SVGViewSpec* currentView;
+@property (nonatomic, readonly) float currentScale;
+@property (nonatomic, readonly) SVGPoint* currentTranslate;
+
+-(long) suspendRedraw:(long) maxWaitMilliseconds;
+-(void) unsuspendRedraw:(long) suspendHandleID;
+-(void) unsuspendRedrawAll;
+-(void) forceRedraw;
+-(void) pauseAnimations;
+-(void) unpauseAnimations;
+-(BOOL) animationsPaused;
+-(float) getCurrentTime;
+-(void) setCurrentTime:(float) seconds;
+-(NodeList*) getIntersectionList:(SVGRect) rect referenceElement:(SVGElement*) referenceElement;
+-(NodeList*) getEnclosureList:(SVGRect) rect referenceElement:(SVGElement*) referenceElement;
+-(BOOL) checkIntersection:(SVGElement*) element rect:(SVGRect) rect;
+-(BOOL) checkEnclosure:(SVGElement*) element rect:(SVGRect) rect;
+-(void) deselectAll;
+-(SVGNumber) createSVGNumber;
+-(SVGLength) createSVGLength;
+-(SVGAngle) createSVGAngle;
+-(SVGPoint) createSVGPoint;
+-(SVGMatrix) createSVGMatrix;
+-(SVGRect) createSVGRect;
+-(SVGTransform) createSVGTransform;
+-(SVGTransform) createSVGTransformFromMatrix:(SVGMatrix) matrix;
+-(Element*) getElementById:(NSString*) elementId;
+
+#pragma mark - below here VIOLATES THE STANDARD, but needs to be CAREFULLY merged with spec
+
+@property (nonatomic, readonly) CGRect viewBoxFrame; // FIXME: this has NON TRIVIAL relationship to the viewport property above
+
+- (SVGElement *)findFirstElementOfClass:(Class)class; /*< temporary convenience method until SVGDocument support is complete */
 
 @end

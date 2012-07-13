@@ -1,9 +1,24 @@
-//
-//  SVGKit.h
-//  SVGKit
-//
-//  Copyright Matt Rajca 2010-2011. All rights reserved.
-//
+/*!
+ 
+ SVGKit - https://github.com/SVGKit/SVGKit
+ 
+ THE MOST IMPORTANT ELEMENTS YOU'LL INTERACT WITH:
+ 
+ 1. SVGKImage = contains most of the convenience methods for loading / reading / displaying SVG files
+ 
+ SVGKImage makes heavy use of the following classes - you'll often use these classes (most of them given to you by an SVGKImage):
+ 
+ 2. SVGKSource = the "file" or "URL" for loading the SVG data
+ 3. SVGKParseResult = contains the parsed SVG file AND/OR the list of errors during parsing
+ 4. SVGSVGElement = the parsed SVG file, stored as a tree of SVGElement's. The root element is an SVGSVGElement
+ 5. SVGDocument = OPTIONAL: only exists for *SOME* SVG FILES (it's very confusing - c.f. the official SVG spec!)
+ 
+ NB: previous versions of SVGKit assumed that "every SVG file has an SVGDocument". This is not true, the spec
+ specifically states otherwise. In practice, most SVG files you encounter have an SVGDocument - but some have more than
+ one! And others have zero! So ... VERY LITTLE of SVGKit relies upon having an SVGDocument, we try to avoid using
+ it where possible.
+ 
+ */
 
 #include "TargetConditionals.h"
 

@@ -16,6 +16,14 @@
 
 #endif
 
+#import "SVGRect.h"
+#import "SVGPoint.h"
+
+/*! NOT IMPLEMENTED YET */
+typedef struct
+{
+	/*! NOT IMPLEMENTED YET */
+} SVGAnimatedLength;
 
 /**
  http://www.w3.org/TR/SVG11/types.html#InterfaceSVGLength

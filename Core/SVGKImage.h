@@ -3,6 +3,10 @@
  
  The main class in SVGKit - this is the one you'll normally interact with
  
+ c.f. SVGKit.h for more info on using SVGKit
+ 
+ What is an SVGKImage?
+ 
  An SVGKImage is as close to "the SVG version of a UIImage" as we could possibly get. We cannot
  subclass UIImage because Apple has defined UIImage as immutable - and SVG images actually change
  (each time you zoom in, we want to re-render the SVG as a higher-resolution set of pixels)
@@ -25,6 +29,7 @@
  */
 
 #import "SKBasicDataTypes.h"
+#import "SVGDocument.h"
 #import "SVGElement.h"
 #import "SVGSVGElement.h"
 #import "SVGGroupElement.h"
@@ -48,7 +53,8 @@
 @property (nonatomic, retain, readonly) SVGKSource* source;
 @property (nonatomic, retain, readonly) SVGKParseResult* parseErrorsAndWarnings;
 
-@property (nonatomic, retain, readonly) SVGSVGElement* DOMTree;
+@property (nonatomic, retain, readonly) SVGDocument* DOMDocument;
+@property (nonatomic, retain, readonly) SVGSVGElement* DOMTree; // needs renaming + (possibly) replacing by DOMDocument
 @property (nonatomic, retain, readonly) CALayer* CALayerTree;
 
 

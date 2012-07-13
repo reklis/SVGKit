@@ -9,26 +9,8 @@
 #import <libxml/parser.h>
 
 #import "SVGKParserSVG.h"
+@class SVGKParserPatternsAndGradients;
 #import "SVGKParserPatternsAndGradients.h"
-
-@interface SVGKParserStackItem : NSObject
-@property(nonatomic,retain) NSObject<SVGKParserExtension>* parserForThisItem;
-@property(nonatomic,retain) NSObject* item;
-
-@end
-
-@implementation SVGKParserStackItem
-@synthesize item;
-@synthesize parserForThisItem;
-
-- (void) dealloc 
-{
-    self.item = nil;
-    self.parserForThisItem = nil;
-    [super dealloc];
-}
-
-@end
 
 @interface SVGKParser()
 @property(nonatomic,retain, readwrite) SVGKSource* source;
@@ -188,29 +170,29 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 			if( [[subParser supportedNamespaces] containsObject:prefix]
 			&& [[subParser supportedTags] containsObject:name] )
 			{
-				NSObject* subParserResult = nil;
+				SVGKParserStackItem* parentStackItem = [_elementStack lastObject];
 				
-			if( nil != (subParserResult = [subParser handleStartElement:name document:source xmlns:prefix attributes:attributes parseResult:self.currentParseRun]) )
-			{
-				NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([attributes objectForKey:@"id"] != nil?[attributes objectForKey:@"id"]:@"(none)"), subParser );
+				NSObject* subParserResult = [subParser handleStartElement:name document:source xmlns:prefix attributes:attributes parseResult:self.currentParseRun parentStackItem:parentStackItem];
 				
-				SVGKParserStackItem* stackItem = [[[SVGKParserStackItem alloc] init] autorelease];;
-				stackItem.parserForThisItem = subParser;
-				stackItem.item = subParserResult;
+					NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([attributes objectForKey:@"id"] != nil?[attributes objectForKey:@"id"]:@"(none)"), subParser );
+					
+					SVGKParserStackItem* stackItem = [[[SVGKParserStackItem alloc] init] autorelease];;
+					stackItem.parserForThisItem = subParser;
+					stackItem.item = subParserResult;
+					
+					[_elementStack addObject:stackItem];
+					
+					if ([subParser createdItemShouldStoreContent:stackItem.item]) {
+						[_storedChars setString:@""];
+						_storingChars = YES;
+					}
+					else {
+						_storingChars = NO;
+					}
+					return;
 				
-				[_elementStack addObject:stackItem];
-				
-				if ([subParser createdItemShouldStoreContent:stackItem.item]) {
-					[_storedChars setString:@""];
-					_storingChars = YES;
-				}
-				else {
-					_storingChars = NO;
-				}
-				return;
 			}
-				
-			}
+			// otherwise ignore it - the parser extension didn't recognise the element
 		}
 	
 	NSLog(@"[%@] ERROR: could not find a parser for tag: <%@:%@>; adding empty placeholder", [self class], prefix, name );
@@ -319,7 +301,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 		
 		if( closingRootTag )
 		{
-			currentParseRun.rootOfSVGTree = (SVGElement*) stackItem.item;
+			[currentParseRun.parsedDocument replaceRootElement:(SVGSVGElement*) stackItem.item];
 		}
 	}
 }

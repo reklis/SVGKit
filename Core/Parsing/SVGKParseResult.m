@@ -3,8 +3,12 @@
 @implementation SVGKParseResult
 
 @synthesize libXMLFailed;
-@synthesize rootOfSVGTree;
+@synthesize parsedDocument, rootOfSVGTree;
 @synthesize warnings, errorsRecoverable, errorsFatal;
+
+#if ENABLE_PARSER_EXTENSIONS_CUSTOM_DATA
+@synthesize extensionsData;
+#endif
 
 - (id)init
 {
@@ -13,6 +17,10 @@
         self.warnings = [NSMutableArray array];
 		self.errorsRecoverable = [NSMutableArray array];
 		self.errorsFatal = [NSMutableArray array];
+		
+		#if ENABLE_PARSER_EXTENSIONS_CUSTOM_DATA
+		self.extensionsData = [NSMutableDictionary dictionary];
+#endif
     }
     return self;
 }
@@ -45,5 +53,19 @@
 	NSLog(@"[%@] SVG ERROR: %@", [self class], [saxError localizedDescription]);
 	[self.errorsFatal addObject:saxError];
 }
+
+#if ENABLE_PARSER_EXTENSIONS_CUSTOM_DATA
+-(NSMutableDictionary*) dictionaryForParserExtension:(NSObject<SVGKParserExtension>*) extension
+{
+	NSMutableDictionary* d = [self.extensionsData objectForKey:[extension class]];
+	if( d == nil )
+	{
+		d = [NSMutableDictionary dictionary];
+		[self.extensionsData setObject:d forKey:[extension class]];
+	}
+	
+	return d;
+}
+#endif
 
 @end
