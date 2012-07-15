@@ -9,6 +9,8 @@
 
 #import "RootViewController.h"
 
+#import "NodeList+Mutable.h"
+
 @interface DetailViewController ()
 
 @property (nonatomic, retain) UIPopoverController *popoverController;
@@ -73,6 +75,9 @@
 		[self.scrollView addSubview:self.contentView];
 		[self.scrollView setContentSize: document.size];
 		[self.scrollView zoomToRect:CGRectMake(0, 0, document.size.width, document.size.height) animated:YES];
+		
+		NodeList* elementsUsingTagG = [document.DOMDocument getElementsByTagName:@"g"];
+		NSLog( @"[%@] checking for SVG standard set of elements with XML tag/node of <g>: %@", [self class], elementsUsingTagG.internalArray );
 	}
 	else
 	{
