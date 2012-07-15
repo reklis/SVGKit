@@ -75,7 +75,7 @@
 
 #pragma mark - Objective C methods needed given our current non-compliant SVG Parser
 
-- (void)parseAttributes:(NSDictionary *)attributes {
+- (NSError*)parseAttributes:(NSDictionary *)attributes {
 	[super parseAttributes:attributes];
 	
 	id value = nil;
@@ -102,6 +102,8 @@
 #endif   
         
 	}
+	
+	return nil;
 }
 
 - (SVGElement *)findFirstElementOfClass:(Class)class {

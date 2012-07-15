@@ -27,7 +27,7 @@
 	_opacity = 1.0f;
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes {
+- (NSError*)parseAttributes:(NSDictionary *)attributes {
 	[super parseAttributes:attributes];
 	
 	id value = nil;
@@ -35,6 +35,8 @@
 	if ((value = [attributes objectForKey:@"opacity"])) {
 		_opacity = [value floatValue];
 	}
+	
+	return nil;
 }
 
 - (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform

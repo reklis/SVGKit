@@ -28,7 +28,7 @@
     [super dealloc];
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes
+- (NSError*)parseAttributes:(NSDictionary *)attributes
 {
     [super parseAttributes:attributes];
     
@@ -71,6 +71,8 @@
 //    transform = "scale(0.80449853,1.2430103)";
 //    "writing-mode" = "lr-tb";
 
+	
+	return nil;
 }
 
 - (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform

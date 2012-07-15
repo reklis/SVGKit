@@ -58,7 +58,7 @@ CGImageRef SVGImageCGImage(SVGImageRef img)
     return self;
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes {
+- (NSError*)parseAttributes:(NSDictionary *)attributes {
 	id value = nil;
 
 	if ((value = [attributes objectForKey:@"x"])) {
@@ -80,6 +80,8 @@ CGImageRef SVGImageCGImage(SVGImageRef img)
 	if ((value = [attributes objectForKey:@"href"])) {
 		_href = [value retain];
 	}
+	
+	return nil;
 }
 
 - (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform

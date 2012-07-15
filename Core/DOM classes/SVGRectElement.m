@@ -54,7 +54,7 @@ void CGPathAddRoundedRect (CGMutablePathRef path, CGRect rect, CGFloat radius) {
 	CGPathCloseSubpath(path);
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes {
+- (NSError*)parseAttributes:(NSDictionary *)attributes {
 	[super parseAttributes:attributes];
 	
 	id value = nil;
@@ -98,6 +98,8 @@ void CGPathAddRoundedRect (CGMutablePathRef path, CGRect rect, CGFloat radius) {
 	
 	[self setPathByCopyingPathFromLocalSpace:path];
 	CGPathRelease(path);
+	
+	return nil;
 }
 
 @end

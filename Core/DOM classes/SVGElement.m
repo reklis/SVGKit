@@ -80,7 +80,7 @@
 	element.parent = self;
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes {
+- (NSError*)parseAttributes:(NSDictionary *)attributes {
 	// to be overriden by subclasses
 	// make sure super implementation is called
 	
@@ -204,9 +204,25 @@
 					return;
 				}
 			}
+			else if( [command isEqualToString:@"skewX"] )
+			{
+				NSLog(@"[%@] ERROR: skew is unsupported: %@", [self class], command );
+				
+				return [NSError errorWithDomain:@"SVGKit" code:15184 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+																			   @"transform=skewX is unsupported", NSLocalizedDescriptionKey,
+																			   nil]
+						];
+			}
+			else if( [command isEqualToString:@"skewY"] )
+			{
+				NSLog(@"[%@] ERROR: skew is unsupported: %@", [self class], command );
+				return [NSError errorWithDomain:@"SVGKit" code:15184 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+																			   @"transform=skewY is unsupported", NSLocalizedDescriptionKey,
+																			   nil]
+						];
+			}
 			else
 			{
-				NSLog(@"[%@] ERROR: unsupported SVG transform command (probably legal, but not implemented yet by SVGKit): %@", [self class], command );
 				NSAssert( FALSE, @"Not implemented yet: transform = %@ %@", command, transformString );
 			}
 		}];
@@ -214,6 +230,8 @@
 		NSLog(@"[%@] Set local / relative transform = (%2.2f, %2.2f // %2.2f, %2.2f) + (%2.2f, %2.2f translate)", [self class], self.transformRelative.a, self.transformRelative.b, self.transformRelative.c, self.transformRelative.d, self.transformRelative.tx, self.transformRelative.ty );
 #endif
 	}
+	
+	return nil;
 }
 
 -(CGAffineTransform) transformAbsolute

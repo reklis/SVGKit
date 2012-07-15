@@ -13,13 +13,12 @@
 @interface SVGPathElement ()
 
 - (void) parseData:(NSString *)data;
-- (void) parseAttributes:(NSDictionary *)attributes;
 
 @end
 
 @implementation SVGPathElement
 
-- (void)parseAttributes:(NSDictionary *)attributes
+- (NSError*)parseAttributes:(NSDictionary *)attributes
 {
 	[super parseAttributes:attributes];
 	
@@ -28,6 +27,8 @@
 	if ((value = [attributes objectForKey:@"d"])) {
 		[self parseData:value];
 	}
+	
+	return nil;
 }
 
 - (void)parseData:(NSString *)data

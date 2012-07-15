@@ -40,7 +40,6 @@
 @property (nonatomic, retain) SVGElement *parent;
 
 #pragma mark - ORIGINALLY PACKAGE-PROTECTED
-- (void)parseAttributes:(NSDictionary *)attributes;
 - (void)addChild:(SVGElement *)element;
 - (void)parseContent:(NSString *)content;
 
@@ -52,8 +51,11 @@
 
 - (void)loadDefaults; // should be overriden to set element defaults
 
-/*! Overridden by sub-classes.  Be sure to call [super parseAttributes:attributes]; */
-- (void)parseAttributes:(NSDictionary *)attributes;
+/*! Overridden by sub-classes.  Be sure to call [super parseAttributes:attributes];
+ Returns nil, or an error if something failed trying to parse attributes (usually:
+ unsupported SVG feature that's not implemented yet) 
+*/
+- (NSError*)parseAttributes:(NSDictionary *)attributes;
 
 /*! Re-calculates the absolute transform on-demand by querying parent's absolute transform and appending self's relative transform */
 -(CGAffineTransform) transformAbsolute;

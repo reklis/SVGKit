@@ -11,7 +11,7 @@
 
 @implementation SVGPolylineElement
 
-- (void)parseAttributes:(NSDictionary *)attributes {
+- (NSError*)parseAttributes:(NSDictionary *)attributes {
 	[super parseAttributes:attributes];
 	
 	id value = nil;
@@ -22,6 +22,8 @@
 		[self setPathByCopyingPathFromLocalSpace:path];
 		CGPathRelease(path);
 	}
+	
+	return nil;
 }
 
 @end

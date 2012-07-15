@@ -46,7 +46,7 @@
 	_fillType = SVGFillTypeSolid;
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes {
+- (NSError*)parseAttributes:(NSDictionary *)attributes {
 	[super parseAttributes:attributes];
 	
 	id value = nil;
@@ -96,6 +96,8 @@
 	if ((value = [attributes objectForKey:@"fill-opacity"])) {
 		_fillColor.a = (uint8_t) ([value floatValue] * 0xFF);
 	}
+	
+	return nil;
 }
 
 - (void)setPathByCopyingPathFromLocalSpace:(CGPathRef)aPath {

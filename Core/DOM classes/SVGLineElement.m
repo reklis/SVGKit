@@ -14,7 +14,7 @@
 @synthesize x2 = _x2;
 @synthesize y2 = _y2;
 
-- (void)parseAttributes:(NSDictionary *)attributes {
+- (NSError*)parseAttributes:(NSDictionary *)attributes {
 	[super parseAttributes:attributes];
 	
 	id value = nil;
@@ -41,6 +41,8 @@
 	
 	[self setPathByCopyingPathFromLocalSpace:path];
 	CGPathRelease(path);
+	
+	return nil;
 }
 
 @end
