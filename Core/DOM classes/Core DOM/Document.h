@@ -72,13 +72,13 @@
 #import "ProcessingInstruction.h"
 @class DocumentType;
 #import "DocumentType.h"
-@class DOMImplementation;
-#import "DOMImplementation.h"
+@class AppleSucksDOMImplementation;
+#import "AppleSucksDOMImplementation.h"
 
 @interface Document : Node
 
 @property(nonatomic,retain,readonly) DocumentType*     doctype;
-@property(nonatomic,retain,readonly) DOMImplementation*  implementation;
+@property(nonatomic,retain,readonly) AppleSucksDOMImplementation*  implementation;
 @property(nonatomic,retain,readonly) Element*          documentElement;
 
 

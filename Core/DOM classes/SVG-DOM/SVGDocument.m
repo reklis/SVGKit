@@ -11,6 +11,12 @@
 
 #import "SKBasicDataTypes.h"
 
+#import "NodeList+Mutable.h"
+
+@interface SVGDocument()
+-(void) privateGetElementsByTagName:(NSString*) tagName childrenOfElement:(SVGElement*) parent addToList:(NodeList*) accumulator;
+@end
+
 @implementation SVGDocument
 
 
@@ -19,5 +25,24 @@
 @synthesize domain;
 @synthesize URL;
 @synthesize rootElement;
+
+-(NodeList*) getElementsByTagName:(NSString*) data
+{
+	NodeList* accumulator = [[NodeList alloc] init];
+	[self privateGetElementsByTagName:data childrenOfElement:self.rootElement addToList:accumulator];
+	
+	return accumulator;
+}
+
+-(void) privateGetElementsByTagName:(NSString*) tagName childrenOfElement:(SVGElement*) parent addToList:(NodeList*) accumulator
+{
+	if( [parent.localName isEqualToString:tagName] )
+		[accumulator.internalArray addObject:parent];
+	
+	for( SVGElement* childElement in parent.children )
+	{
+		[self privateGetElementsByTagName:tagName childrenOfElement:childElement addToList:accumulator];
+	}
+}
 
 @end

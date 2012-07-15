@@ -8,6 +8,8 @@
 -(SVGPoint*) matrixTransform:(SVGMatrix*) matrix
 {
 	NSAssert( FALSE, @"Not implemented yet" );
+	
+	return nil;
 }
 
 @end

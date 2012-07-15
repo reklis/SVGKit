@@ -46,8 +46,6 @@ static NSDictionary *elementMap;
 }
 
 - (void)dealloc {
-	[_anonymousGraphicsGroups release];
-	[_graphicsGroups release];
 	
 	[super dealloc];
 }
@@ -184,7 +182,7 @@ static NSDictionary *elementMap;
 		return false;
 }
 
--(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult *)parseResult
+-(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem *)parentStackItem
 {
 	SVGElement *parentElement = (SVGElement*) parent;
 	
@@ -192,68 +190,18 @@ static NSDictionary *elementMap;
 	{
 		SVGElement *childElement = (SVGElement*) child;
 		
-		if ( parent == nil ) // i.e. the root SVG tag
+		if ( parent != nil )
 		{
-			if( ! [child isKindOfClass:[SVGSVGElement class]] )
-			{
-				NSError* fatalError = [NSError errorWithDomain:@"SVGKit" code:5324 userInfo:
-									   [NSDictionary dictionaryWithObjectsAndKeys:
-										[NSString stringWithFormat:@"Unexpected root element: expected root tag to be an '<SVG...>' tag. Instead found a: %@", childElement.identifier], NSLocalizedDescriptionKey,
-										nil]];
-				
-				[parseResult addParseErrorFatal:fatalError];
-				return;
-			}
-			
-			NSLog(@"[%@] PARSER_INFO: asked to add object to nil parent; i.e. we've hit the root of the tree; setting global variables on the SVG rootElement now", [self class]);
-			SVGSVGElement *rootSVGElement = (SVGSVGElement*) childElement;
-			[rootSVGElement setGraphicsGroups:_graphicsGroups];
-			[rootSVGElement setAnonymousGraphicsGroups:_anonymousGraphicsGroups];
-			
-			[_graphicsGroups release];
-			[_anonymousGraphicsGroups release];
-			_graphicsGroups = nil;
-			_anonymousGraphicsGroups = nil;
-			
-		}
-		else
-		{
-			[parentElement addChild:childElement];
-			
-			/*!
-			 SVG Spec attaches special meaning to the "g" tag - and applications
-			 need to be able to pull-out the "g"-tagged items later on
-			 */
-			if( [childElement.localName isEqualToString:@"g"] )
-			{
-				if( childElement.identifier == nil )
-				{
-					if( _anonymousGraphicsGroups == nil )
-						_anonymousGraphicsGroups = [NSMutableArray new];
-					
-					[_anonymousGraphicsGroups addObject:childElement];
-					
-#if PARSER_WARN_FOR_ANONYMOUS_SVG_G_TAGS
-					NSLog(@"[%@] PARSER_WARN: Found anonymous g tag (tag has no XML 'id=' attribute). Loading OK, but check your SVG file (id tags are highly recommended!)...", [self class] );
-#endif
-				}
-				else
-				{
-					if( _graphicsGroups == nil )
-						_graphicsGroups = [NSMutableDictionary new];
-					
-					[_graphicsGroups setValue:childElement forKey:childElement.identifier];
-				}
-			}
+			[parentElement addChild:childElement];			
 		}
 	}
 	else
 	{
 		/*!
-		 Unknown metadata
+		 Unknown tag
 		 */
 		
-		[parentElement addMetadataChild:child];
+		NSAssert( FALSE, @"Asked to add unrecognized child tag of type = %@ to parent = %@", [child class], parent );
 	}
 }
 

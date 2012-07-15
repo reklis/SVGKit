@@ -80,11 +80,6 @@
 	element.parent = self;
 }
 
--(void) addMetadataChild:(NSObject*) child
-{
-	[self.metadataChildren addObject:child];
-}
-
 - (void)parseAttributes:(NSDictionary *)attributes {
 	// to be overriden by subclasses
 	// make sure super implementation is called

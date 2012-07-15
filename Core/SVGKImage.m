@@ -86,7 +86,8 @@
 		}
 		else
 		{
-			self.DOMDocument = self.DOMTree = nil;
+			self.DOMDocument = nil;
+			self.DOMTree = nil;
 		}
 		
 		if ( self.DOMDocument == nil )
@@ -96,8 +97,8 @@
 		}
 		else
 		{
-			self.svgWidth = self.DOMTree.documentWidth;
-			self.svgHeight = self.DOMTree.documentHeight;
+			self.svgWidth = self.DOMTree.width;
+			self.svgHeight = self.DOMTree.height;
 		}
 	}
 	return self;
@@ -314,7 +315,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 		
 		// TODO: calc the correct transform!
 		CGRect frameViewBox = self.DOMTree.viewBoxFrame;
-		CGRect frameImage = CGRectMake(0,0, SVGLengthAsPixels( self.DOMTree.documentWidth), SVGLengthAsPixels( self.DOMTree.documentHeight ) );
+		CGRect frameImage = CGRectMake(0,0, SVGLengthAsPixels( self.DOMTree.width), SVGLengthAsPixels( self.DOMTree.height ) );
 		
 		if( ! CGRectIsEmpty( frameViewBox ) )
 			preTransform = CGAffineTransformMakeScale( frameImage.size.width / frameViewBox.size.width, frameImage.size.height / frameViewBox.size.height);

@@ -18,6 +18,9 @@
 
 #import "SVGRect.h"
 #import "SVGPoint.h"
+#import "SVGNumber.h"
+#import "SVGAngle.h"
+#import "SVGTransform.h"
 
 /*! NOT IMPLEMENTED YET */
 typedef struct

@@ -9,8 +9,11 @@
 #import <libxml/parser.h>
 
 #import "SVGKParserSVG.h"
+
 @class SVGKParserPatternsAndGradients;
 #import "SVGKParserPatternsAndGradients.h"
+
+#import "SVGDocument_Mutable.h" // so we can modify the SVGDocuments we're parsing
 
 @interface SVGKParser()
 @property(nonatomic,retain, readwrite) SVGKSource* source;
@@ -290,7 +293,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 		}
 		
 		NSLog(@"[%@] DEBUG-PARSER: ended tag (</%@>): telling parser (%@) to add that item to tree-parent = %@", [self class], name, parserHandlingTheParentItem, parentStackItem.item );
-		[parserHandlingTheParentItem addChildObject:stackItem.item toObject:parentStackItem.item parseResult:self.currentParseRun];
+		[parserHandlingTheParentItem addChildObject:stackItem.item toObject:parentStackItem.item parseResult:self.currentParseRun parentStackItem:parentStackItem];
 		
 		if ( [stackItem.parserForThisItem createdItemShouldStoreContent:stackItem.item]) {
 			[stackItem.parserForThisItem parseContent:_storedChars forItem:stackItem.item];
@@ -301,7 +304,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 		
 		if( closingRootTag )
 		{
-			[currentParseRun.parsedDocument replaceRootElement:(SVGSVGElement*) stackItem.item];
+			currentParseRun.parsedDocument.rootElement = (SVGSVGElement*) stackItem.item;
 		}
 	}
 }

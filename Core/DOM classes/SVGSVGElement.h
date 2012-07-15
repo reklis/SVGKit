@@ -47,11 +47,15 @@
  */
 
 #import "SVGElement.h"
+#import "SVGViewSpec.h"
 
+#pragma mark - most of the SVG* types (SVGLength, SVGNumber, etc) are in this imported header
 #import "SKBasicDataTypes.h"
 
+#pragma mark - a few raw DOM imports are required for SVG DOM, but not many
+#import "Element.h"
 #import "NodeList.h"
-#import "SVGViewSpec.h"
+
 
 @interface SVGSVGElement : SVGElement < SVGLayeredElement >
 
@@ -89,12 +93,12 @@
 -(void) deselectAll;
 -(SVGNumber) createSVGNumber;
 -(SVGLength) createSVGLength;
--(SVGAngle) createSVGAngle;
--(SVGPoint) createSVGPoint;
--(SVGMatrix) createSVGMatrix;
+-(SVGAngle*) createSVGAngle;
+-(SVGPoint*) createSVGPoint;
+-(SVGMatrix*) createSVGMatrix;
 -(SVGRect) createSVGRect;
--(SVGTransform) createSVGTransform;
--(SVGTransform) createSVGTransformFromMatrix:(SVGMatrix) matrix;
+-(SVGTransform*) createSVGTransform;
+-(SVGTransform*) createSVGTransformFromMatrix:(SVGMatrix*) matrix;
 -(Element*) getElementById:(NSString*) elementId;
 
 #pragma mark - below here VIOLATES THE STANDARD, but needs to be CAREFULLY merged with spec
