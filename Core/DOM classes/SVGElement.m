@@ -301,21 +301,34 @@
 
 }
 
+/*! implemented making heavy use of the self.viewportElement to optimize performance - I believe this is what the
+ SVG Spec authors intended
+ 
+ FIXME: this method could be removed by cut/pasting the code below directly into SVGKImage and its CALayer generation
+ code. Previously, this method recursed through the whole tree, but now that it's using the self.viewportElement property
+ it's a bit simpler.
+ */
 -(CGAffineTransform) transformAbsolute
 {
-	if( self.parentNode == nil )
+	if( self.viewportElement == nil )
 		return self.transformRelative;
 	else
 	{
-		SVGElement* parentElement = (SVGElement*) self.parentNode;
-		NSAssert( [parentElement isKindOfClass:[SVGElement class]], @"in an SVG fragment, all nodes must be subclasses of SVGElement. My parent is instead of class %@", [self.parentNode class] );
-		
-		CGAffineTransform inheritedTransform = [parentElement transformAbsolute];
-		//DEBUG ONLY: CGAffineTransform localTransform = self.transformRelative; // Apple's debugger is appallingly bad
-		
-		CGAffineTransform absoluteTransform = CGAffineTransformConcat( self.transformRelative, inheritedTransform );
-		
-		return absoluteTransform;
+		/**
+		 If this node altered the viewport, then the "inherited" info is whatever its parent had.
+		 
+		 Otherwise, its whatever the pre-saved self.viewportElement is using.
+		 
+		 NB: this is an optimization that is built-in to the SVG spec; previous implementation in SVGKit
+		 recursed up the entire tree of SVGElement's, even though most SVGElement's are NOT ALLOWED to
+		 redefine the viewport
+		 */
+		if( self.viewportElement == self )
+		{
+			return CGAffineTransformConcat( self.transformRelative, ((SVGElement*) self.parentNode).viewportElement.transformAbsolute );
+		}
+		else
+			return [self.viewportElement transformAbsolute];
 	}
 }
 

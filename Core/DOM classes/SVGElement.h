@@ -24,7 +24,10 @@
 @property (nonatomic, retain) SVGSVGElement* ownerSVGElement;
 
 /*! The viewport is set / re-set whenever an SVG node specifies a "width" (and optionally: a "height") attribute,
- assuming that SVG node is one of: svg, symbol, image, foreignobject */
+ assuming that SVG node is one of: svg, symbol, image, foreignobject
+ 
+ The spec isn't clear what happens if this element redefines the viewport itself, but IMHO it implies that the
+ viewportElement becomes a reference to "self" */
 @property (nonatomic, retain) SVGElement* viewportElement;
 
 
