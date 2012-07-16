@@ -31,14 +31,18 @@
 @property (nonatomic, retain) SVGElement* viewportElement;
 
 
-#pragma mark - NON-STANDARD features of class (these are things that are NOT in the SVG spec, and should NOT be in SVGKit)
+#pragma mark - NON-STANDARD features of class (these are things that are NOT in the SVG spec, and should NOT be in SVGKit's implementation - they should be moved to a different class, although WE DO STILL NEED THESE in order to implement the spec, and to provide SVGKit features!)
 
 /*! This is used when generating CALayer objects, to store the id of the SVGElement that created the CALayer */
 #define kSVGElementIdentifier @"SVGElementIdentifier"
 
 @property (nonatomic, readonly, copy) NSString *stringValue;
 
-/*! Transform to be applied to this node and all sub-nodes; does NOT take account of any transforms applied by parent / ancestor nodes */
+/*! Transform to be applied to this node and all sub-nodes; does NOT take account of any transforms applied by parent / ancestor nodes
+ 
+ FIXME: this method could be removed by some careful refactoring of the code in SVGKImage and its CALayer generation
+ code. You need to also refactor / merge the method "transformAbsolute" in the .m file of this class.
+ */
 @property (nonatomic) CGAffineTransform transformRelative;
 
 - (void)parseContent:(NSString *)content;
