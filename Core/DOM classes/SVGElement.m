@@ -27,47 +27,69 @@
  */
 @implementation SVGElement
 
+@synthesize identifier = _identifier;
+@synthesize xmlbase;
+@synthesize ownerSVGElement;
+@synthesize viewportElement;
 
-@synthesize children = _children;
 @synthesize stringValue = _stringValue;
-@synthesize localName = _localName;
 
-@synthesize parent = _parent;
 @synthesize transformRelative = _transformRelative;
 
-@synthesize identifier = _identifier;
 
-@synthesize metadataChildren;
 
 + (BOOL)shouldStoreContent {
 	return NO;
 }
 
+/*! Override so that we can automatically set / unset the ownerSVGElement and viewportElement properties,
+ as required by SVG Spec */
+-(void)setParentNode:(Node *)newParent
+{
+	[super setParentNode:newParent];
+	
+	/** SVG Spec: if "outermost SVG tag" then both element refs should be nil */
+	if( [self isKindOfClass:[SVGSVGElement class]]
+	&& (self.parentNode == nil || ! [self.parentNode isKindOfClass:[SVGElement class]]) )
+	{
+		self.ownerSVGElement = nil;
+		self.viewportElement = nil;
+	}
+	else
+	{
+		NSAssert( [self.localName isEqualToString:@"svg"] || [newParent isKindOfClass:[SVGElement class]], @"All SVG nodes must have SVGElement superclasses, unless they are an embedded SVG root node, with tag = SVG" );
+		
+		if( [self isKindOfClass:[SVGSVGElement class]] )
+			self.ownerSVGElement = (SVGSVGElement*) self;
+		else
+			self.ownerSVGElement = ((SVGElement*) newParent).ownerSVGElement;
+		
+		if( [self isKindOfClass:[SVGSVGElement class]] )
+			self.viewportElement =  self;
+		else
+			self.viewportElement = ((SVGElement*) self.parentNode).viewportElement;
+	}
+}
+
 - (id)init {
-    self = [super init];
+    self = [super initType:SKNodeType_ELEMENT_NODE];
     if (self) {
 		[self loadDefaults];
-        _children = [[NSMutableArray alloc] init];
 		self.transformRelative = CGAffineTransformIdentity;
-		self.metadataChildren = [NSMutableArray array];
     }
     return self;
 }
 
 - (id)initWithName:(NSString *)name {
-	self = [self init];
+	self = [super initElement:name];
 	if (self) {
-		_localName = [name retain];
 		self.transformRelative = CGAffineTransformIdentity;
 	}
 	return self;
 }
 
 - (void)dealloc {
-	self.metadataChildren = nil;
-	[_children release];
 	[_stringValue release];
-	[_localName release];
 	[_identifier release];
 	
 	[super dealloc];
@@ -75,11 +97,6 @@
 
 - (void)loadDefaults {
 	// to be overriden by subclasses
-}
-
-- (void)addChild:(SVGElement *)element {
-	[_children addObject:element];
-	element.parent = self;
 }
 
 - (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult  {
@@ -237,12 +254,15 @@
 
 -(CGAffineTransform) transformAbsolute
 {
-	if( self.parent == nil )
+	if( self.parentNode == nil )
 		return self.transformRelative;
 	else
 	{
-		CGAffineTransform inheritedTransform = [self.parent transformAbsolute];
-		CGAffineTransform localTransform = self.transformRelative; // Apple's debugger is appallingly bad
+		SVGElement* parentElement = (SVGElement*) self.parentNode;
+		NSAssert( [parentElement isKindOfClass:[SVGElement class]], @"in an SVG fragment, all nodes must be subclasses of SVGElement. My parent is instead of class %@", [self.parentNode class] );
+		
+		CGAffineTransform inheritedTransform = [parentElement transformAbsolute];
+		//DEBUG ONLY: CGAffineTransform localTransform = self.transformRelative; // Apple's debugger is appallingly bad
 		
 		CGAffineTransform absoluteTransform = CGAffineTransformConcat( self.transformRelative, inheritedTransform );
 		
@@ -256,7 +276,7 @@
 
 - (NSString *)description {
 	return [NSString stringWithFormat:@"<%@ %p | id=%@ | localName=%@ | stringValue=%@ | children=%d>", 
-			[self class], self, _identifier, _localName, _stringValue, [_children count]];
+			[self class], self, _identifier, self.localName, _stringValue, self.childNodes.length];
 }
 
 @end

@@ -11,7 +11,7 @@
 
 #import "SKBasicDataTypes.h"
 
-#import "NodeList+Mutable.h"
+#import "NodeList+Mutable.h" // needed for access to underlying array, because SVG doesnt support fast enumeration natively
 
 @interface SVGDocument()
 -(void) privateGetElementsByTagName:(NSString*) tagName childrenOfElement:(SVGElement*) parent addToList:(NodeList*) accumulator;
@@ -39,7 +39,7 @@
 	if( [parent.localName isEqualToString:tagName] )
 		[accumulator.internalArray addObject:parent];
 	
-	for( SVGElement* childElement in parent.children )
+	for( SVGElement* childElement in parent.childNodes.internalArray )
 	{
 		[self privateGetElementsByTagName:tagName childrenOfElement:childElement addToList:accumulator];
 	}

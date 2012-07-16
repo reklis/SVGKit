@@ -1,47 +1,40 @@
 /**
  SVGElement
  
- This class is WRONG: most of the properties and methods should NOT be implemented here, but instead in the
- superclass "Node".
- 
- c.f. official definition of "Node" in SVG:
  http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1950641247
 
+ NB: "id" is illegal in Objective-C language, so we use "identifier" instead
  
- Documenting the actual data in this class (even though it's incorrect):
-  - "children": nb: the correct name would be "childNodes", according to SVG spec ... child elements (SVG is a tree: every element can have chidren)
-  - "localName": the final part of the SVG tag (e.g. in "<svg:element", this would be "element")
-  - "identifier": the SVG id attribute (e.g. "<svg:svg id="this is the identifier"")
-  - "transformRelative": identity OR the transform to apply BEFORE rendering this element (and its children)
-  - "parent": the parent node in the SVG tree
+ 
+ + NON STANDARD: "transformRelative": identity OR the transform to apply BEFORE rendering this element (and its children)
  
  */
 #import <QuartzCore/QuartzCore.h>
 
+#import "Node.h"
+#import "Node+Mutable.h"
 
-@interface SVGElement : NSObject {
-  @private
-	NSMutableArray *_children;
-}
+@class SVGSVGElement;
+//obj-c's compiler sucks, and doesn't allow this line: #import "SVGSVGElement.h"
+
+@interface SVGElement : Node
+
+@property (nonatomic, readwrite, retain) NSString *identifier; // 'id' is reserved in Obj-C, so we have to break SVG Spec here, slightly
+@property (nonatomic, retain) NSString* xmlbase;
+@property (nonatomic, retain) SVGSVGElement* ownerSVGElement;
+@property (nonatomic, retain) SVGElement* viewportElement;
+
+
+#pragma mark - NON-STANDARD features of class (these are things that are NOT in the SVG spec, and should NOT be in SVGKit)
 
 /*! This is used when generating CALayer objects, to store the id of the SVGElement that created the CALayer */
 #define kSVGElementIdentifier @"SVGElementIdentifier"
 
-@property (nonatomic, readonly) NSArray *children;
 @property (nonatomic, readonly, copy) NSString *stringValue;
-@property (nonatomic, readonly) NSString *localName;
-
-@property (nonatomic, readwrite, retain) NSString *identifier; // 'id' is reserved
-
-@property (nonatomic, retain) NSMutableArray* metadataChildren;
 
 /*! Transform to be applied to this node and all sub-nodes; does NOT take account of any transforms applied by parent / ancestor nodes */
 @property (nonatomic) CGAffineTransform transformRelative;
-/*! Required by SVG transform and SVG viewbox: you have to be able to query your parent nodes at all times to find out your actual values */
-@property (nonatomic, retain) SVGElement *parent;
 
-#pragma mark - ORIGINALLY PACKAGE-PROTECTED
-- (void)addChild:(SVGElement *)element;
 - (void)parseContent:(NSString *)content;
 
 

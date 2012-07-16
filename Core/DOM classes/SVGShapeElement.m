@@ -150,7 +150,7 @@
 	CGPathAddPath( pathToPlaceInLayer, &transformAbsoluteThenGlobalViewBoxFix, _pathRelative);	
 	
     CGRect rect = CGPathGetPathBoundingBox( _pathRelative );
-	CGRect unTransformedPathBB = CGPathGetBoundingBox( _pathRelative );
+	//DEBUG ONLY: CGRect unTransformedPathBB = CGPathGetBoundingBox( _pathRelative );
 	CGRect transformedPathBB = CGPathGetBoundingBox( pathToPlaceInLayer );
 	
 	/** NB: when we set the _shapeLayer.frame, it has a *side effect* of moving the path itself - so, in order to prevent that,
@@ -170,7 +170,7 @@
 	 */
 	_shapeLayer.frame = CGRectApplyAffineTransform( rect, CGAffineTransformConcat( svgEffectiveTransform, preTransform ) );
 		
-	CGRect shapeLayerFrame = _shapeLayer.frame;
+	//DEBUG ONLY: CGRect shapeLayerFrame = _shapeLayer.frame;
 	
 	if (_strokeWidth) {
 		/*

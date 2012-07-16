@@ -192,7 +192,7 @@ static NSDictionary *elementMap;
 		
 		if ( parent != nil )
 		{
-			[parentElement addChild:childElement];			
+			[parentElement appendChild:childElement];			
 		}
 	}
 	else
