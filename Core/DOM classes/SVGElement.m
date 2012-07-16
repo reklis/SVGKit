@@ -42,6 +42,16 @@
 	return NO;
 }
 
+/*! As per the SVG Spec, the local reference to "viewportElement" depends on the values of the
+ attributes of the node - does it have a "width" attribute? */
+-(void) reCalculateAndSetViewportElementReference
+{
+	if( [self.attributes getNamedItem:@"width"] != nil )
+		self.viewportElement =  self;
+	else
+		self.viewportElement = ((SVGElement*) self.parentNode).viewportElement;
+}
+
 /*! Override so that we can automatically set / unset the ownerSVGElement and viewportElement properties,
  as required by SVG Spec */
 -(void)setParentNode:(Node *)newParent
@@ -64,12 +74,51 @@
 		else
 			self.ownerSVGElement = ((SVGElement*) newParent).ownerSVGElement;
 		
-		if( [self isKindOfClass:[SVGSVGElement class]] )
-			self.viewportElement =  self;
-		else
-			self.viewportElement = ((SVGElement*) self.parentNode).viewportElement;
+		[self reCalculateAndSetViewportElementReference];
 	}
 }
+
+/*! Override so that we can automatically set / unset the viewportElement property,
+ as required by SVG Spec */
+-(void)setAttributes:(NamedNodeMap *)attributes
+{
+	[super setAttributes:attributes];
+	
+	[self reCalculateAndSetViewportElementReference];
+}
+
+/*! Override so that we can automatically set / unset the viewportElement property,
+ as required by SVG Spec */
+
+-(void) setAttribute:(NSString*) name value:(NSString*) value
+{
+	[super setAttribute:name value:value];
+	
+	[self reCalculateAndSetViewportElementReference];
+}
+-(void) removeAttribute:(NSString*) name
+{
+	[super removeAttribute:name];
+	
+	[self reCalculateAndSetViewportElementReference];
+}
+-(Attr*) setAttributeNode:(Attr*) newAttr
+{
+	Attr* a = [super setAttributeNode:newAttr];
+	
+	[self reCalculateAndSetViewportElementReference];
+	
+	return a;
+}
+-(Attr*) removeAttributeNode:(Attr*) oldAttr
+{
+	Attr* a = [super removeAttributeNode:oldAttr];
+	
+	[self reCalculateAndSetViewportElementReference];
+	
+	return a;
+}
+
 
 - (id)init {
     self = [super initType:SKNodeType_ELEMENT_NODE];

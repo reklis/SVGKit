@@ -11,17 +11,20 @@
  */
 #import <QuartzCore/QuartzCore.h>
 
-#import "Node.h"
+#import "Element.h"
 #import "Node+Mutable.h"
 
 @class SVGSVGElement;
 //obj-c's compiler sucks, and doesn't allow this line: #import "SVGSVGElement.h"
 
-@interface SVGElement : Node
+@interface SVGElement : Element
 
 @property (nonatomic, readwrite, retain) NSString *identifier; // 'id' is reserved in Obj-C, so we have to break SVG Spec here, slightly
 @property (nonatomic, retain) NSString* xmlbase;
 @property (nonatomic, retain) SVGSVGElement* ownerSVGElement;
+
+/*! The viewport is set / re-set whenever an SVG node specifies a "width" (and optionally: a "height") attribute,
+ assuming that SVG node is one of: svg, symbol, image, foreignobject */
 @property (nonatomic, retain) SVGElement* viewportElement;
 
 

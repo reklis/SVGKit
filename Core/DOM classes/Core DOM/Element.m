@@ -1,28 +1,27 @@
 #import "Element.h"
 
+#import "NamedNodeMap.h"
+
 @interface Element()
 @property(nonatomic,retain,readwrite) NSString* tagName;
-
-@property(nonatomic,retain) NSMutableDictionary* attributesByName;
 @end
 
 @implementation Element
 
 @synthesize tagName;
-@synthesize attributesByName;
 
 - (id)initType:(SKNodeType) nt
 {
     self = [super initType:nt];
     if (self) {
-        self.attributesByName = [NSMutableDictionary dictionary];
+		
     }
     return self;
 }
 
 -(NSString*) getAttribute:(NSString*) name
 {
-	Attr* result = [self.attributesByName valueForKey:name];
+	Attr* result = (Attr*) [self.attributes getNamedItem:name];
 	
 	if( result == nil || result.value == nil )
 		return @""; // according to spec
@@ -34,33 +33,33 @@
 {
 	Attr* att = [[[Attr alloc] initAttr:name value:value] autorelease];
 	
-	[self.attributesByName setValue:att forKey:name];
+	[self.attributes setNamedItem:att];
 }
 
 -(void) removeAttribute:(NSString*) name
 {
-	[self.attributesByName removeObjectForKey:name];
+	[self.attributes removeNamedItem:name];
 	
 	NSAssert( FALSE, @"Not fully implemented. Spec says: If the removed attribute is known to have a default value, an attribute immediately appears containing the default value as well as the corresponding namespace URI, local name, and prefix when applicable." );
 }
 
 -(Attr*) getAttributeNode:(NSString*) name
 {
-	return [self.attributesByName valueForKey:name];
+	return (Attr*) [self.attributes getNamedItem:name];
 }
 
 -(Attr*) setAttributeNode:(Attr*) newAttr
 {
-	Attr* oldAtt = [self.attributesByName objectForKey:newAttr.nodeName];
+	Attr* oldAtt = (Attr*) [self.attributes getNamedItem:newAttr.nodeName];
 	
-	[self.attributesByName setValue:newAttr forKey:newAttr.nodeName];
+	[self.attributes setNamedItem:newAttr];
 	
 	return oldAtt;
 }
 
 -(Attr*) removeAttributeNode:(Attr*) oldAttr
 {
-	[self.attributesByName removeObjectForKey:oldAttr.nodeName];
+	[self.attributes removeNamedItem:oldAttr.nodeName];
 	
 	NSAssert( FALSE, @"Not fully implemented. Spec: If the removed Attr  has a default value it is immediately replaced. The replacing attribute has the same namespace URI and local name, as well as the original prefix, when applicable. " );
 	
