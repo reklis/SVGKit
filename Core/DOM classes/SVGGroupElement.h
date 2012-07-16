@@ -6,6 +6,7 @@
 //
 
 #import "SVGElement.h"
+#import "SVGLayeredElement.h"
 
 @interface SVGGroupElement : SVGElement < SVGLayeredElement > { }
 

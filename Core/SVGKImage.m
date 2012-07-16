@@ -70,12 +70,12 @@
 	return [[[[self class] alloc] initWithContentsOfFile:aPath] autorelease];
 }
 
-- (id)initWithSource:(SVGKSource *)source {
+- (id)initWithSource:(SVGKSource *)newSource {
 	self = [super init];
 	if (self) {
 		self.svgWidth = SVGLengthZero;
 		self.svgHeight = SVGLengthZero;
-		self.source = source;
+		self.source = newSource;
 		
 		self.parseErrorsAndWarnings = [SVGKParser parseSourceUsingDefaultSVGKParser:self.source];
 		

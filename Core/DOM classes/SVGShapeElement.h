@@ -23,6 +23,7 @@
  */
 
 #import "SVGElement.h"
+#import "SVGLayeredElement.h"
 #import "SVGUtils.h"
 
 @class SVGGradientElement;

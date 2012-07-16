@@ -7,6 +7,8 @@
 
 #import "SVGLineElement.h"
 
+#import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
+
 @implementation SVGLineElement
 
 @synthesize x1 = _x1;
@@ -14,8 +16,8 @@
 @synthesize x2 = _x2;
 @synthesize y2 = _y2;
 
-- (NSError*)parseAttributes:(NSDictionary *)attributes {
-	[super parseAttributes:attributes];
+- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
+	[super parseAttributes:attributes parseResult:parseResult];
 	
 	id value = nil;
 	
@@ -41,8 +43,6 @@
 	
 	[self setPathByCopyingPathFromLocalSpace:path];
 	CGPathRelease(path);
-	
-	return nil;
 }
 
 @end

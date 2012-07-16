@@ -10,6 +10,8 @@
 #import "SVGUtils.h"
 #import "SVGKPointsAndPathsParser.h"
 
+#import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
+
 @interface SVGPathElement ()
 
 - (void) parseData:(NSString *)data;
@@ -18,17 +20,15 @@
 
 @implementation SVGPathElement
 
-- (NSError*)parseAttributes:(NSDictionary *)attributes
+- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult
 {
-	[super parseAttributes:attributes];
+	[super parseAttributes:attributes parseResult:parseResult];
 	
 	id value = nil;
 	
 	if ((value = [attributes objectForKey:@"d"])) {
 		[self parseData:value];
 	}
-	
-	return nil;
 }
 
 - (void)parseData:(NSString *)data

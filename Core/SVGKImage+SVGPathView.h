@@ -8,6 +8,8 @@
  it's pretty clean at the moment
  */
 
+#import "SVGLayeredElement.h"
+
 #if NS_BLOCKS_AVAILABLE
 typedef void (^SVGElementAggregationBlock)(SVGElement < SVGLayeredElement > * layeredElement);
 #endif

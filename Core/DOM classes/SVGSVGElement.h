@@ -56,6 +56,7 @@
 #import "Element.h"
 #import "NodeList.h"
 
+#import "SVGLayeredElement.h"
 
 @interface SVGSVGElement : SVGElement < SVGLayeredElement >
 

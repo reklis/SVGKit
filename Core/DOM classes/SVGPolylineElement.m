@@ -9,10 +9,13 @@
 
 #import "SVGUtils.h"
 
+#import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
+
+
 @implementation SVGPolylineElement
 
-- (NSError*)parseAttributes:(NSDictionary *)attributes {
-	[super parseAttributes:attributes];
+- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
+	[super parseAttributes:attributes parseResult:parseResult];
 	
 	id value = nil;
 	
@@ -22,8 +25,6 @@
 		[self setPathByCopyingPathFromLocalSpace:path];
 		CGPathRelease(path);
 	}
-	
-	return nil;
 }
 
 @end

@@ -82,12 +82,7 @@ static NSDictionary *elementMap;
 		}
 		
 		SVGElement *element = [[[elementClass alloc] initWithName:name] autorelease];
-		NSError* errorOrNil = [element parseAttributes:attributes];
-		
-		if( errorOrNil != nil )
-		{
-			[parseResult addParseErrorRecoverable:errorOrNil];
-		}
+		[element parseAttributes:attributes parseResult:parseResult];
 		
 		/** special case: <svg:svg ... version="XXX"> */
 		if( [@"svg" isEqualToString:name] )

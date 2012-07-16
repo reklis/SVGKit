@@ -3,6 +3,9 @@
 #import "SVGSVGElement_Mutable.h"
 #import "CALayerWithChildHitTest.h"
 
+
+#import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
+
 @interface SVGSVGElement()
 @property (nonatomic, readwrite) CGRect viewBoxFrame;
 @end
@@ -75,8 +78,8 @@
 
 #pragma mark - Objective C methods needed given our current non-compliant SVG Parser
 
-- (NSError*)parseAttributes:(NSDictionary *)attributes {
-	[super parseAttributes:attributes];
+- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
+	[super parseAttributes:attributes parseResult:parseResult];
 	
 	id value = nil;
 	
@@ -102,8 +105,6 @@
 #endif   
         
 	}
-	
-	return nil;
 }
 
 - (SVGElement *)findFirstElementOfClass:(Class)class {

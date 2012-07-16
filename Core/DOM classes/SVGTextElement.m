@@ -12,6 +12,9 @@
 #import <UIKit/UIKit.h>
 #endif
 
+#import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
+
+
 @implementation SVGTextElement
 
 + (BOOL)shouldStoreContent {
@@ -28,9 +31,9 @@
     [super dealloc];
 }
 
-- (NSError*)parseAttributes:(NSDictionary *)attributes
+- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult
 {
-    [super parseAttributes:attributes];
+    [super parseAttributes:attributes parseResult:parseResult];
     
 	id value = nil;
     
@@ -70,9 +73,6 @@
 //    "text-anchor" = start;
 //    transform = "scale(0.80449853,1.2430103)";
 //    "writing-mode" = "lr-tb";
-
-	
-	return nil;
 }
 
 - (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform

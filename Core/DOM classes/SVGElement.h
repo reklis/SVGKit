@@ -18,6 +18,7 @@
  */
 #import <QuartzCore/QuartzCore.h>
 
+
 @interface SVGElement : NSObject {
   @private
 	NSMutableArray *_children;
@@ -43,40 +44,5 @@
 - (void)addChild:(SVGElement *)element;
 - (void)parseContent:(NSString *)content;
 
-#pragma mark - Public
-
-+ (BOOL)shouldStoreContent; // to optimize parser, default is NO
-
-- (id)initWithName:(NSString *)name;
-
-- (void)loadDefaults; // should be overriden to set element defaults
-
-/*! Overridden by sub-classes.  Be sure to call [super parseAttributes:attributes];
- Returns nil, or an error if something failed trying to parse attributes (usually:
- unsupported SVG feature that's not implemented yet) 
-*/
-- (NSError*)parseAttributes:(NSDictionary *)attributes;
-
-/*! Re-calculates the absolute transform on-demand by querying parent's absolute transform and appending self's relative transform */
--(CGAffineTransform) transformAbsolute;
-
-
-@end
-
-@protocol SVGLayeredElement < NSObject >
-
-/*!
- SVG's can be specified in any arbitrary resolution; many on the internet have impossibly huge co-ordinates, e.g. "1 million x 1 million",
- but when you render them, you're expected to scale that co-ord down to your local co-ords - e.g. "1024x768" for an iPad 1 screen. So, when
- generating layers, we provide the transform that will perform that scale (NB: this is the compound transform from all "viewbox / width,height"
- found in higher layers of the tree)
- 
- NB: the returned layer has - as its "name" property - the "identifier" property of the SVGElement that created it;
- but that can be overwritten by applications (for valid reasons), so we ADDITIONALLY store the identifier into a
- custom key - kSVGElementIdentifier - on the CALayer. Because it's a custom key, it's (almost) guaranteed not to be
- overwritten / altered by other application code
- */
-- (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform;
-- (void)layoutLayer:(CALayer *)layer;
 
 @end

@@ -7,6 +7,8 @@
 
 #import "SVGElement.h"
 
+#import "SVGElement_ForParser.h" //.h" // to solve insane Xcode circular dependencies
+
 @interface SVGElement ()
 
 @property (nonatomic, copy) NSString *stringValue;
@@ -80,7 +82,7 @@
 	element.parent = self;
 }
 
-- (NSError*)parseAttributes:(NSDictionary *)attributes {
+- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult  {
 	// to be overriden by subclasses
 	// make sure super implementation is called
 	
@@ -208,18 +210,18 @@
 			{
 				NSLog(@"[%@] ERROR: skew is unsupported: %@", [self class], command );
 				
-				return [NSError errorWithDomain:@"SVGKit" code:15184 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+				[parseResult addParseErrorRecoverable: [NSError errorWithDomain:@"SVGKit" code:15184 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 																			   @"transform=skewX is unsupported", NSLocalizedDescriptionKey,
 																			   nil]
-						];
+						]];
 			}
 			else if( [command isEqualToString:@"skewY"] )
 			{
 				NSLog(@"[%@] ERROR: skew is unsupported: %@", [self class], command );
-				return [NSError errorWithDomain:@"SVGKit" code:15184 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+				[parseResult addParseErrorRecoverable: [NSError errorWithDomain:@"SVGKit" code:15184 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 																			   @"transform=skewY is unsupported", NSLocalizedDescriptionKey,
 																			   nil]
-						];
+						]];
 			}
 			else
 			{
@@ -230,8 +232,7 @@
 		NSLog(@"[%@] Set local / relative transform = (%2.2f, %2.2f // %2.2f, %2.2f) + (%2.2f, %2.2f translate)", [self class], self.transformRelative.a, self.transformRelative.b, self.transformRelative.c, self.transformRelative.d, self.transformRelative.tx, self.transformRelative.ty );
 #endif
 	}
-	
-	return nil;
+
 }
 
 -(CGAffineTransform) transformAbsolute

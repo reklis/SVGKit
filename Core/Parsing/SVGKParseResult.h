@@ -3,6 +3,7 @@
  */
 #import <Foundation/Foundation.h>
 
+@class SVGSVGElement, SVGDocument;
 #import "SVGSVGElement.h"
 #import "SVGDocument.h"
 

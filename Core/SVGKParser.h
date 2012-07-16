@@ -23,9 +23,9 @@
 #import <Foundation/Foundation.h>
 
 #import "SVGKSource.h"
+#import "SVGKParserExtension.h"
 #import "SVGKParseResult.h"
 
-#import "SVGKParserExtension.h"
 #import "SVGKParserStackItem.h"
 #import "SVGElement.h"
 

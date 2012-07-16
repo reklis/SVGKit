@@ -12,6 +12,8 @@
 #import "SVGKPattern.h"
 #import "CAShapeLayerWithHitTest.h"
 
+#import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
+
 @implementation SVGShapeElement
 
 #define IDENTIFIER_LEN 256
@@ -46,8 +48,9 @@
 	_fillType = SVGFillTypeSolid;
 }
 
-- (NSError*)parseAttributes:(NSDictionary *)attributes {
-	[super parseAttributes:attributes];
+- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult
+{
+	[super parseAttributes:attributes parseResult:parseResult];
 	
 	id value = nil;
 	
@@ -96,8 +99,6 @@
 	if ((value = [attributes objectForKey:@"fill-opacity"])) {
 		_fillColor.a = (uint8_t) ([value floatValue] * 0xFF);
 	}
-	
-	return nil;
 }
 
 - (void)setPathByCopyingPathFromLocalSpace:(CGPathRef)aPath {
@@ -117,7 +118,7 @@
 		[_shapeLayer setValue:self.identifier forKey:kSVGElementIdentifier];
 	_shapeLayer.opacity = _opacity;
 	
-	CGAffineTransform svgEffectiveTransform = [self transformAbsolute];
+	CGAffineTransform svgEffectiveTransform = [((SVGElement*)self) transformAbsolute];
 	
 #if OUTLINE_SHAPES
 	
