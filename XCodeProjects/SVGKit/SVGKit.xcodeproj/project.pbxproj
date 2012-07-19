@@ -18,6 +18,8 @@
 		66213551148AF80B006881E1 /* CALayerWithChildHitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 66213547148AF80A006881E1 /* CALayerWithChildHitTest.m */; };
 		66213553148AF80B006881E1 /* CAShapeLayerWithHitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 66213549148AF80A006881E1 /* CAShapeLayerWithHitTest.m */; };
 		66213557148AF80B006881E1 /* SVGPathView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621354D148AF80A006881E1 /* SVGPathView.m */; };
+		6643AE2815B8503500E5F2AB /* SVGKParserStackItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CBCA4D15AF27B000C36B57 /* SVGKParserStackItem.m */; };
+		6643AE2A15B8506400E5F2AB /* SVGPathView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621354D148AF80A006881E1 /* SVGPathView.m */; };
 		6648DF7115B3846B00B929E2 /* SVGLayeredElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 6648DF7015B3846A00B929E2 /* SVGLayeredElement.h */; };
 		6648DF7215B3846B00B929E2 /* SVGLayeredElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 6648DF7015B3846A00B929E2 /* SVGLayeredElement.h */; };
 		665D4E9C15B47FFA00B8DEB2 /* SVGElement_ForParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 665D4E9B15B47FFA00B8DEB2 /* SVGElement_ForParser.h */; };
@@ -971,6 +973,7 @@
 				66CBCA6915B05D2300C36B57 /* SVGMatrix.m in Sources */,
 				66CBCA7B15B35A9200C36B57 /* SVGTransform.m in Sources */,
 				66CBCA8215B3642300C36B57 /* SVGAngle.m in Sources */,
+				6643AE2815B8503500E5F2AB /* SVGKParserStackItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1030,6 +1033,7 @@
 				66CBCA6815B05D2300C36B57 /* SVGMatrix.m in Sources */,
 				66CBCA7A15B35A9200C36B57 /* SVGTransform.m in Sources */,
 				66CBCA8115B3642300C36B57 /* SVGAngle.m in Sources */,
+				6643AE2A15B8506400E5F2AB /* SVGPathView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
