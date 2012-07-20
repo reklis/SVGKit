@@ -182,6 +182,7 @@
 		667141B3159C7E1C00C5A424 /* SVGKParserPatternsAndGradients.m in Sources */ = {isa = PBXBuildFile; fileRef = 667141B1159C7E1C00C5A424 /* SVGKParserPatternsAndGradients.m */; };
 		667141EB159C7F4F00C5A424 /* SVGKParserPatternsAndGradients.h in Headers */ = {isa = PBXBuildFile; fileRef = 667141B0159C7E1C00C5A424 /* SVGKParserPatternsAndGradients.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		667141EE159C801500C5A424 /* SVGKParserPatternsAndGradients.m in Sources */ = {isa = PBXBuildFile; fileRef = 667141B1159C7E1C00C5A424 /* SVGKParserPatternsAndGradients.m */; };
+		667A2C5715B9DFF000F4464E /* SVGKParserStackItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 66CBCA4C15AF27AF00C36B57 /* SVGKParserStackItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6684CD451566CF1300A46247 /* SVGKImage+SVGPathView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6684CD431566CF1300A46247 /* SVGKImage+SVGPathView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6684CD471566CF1300A46247 /* SVGKImage+SVGPathView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6684CD441566CF1300A46247 /* SVGKImage+SVGPathView.m */; };
 		6684CD481566CF1300A46247 /* SVGKImage+SVGPathView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6684CD441566CF1300A46247 /* SVGKImage+SVGPathView.m */; };
@@ -721,6 +722,7 @@
 				666142EA156C2E6A000F3A27 /* SVGKParserExtension.h in Headers */,
 				666142EC156C2E6A000F3A27 /* SVGKParserSVG.h in Headers */,
 				666142F0156C2E6A000F3A27 /* SVGKPointsAndPathsParser.h in Headers */,
+				667A2C5715B9DFF000F4464E /* SVGKParserStackItem.h in Headers */,
 				666142FD156C2F14000F3A27 /* Document.h in Headers */,
 				66614303156C3A0B000F3A27 /* Node.h in Headers */,
 				66614309156C3B95000F3A27 /* NodeList.h in Headers */,
