@@ -124,4 +124,12 @@
 	return oldNode;
 }
 
+#pragma mark - ADDITIONAL to SVG Spec: useful debug / output / description methods
+
+-(NSString *)description
+{
+	return [NSString stringWithFormat:@"NamedNodeMap: NSDictionary(%@)", self.internalDictionary];
+}
+
+
 @end

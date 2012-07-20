@@ -119,24 +119,6 @@
 	return a;
 }
 
-
-- (id)init {
-    self = [super initType:SKNodeType_ELEMENT_NODE];
-    if (self) {
-		[self loadDefaults];
-		self.transformRelative = CGAffineTransformIdentity;
-    }
-    return self;
-}
-
-- (id)initWithName:(NSString *)name {
-	self = [super initElement:name];
-	if (self) {
-		self.transformRelative = CGAffineTransformIdentity;
-	}
-	return self;
-}
-
 - (void)dealloc {
 	[_stringValue release];
 	[_identifier release];
@@ -337,8 +319,31 @@
 }
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"<%@ %p | id=%@ | localName=%@ | stringValue=%@ | children=%d>", 
-			[self class], self, _identifier, self.localName, _stringValue, self.childNodes.length];
+	return [NSString stringWithFormat:@"<%@ %p | id=%@ | prefix:localName=%@:%@ | tagName=%@ | stringValue=%@ | children=%d>", 
+			[self class], self, _identifier, self.prefix, self.localName, self.tagName, _stringValue, self.childNodes.length];
+}
+
+#pragma mark - Objective-C init methods (not in SVG Spec - the official spec has no explicit way to create nodes, which is clearly a bug in the Spec. Until they fix the spec, we have to do something or else SVG would be unusable)
+
+- (id)initWithLocalName:(NSString*) n
+{
+	self = [super initWithLocalName:n];
+	if( self )
+	{
+		[self loadDefaults];
+		self.transformRelative = CGAffineTransformIdentity;
+	}
+	return self;
+}
+- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI
+{
+	self = [super initWithQualifiedName:n inNameSpaceURI:nsURI];
+	if( self )
+	{
+		[self loadDefaults];
+		self.transformRelative = CGAffineTransformIdentity;
+	}
+	return self;
 }
 
 @end

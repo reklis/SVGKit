@@ -1,11 +1,12 @@
 #import "Document.h"
+#import "Document+Mutable.h"
 
-/*
- @property(nonatomic,retain,readonly) DocumentType     doctype;
- @property(nonatomic,retain,readonly) DOMImplementation  implementation;
- @property(nonatomic,retain,readonly) Element          documentElement;
+#import "NodeList+Mutable.h" // needed for access to underlying array, because SVG doesnt specify how lists are made mutable
 
-*/
+@interface Document()
+/*! private method used in implementation of the getElementsByTagName method */
+-(void) privateGetElementsByTagName:(NSString*) tagName childrenOfElement:(Node*) parent addToList:(NodeList*) accumulator;
+@end
 
 @implementation Document
 
@@ -16,8 +17,11 @@
 
 -(Element*) createElement:(NSString*) tagName
 {
-	NSAssert( FALSE, @"This is not implemented, but is required by the spec to: Creates an element of the type specified. In addition, if there are known attributes with default values, Attr nodes representing them are automatically created and attached to the element." );
-	return nil;
+	Element* newElement = [[Element alloc] initElement:tagName];
+	
+	NSLog( @"[%@] WARNING: SVG Spec, missing feature: if there are known attributes with default values, Attr nodes representing them SHOULD BE automatically created and attached to the element.", [self class] );
+	
+	return newElement;
 }
 
 -(DocumentFragment*) createDocumentFragment
@@ -58,8 +62,29 @@
 
 -(NodeList*) getElementsByTagName:(NSString*) data
 {
-	NSAssert( FALSE, @"Not implemented. According to spec: Returns a NodeList  of all the Elements  with a given tag name in the order in which they are encountered in a preorder traversal of the Document tree." );
-	return nil;
+	NodeList* accumulator = [[NodeList alloc] init];
+	[self privateGetElementsByTagName:data childrenOfElement:self.documentElement addToList:accumulator];
+	
+	return accumulator;
+}
+
+-(void) privateGetElementsByTagName:(NSString*) tagName childrenOfElement:(Node*) parent addToList:(NodeList*) accumulator
+{
+	/** According to spec, this is only valid for ELEMENT nodes */
+	if( [parent isKindOfClass:[Element class]] )
+	{
+		/** According to spec, "tag name" for an Element is the value of its .nodeName property; that means SOMETIMES its a qualified name! */
+		if( [tagName isEqualToString:@"*"]
+		|| [parent.nodeName isEqualToString:tagName] )
+		{
+			[accumulator.internalArray addObject:parent];
+		}
+	}
+	
+	for( Node* childNode in parent.childNodes )
+	{
+		[self privateGetElementsByTagName:tagName childrenOfElement:childNode addToList:accumulator];
+	}
 }
 
 // Introduced in DOM Level 2:
@@ -72,8 +97,11 @@
 // Introduced in DOM Level 2:
 -(Element*) createElementNS:(NSString*) namespaceURI qualifiedName:(NSString*) qualifiedName
 {
-	NSAssert( FALSE, @"This should be implemented to share code with createAttributeNS: method below" );
-	return nil;
+	Element* newElement = [[Element alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:[NSURL URLWithString:namespaceURI]];
+	
+	NSLog( @"[%@] WARNING: SVG Spec, missing feature: if there are known attributes with default values, Attr nodes representing them SHOULD BE automatically created and attached to the element.", [self class] );
+	
+	return newElement;
 }
 
 // Introduced in DOM Level 2:

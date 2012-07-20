@@ -49,15 +49,6 @@ CGImageRef SVGImageCGImage(SVGImageRef img)
     [super dealloc];
 }
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        // Initialization code here.
-    }
-    
-    return self;
-}
-
 - (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
 	id value = nil;
 

@@ -38,7 +38,7 @@
  */
 -(NSArray*) supportedTags;
 
-- (NSObject*)handleStartElement:(NSString *)name document:(SVGKSource*) document xmlns:(NSString*) namespaceURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
+- (NSObject*)handleStartElement:(NSString *)name document:(SVGKSource*) document namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
 -(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
 -(void) parseContent:(NSMutableString*) content forItem:(NSObject*) item;
 -(BOOL) createdItemShouldStoreContent:(NSObject*) item;

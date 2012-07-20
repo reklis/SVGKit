@@ -91,4 +91,9 @@
 // Introduced in DOM Level 2:
 -(BOOL) hasAttributeNS:(NSString*) namespaceURI localName:(NSString*) localName;
 
+#pragma mark - Objective-C init methods (not in SVG Spec - you're supposed to use SVGDocument's createXXX methods instead)
+
+- (id)initWithLocalName:(NSString*) n;
+- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI;
+	
 @end

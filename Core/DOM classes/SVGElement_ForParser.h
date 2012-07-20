@@ -7,8 +7,6 @@
 
 + (BOOL)shouldStoreContent; // to optimize parser, default is NO
 
-- (id)initWithName:(NSString *)name;
-
 - (void)loadDefaults; // should be overriden to set element defaults
 
 /*! Overridden by sub-classes.  Be sure to call [super parseAttributes:attributes];

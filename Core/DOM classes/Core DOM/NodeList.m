@@ -36,4 +36,11 @@
 	return [self.internalArray countByEnumeratingWithState:state objects:buffer count:len];
 }
 
+#pragma mark - ADDITIONAL to SVG Spec: useful debug / output / description methods
+
+-(NSString *)description
+{
+	return [NSString stringWithFormat:@"NodeList: array(%@)", self.internalArray];
+}
+
 @end

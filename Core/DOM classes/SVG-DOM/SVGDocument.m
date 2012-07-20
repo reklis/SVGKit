@@ -6,16 +6,12 @@
  http://www.w3.org/TR/SVG11/struct.html#InterfaceSVGDocument
  */
 
+#import "Document+Mutable.h"
+
 #import "SVGDocument.h"
 #import "SVGDocument_Mutable.h"
 
 #import "SKBasicDataTypes.h"
-
-#import "NodeList+Mutable.h" // needed for access to underlying array, because SVG doesnt support fast enumeration natively
-
-@interface SVGDocument()
--(void) privateGetElementsByTagName:(NSString*) tagName childrenOfElement:(SVGElement*) parent addToList:(NodeList*) accumulator;
-@end
 
 @implementation SVGDocument
 
@@ -24,25 +20,34 @@
 @synthesize referrer;
 @synthesize domain;
 @synthesize URL;
-@synthesize rootElement;
+@synthesize rootElement=_rootElement;
 
--(NodeList*) getElementsByTagName:(NSString*) data
+-(void)setRootElement:(SVGSVGElement *)rootElement
 {
-	NodeList* accumulator = [[NodeList alloc] init];
-	[self privateGetElementsByTagName:data childrenOfElement:self.rootElement addToList:accumulator];
+	[_rootElement release];
+	_rootElement = rootElement;
+	[_rootElement retain];
 	
-	return accumulator;
+	/*! SVG spec has two variables with same name, because DOM was written to support
+	 weak programming languages that don't provide full OOP polymorphism.
+	 
+	 So, we'd better keep the two variables in sync!
+	 */
+	super.documentElement = rootElement;
 }
 
--(void) privateGetElementsByTagName:(NSString*) tagName childrenOfElement:(SVGElement*) parent addToList:(NodeList*) accumulator
+-(void)setDocumentElement:(Element *)newDocumentElement
 {
-	if( [parent.localName isEqualToString:tagName] )
-		[accumulator.internalArray addObject:parent];
+	NSAssert( [newDocumentElement isKindOfClass:[SVGSVGElement class]], @"Cannot set the documentElement property on an SVG doc unless it's of type SVGSVGDocument" );
 	
-	for( SVGElement* childElement in parent.childNodes.internalArray )
-	{
-		[self privateGetElementsByTagName:tagName childrenOfElement:childElement addToList:accumulator];
-	}
+	super.documentElement = newDocumentElement;
+	
+	/*! SVG spec has two variables with same name, because DOM was written to support
+	 weak programming languages that don't provide full OOP polymorphism.
+	 
+	 So, we'd better keep the two variables in sync!
+	 */
+	self.rootElement = (SVGSVGElement*) self.documentElement;
 }
 
 @end

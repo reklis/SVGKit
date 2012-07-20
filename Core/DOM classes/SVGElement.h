@@ -47,5 +47,10 @@
 
 - (void)parseContent:(NSString *)content;
 
+#pragma mark - Objective-C init methods (not in SVG Spec - the official spec has no explicit way to create nodes, which is clearly a bug in the Spec. Until they fix the spec, we have to do something or else SVG would be unusable)
+
+- (id)initWithLocalName:(NSString*) n;
+- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI;
+
 
 @end

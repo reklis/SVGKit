@@ -63,9 +63,9 @@ static NSDictionary *elementMap;
 	return [NSMutableArray arrayWithArray:[elementMap allKeys]];
 }
 
-- (NSObject*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem 
+- (NSObject*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem 
 {
-	if( [[self supportedNamespaces] containsObject:prefix] )
+	if( [[self supportedNamespaces] containsObject:XMLNSURI] )
 	{
 		Class elementClass = [elementMap objectForKey:name];
 		
@@ -81,7 +81,20 @@ static NSDictionary *elementMap;
 			[attributes addEntriesFromDictionary:[SVGKParser NSDictionaryFromCSSAttributes:style]];
 		}
 		
-		SVGElement *element = [[[elementClass alloc] initWithName:name] autorelease];
+		/**
+		 NB: following the SVG Spec, it's critical that we ONLY use the DOM methods for creating
+		 basic 'Element' nodes.
+		 
+		 Our SVGElement root class has an implementation of init that delegates to the same
+		 private methods that the DOM methods use, so it's safe...
+		 
+		 FIXME: ...but in reality we ought to be using the DOMDocument createElement/NS methods, although "good luck" trying to find a DOMDocument if your SVG is embedded inside a larger XML document :(
+		 */
+		
+		
+		NSString* qualifiedName = (prefix == nil) ? name : [NSString stringWithFormat:@"%@:%@", prefix, name];
+		/** NB: must supply a NON-qualified name if we have no specific prefix here ! */
+		SVGElement *element = [[[elementClass alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:XMLNSURI ] autorelease];
 		[element parseAttributes:attributes parseResult:parseResult];
 		
 		/** special case: <svg:svg ... version="XXX"> */

@@ -135,7 +135,7 @@ typedef enum SKNodeType
 // Introduced in DOM Level 2:
 @property(nonatomic) BOOL hasAttributes;
 
-#pragma mark - ObjectiveC init methods
+#pragma mark - Objective-C init methods (not in SVG Spec - you're supposed to use SVGDocument's createXXX methods instead)
 /** Generic init method - used by all the other methods (designated initializer, effectively) */
 - (id)initType:(SKNodeType) nt;
 
@@ -145,7 +145,10 @@ typedef enum SKNodeType
 - (id)initDocument:(NSString*) n;
 - (id)initDocumentFragment:(NSString*) n;
 - (id)initDocumentType:(NSString*) n;
+/*! DOM level 1 (leaves various things set to nil) */
 - (id)initElement:(NSString*) n;
+/*! DOM level 2 (ALWAYS use this if possible: otherwise lots of things left at nil) */
+- (id)initElement:(NSString*) n inNameSpaceURI:(NSString*) nsURI;
 - (id)initEntity:(NSString*) n;
 - (id)initEntityReference:(NSString*) n;
 - (id)initNotation:(NSString*) n;

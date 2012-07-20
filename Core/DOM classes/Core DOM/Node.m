@@ -31,6 +31,8 @@
 
 @synthesize hasAttributes, hasChildNodes;
 
+@synthesize localName;
+
 - (id)initType:(SKNodeType) nt
 {
     self = [super init];
@@ -115,6 +117,19 @@
     }
     return self;
 }
+- (id)initElement:(NSString*) n inNameSpaceURI:(NSString*) nsURI {
+    self = [self initType:SKNodeType_ELEMENT_NODE];
+    if (self) {
+        self.nodeName = n;
+		
+		NSArray* nameSpaceParts = [n componentsSeparatedByString:@":"];
+		self.localName = [nameSpaceParts lastObject];
+		if( [nameSpaceParts count] > 1 )
+			self.prefix = [nameSpaceParts objectAtIndex:0];
+    }
+    return self;
+}
+
 - (id)initEntity:(NSString*) n {
     self = [self initType:SKNodeType_ENTITY_NODE];
     if (self) {
@@ -252,15 +267,59 @@
 @synthesize prefix;
 
 // Introduced in DOM Level 2:
-@synthesize localName;
-
-// Introduced in DOM Level 2:
 -(BOOL)hasAttributes
 {
 	if( self.attributes == nil )
 		return FALSE;
 	
 	return (self.attributes.length > 0 );
+}
+
+#pragma mark - ADDITIONAL to SVG Spec: useful debug / output / description methods
+
+-(NSString *)description
+{
+	NSString* nodeTypeName;
+	switch( self.nodeType )
+	{
+		case SKNodeType_ELEMENT_NODE:
+			nodeTypeName = @"ELEMENT";
+			break;
+		case SKNodeType_TEXT_NODE:
+			nodeTypeName = @"TEXT";
+			break;
+		case SKNodeType_ENTITY_NODE:
+			nodeTypeName = @"ENTITY";
+			break;
+		case SKNodeType_COMMENT_NODE:
+			nodeTypeName = @"COMMENT";
+			break;
+		case SKNodeType_DOCUMENT_NODE:
+			nodeTypeName = @"DOCUMENT";
+			break;
+		case SKNodeType_NOTATION_NODE:
+			nodeTypeName = @"NOTATION";
+			break;
+		case SKNodeType_ATTRIBUTE_NODE:
+			nodeTypeName = @"ATTRIBUTE";
+			break;
+		case SKNodeType_CDATA_SECTION_NODE:
+			nodeTypeName = @"CDATA";
+			break;
+		case SKNodeType_DOCUMENT_TYPE_NODE:
+			nodeTypeName = @"DOC TYPE";
+			break;
+		case SKNodeType_ENTITY_REFERENCE_NODE:
+			nodeTypeName = @"ENTITY REF";
+			break;
+		case SKNodeType_DOCUMENT_FRAGMENT_NODE:
+			nodeTypeName = @"DOC FRAGMENT";
+			break;
+		case SKNodeType_PROCESSING_INSTRUCTION_NODE:
+			nodeTypeName = @"PROCESSING INSTRUCTION";
+			break;
+	}
+	return [NSString stringWithFormat:@"Node: %@ (%@) @@%ld attributes + %ld x children", self.nodeName, nodeTypeName, self.attributes.length, self.childNodes.length];
 }
 
 @end

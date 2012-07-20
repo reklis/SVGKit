@@ -32,16 +32,42 @@ To use this, you must:
   2. SVGSVGElement* rootOfTree = im.DOMTree; // NB: this is a partial implementation of the official "SVG DOM" standard. See the header file for this class and its superclass to see what you can do with it
 
 
-Usage - Advanced (iPHone/iPad)
+Advanced Features (this branch/fork only!) (iPhone/iPad)
+=====
+
+FEATURE 1: load SVG from web, or from disk
 -----
-
-The big change with this branch, apart from requiring fewer lines of code, is that you can now do easy loading of different files. e.g.
-
   - [SVGKParser parse: (SVGKSource*)]; // anything that's an "SVGKSource" can be parsed
 
   - [SVGKSource sourceWithFile:@"monkey.svg"]; // create a source from disk...
   - [SVGKSource sourceWithURL:@"http://upload.wikimedia.org/wikipedia/commons/f/fd/Ghostscript_Tiger.svg"]; // create a source from disk...
 
+
+FEATURE 2: search an SVG file for particular tags / nodes / elements:
+-----
+  - Find all <svg:g> and <g> tags: NodeList* gElements = [svgImage.DOMDocument getElementsByTagName:@"g"];
+  - Find ALL tags (from root of SVG down): NodeList* allElements = [svgImage.DOMDocument getElementsByTagName:@"*"];
+
+FEATURE 3: resize your SVG file to any size:
+-----
+  - COMPLICATED: c.f. this thread: https://github.com/adamgit/SVGKit/issues/7
+
+FEATURE 4: automatic scaling of your SVG to fit in memory
+-----
+  - AUTOMATIC: SVG files are scaled to fit the co-ordinate system as required/intended by spec
+  - ...many files that ran out of memory in previous versions of SVGKit now render OK
+
+FEATURE 5: Access to the DOM Document Object Model
+-----
+  - PARTIALLY IMPLEMENTED: SVGKImage.DOMDocument is a true DOMDocument, but many of the methods aren't fully implemented
+
+FEATURE 6: Retrieve any part of your SVG document positioned correctly in space
+-----
+  - [((SVGKImage*) image).newCopyPositionedAbsoluteLayerWithIdentifier:@"id of the SVG tag / node /element"];
+  - NB: this MUST return a copy, because it's moving your layer out of the tree and into a fresh CALayer of its own
+
+FEATURE X: detailed information on whether and WHY parsing failed:
+-----
   - (SVGKParser*).currentParseRun.warnings; // array of NSError objects, each one a "WARNING" from the parser
   - (SVGKParser*).currentParseRun.errorsFatal; // array of NSError objects, each one a "FATAL ERROR" from the parser - if your SVG didn't render at all, this is why!
   - (SVGKParser*).currentParseRun.errorsRecoverable; // array of NSError objects, each one a "RECOVERABLE ERROR" from the parser - if your SVG didn't render correctly, this is why! (although you probably still got to see something)

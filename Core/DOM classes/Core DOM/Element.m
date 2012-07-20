@@ -10,14 +10,21 @@
 
 @synthesize tagName;
 
-- (id)initType:(SKNodeType) nt
-{
-    self = [super initType:nt];
+- (id)initWithLocalName:(NSString*) n {
+    self = [super initElement:n];
     if (self) {
-		
+        self.tagName = n;
     }
     return self;
 }
+- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI {
+    self = [super initElement:n inNameSpaceURI:nsURI];
+    if (self) {
+        self.tagName = n;
+    }
+    return self;
+}
+
 
 -(NSString*) getAttribute:(NSString*) name
 {

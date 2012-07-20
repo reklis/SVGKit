@@ -8,8 +8,6 @@
 
 #import "SVGKParserSVG.h"
 
-#import "NodeList+Mutable.h" // needed for access to underlying array, because SVG doesnt support fast enumeration natively
-
 @interface SVGKImage ()
 
 @property (nonatomic, readwrite) SVGLength svgWidth;
@@ -286,7 +284,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 		return layer;
 	}
 	
-	for (SVGElement *child in element.childNodes.internalArray )
+	for (SVGElement *child in element.childNodes )
 	{
 		if ([child conformsToProtocol:@protocol(SVGLayeredElement)]) {
 			CALayer *sublayer = [self newLayerWithElement:(id<SVGLayeredElement>)child preTransform:preTransform];

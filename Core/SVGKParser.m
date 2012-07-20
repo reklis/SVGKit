@@ -18,13 +18,14 @@
 @interface SVGKParser()
 @property(nonatomic,retain, readwrite) SVGKSource* source;
 @property(nonatomic,retain, readwrite) SVGKParseResult* currentParseRun;
+@property(nonatomic,retain) NSString* defaultXMLNamespaceForThisParseRun;
 @end
 
 @implementation SVGKParser
 
 @synthesize source;
 @synthesize currentParseRun;
-
+@synthesize defaultXMLNamespaceForThisParseRun;
 
 @synthesize parserExtensions;
 
@@ -166,16 +167,16 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
  */
 
 
-- (void)handleStartElement:(NSString *)name xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes {
+- (void)handleStartElement:(NSString *)name namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes {
 	
 		for( NSObject<SVGKParserExtension>* subParser in self.parserExtensions )
 		{
-			if( [[subParser supportedNamespaces] containsObject:prefix]
+			if( [[subParser supportedNamespaces] containsObject:XMLNSURI]
 			&& [[subParser supportedTags] containsObject:name] )
 			{
 				SVGKParserStackItem* parentStackItem = [_elementStack lastObject];
 				
-				NSObject* subParserResult = [subParser handleStartElement:name document:source xmlns:prefix attributes:attributes parseResult:self.currentParseRun parentStackItem:parentStackItem];
+				NSObject* subParserResult = [subParser handleStartElement:name document:source namePrefix:prefix namespaceURI:XMLNSURI attributes:attributes parseResult:self.currentParseRun parentStackItem:parentStackItem];
 				
 					NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([attributes objectForKey:@"id"] != nil?[attributes objectForKey:@"id"]:@"(none)"), subParser );
 					
@@ -211,23 +212,38 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	
 	SVGKParser *self = (SVGKParser *) ctx;
 	
-	NSString *name = NSStringFromLibxmlString(localname);
-	NSMutableDictionary *attrs = NSDictionaryFromLibxmlAttributes(attributes, nb_attributes);
+	NSString *stringLocalName = NSStringFromLibxmlString(localname);
+	NSString *stringPrefix = NSStringFromLibxmlString(prefix);
+	NSMutableDictionary *attrs = NSDictionaryFromLibxmlAttributes(attributes, nb_attributes);	
+	NSString *stringURI = NSStringFromLibxmlString(URI);
 	
-	/**
-	 Debugging:
-	//NSString *url = NSStringFromLibxmlString(URI);
-	NSString *prefix2 = nil;
-	if( prefix != NULL )
-		prefix2 = NSStringFromLibxmlString(prefix);
-	 */
+	/** Set a default Namespace for rest of this document if one is included in the attributes */
+	if( self.defaultXMLNamespaceForThisParseRun == nil )
+	{
+		NSString* newDefaultNamespace = [attrs objectForKey:@"xmlns"];
+		if( newDefaultNamespace != nil )
+		{
+			self.defaultXMLNamespaceForThisParseRun = newDefaultNamespace;
+		}
+	}
 	
-	NSString *objcURIString = nil;
-	if( URI != NULL )
-		objcURIString = NSStringFromLibxmlString(URI);
+	if( stringURI == nil
+	&& self.defaultXMLNamespaceForThisParseRun != nil )
+	{
+		/** Apply the default XML NS to this tag as if it had been typed in.
+		 
+		 e.g. if somewhere in this doc the author put:
+		 
+		 <svg xmlns="blah">
+		 
+		 ...then any time we find a tag that HAS NO EXPLICIT NAMESPACE, we act as if it had that one.
+		 */
+		
+		stringURI = self.defaultXMLNamespaceForThisParseRun;
+	}
 	
 #if DEBUG_VERBOSE_LOG_EVERY_TAG
-	NSLog(@"[%@] DEBUG_VERBOSE: <%@%@> (namespace URL:%@), attributes: %i", [self class], (prefix2==nil)?@"":[NSString stringWithFormat:@"%@:",prefix2], name, (URI==NULL)?@"n/a":objcURIString, nb_attributes );
+	NSLog(@"[%@] DEBUG_VERBOSE: <%@%@> (namespace URL:%@), attributes: %i", [self class], [NSString stringWithFormat:@"%@:",stringPrefix], name, stringURI, nb_attributes );
 #endif
 	
 #if DEBUG_VERBOSE_LOG_EVERY_TAG
@@ -256,7 +272,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	}
 #endif
 	
-	[self handleStartElement:name xmlns:objcURIString attributes:attrs];
+	[self handleStartElement:stringLocalName namePrefix:stringPrefix namespaceURI:stringURI attributes:attrs];
 }
 
 - (void)handleEndElement:(NSString *)name {
@@ -433,7 +449,10 @@ static xmlSAXHandler SAXHandler = {
 #pragma mark Utility
 
 static NSString *NSStringFromLibxmlString (const xmlChar *string) {
-	return [NSString stringWithUTF8String:(const char *) string];
+	if( string == NULL ) // Yes, Apple requires we do this check!
+		return nil;
+	else
+		return [NSString stringWithUTF8String:(const char *) string];
 }
 
 static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **attrs, int attr_ct) {

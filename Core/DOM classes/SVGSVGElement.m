@@ -6,7 +6,6 @@
 
 #import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
 
-#import "NodeList+Mutable.h" // needed for access to underlying array, because SVG doesnt support fast enumeration natively
 
 @interface SVGSVGElement()
 @property (nonatomic, readwrite) CGRect viewBoxFrame;
@@ -110,7 +109,7 @@
 }
 
 - (SVGElement *)findFirstElementOfClass:(Class)class {
-	for (SVGElement *element in self.childNodes.internalArray)
+	for (SVGElement *element in self.childNodes)
 	{
 		if ([element isKindOfClass:class])
 			return element;
@@ -161,6 +160,5 @@
 		currentLayer.frame = frame;
 	}
 }
-
 
 @end

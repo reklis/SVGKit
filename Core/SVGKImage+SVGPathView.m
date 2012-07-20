@@ -1,7 +1,5 @@
 #import "SVGKImage+SVGPathView.h"
 
-#import "NodeList+Mutable.h" // needed for access to underlying array, because SVG doesnt support fast enumeration natively
-
 @implementation SVGKImage (SVGPathView)
 
 #if NS_BLOCKS_AVAILABLE
@@ -13,7 +11,7 @@
 		return;
 	}
 	
-	for (SVGElement *child in element.childNodes.internalArray)
+	for (SVGElement *child in element.childNodes)
 	{
 		if ([child conformsToProtocol:@protocol(SVGLayeredElement)]) {
 			SVGElement<SVGLayeredElement>* layeredElement = (SVGElement<SVGLayeredElement>*)child;
