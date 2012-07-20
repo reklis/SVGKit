@@ -29,4 +29,11 @@
 	return [self.internalArray count];
 }
 
+#pragma mark - ADDITIONAL to SVG Spec: Objective-C support for fast-iteration ("for * in ..." syntax)
+
+-(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id [])buffer count:(NSUInteger)len
+{
+	return [self.internalArray countByEnumeratingWithState:state objects:buffer count:len];
+}
+
 @end
