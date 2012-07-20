@@ -14,6 +14,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class SVGKParserStackItem;
 #import "SVGKParserStackItem.h"
 #import "SVGKSource.h"
 
