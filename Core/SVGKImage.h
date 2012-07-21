@@ -13,6 +13,13 @@
  
  We use the exact same method names as UIImage, and try to be literally as identical as possible.
  
+ Creating an SVGKImage:
+ 
+  - PREFERRED: use the "imageNamed:" method
+  - CUSTOM SVGKSource class: use the "initWithSource:" method
+  - CUSTOM PARSING: Parse using SVGKParser, then send the parse-result to "initWithParsedSVG:"
+ 
+ 
  Data:
   - UIImage: not supported yet: will be a cached UIImage that is re-generated on demand. Will enable us to implement an SVGKImageView
  that works as a drop-in replacement for UIImageView
@@ -113,8 +120,14 @@
 
 #pragma mark - core methods for interacting with an SVG image usefully (not from UIImage)
 
-/*! This is used internally by the main UIImage cloned methods anyway, so we might as well expose it */
+/*! If you want to provide a custom SVGKSource */
 - (id)initWithSource:(SVGKSource *)source;
+/*! If you already have a parsed SVG, and just want to upgrade it to an SVGKImage
+ 
+ NB: this is frequently used if you have to add custom SVGKParserExtensions to parse an
+ SVG which contains custom tags
+ */
+- (id)initWithParsedSVG:(SVGKParseResult *)parseResult;
 
 
 /*! Creates a new instance each time you call it. This should ONLY be used if you specifically need to duplicate

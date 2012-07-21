@@ -70,14 +70,13 @@
 	return [[[[self class] alloc] initWithContentsOfFile:aPath] autorelease];
 }
 
-- (id)initWithSource:(SVGKSource *)newSource {
+- (id)initWithParsedSVG:(SVGKParseResult *)parseResult {
 	self = [super init];
 	if (self) {
 		self.svgWidth = SVGLengthZero;
 		self.svgHeight = SVGLengthZero;
-		self.source = newSource;
 		
-		self.parseErrorsAndWarnings = [SVGKParser parseSourceUsingDefaultSVGKParser:self.source];
+		self.parseErrorsAndWarnings = parseResult;
 		
 		if( parseErrorsAndWarnings.parsedDocument != nil )
 		{
@@ -100,6 +99,14 @@
 			self.svgWidth = self.DOMTree.width;
 			self.svgHeight = self.DOMTree.height;
 		}
+	}
+	return self;
+}
+
+- (id)initWithSource:(SVGKSource *)newSource {
+	self = [self initWithParsedSVG:[SVGKParser parseSourceUsingDefaultSVGKParser:self.source]];
+	if (self) {
+		self.source = newSource;
 	}
 	return self;
 }
