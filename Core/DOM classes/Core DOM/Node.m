@@ -318,6 +318,9 @@
 		case SKNodeType_PROCESSING_INSTRUCTION_NODE:
 			nodeTypeName = @"PROCESSING INSTRUCTION";
 			break;
+			
+		default:
+			nodeTypeName = @"N/A (DATA IS MISSING FROM NODE INSTANCE)";
 	}
 	return [NSString stringWithFormat:@"Node: %@ (%@) @@%ld attributes + %ld x children", self.nodeName, nodeTypeName, self.attributes.length, self.childNodes.length];
 }

@@ -1,7 +1,22 @@
 /**
  SVGKParser.h
  
- The main parser for SVGKit. All the magic starts here
+ The main parser for SVGKit. All the magic starts here. Either use:
+ 
+    A: +parseSourceUsingDefaultSVGKParser
+ 
+ ...or use:
+ 
+    B: 1. -initWithSource:
+    B: 2. -addDefaultSVGParserExtensions
+	B: ...
+    B: 3. (as many times as you need) -addParserExtension:
+ 	B: ...
+    B: 4. -parseSynchronously
+ 
+ Note that "A" above does ALL the steps in B for you. If you need a custom set of Parser Extensions, you'll need to
+  do all the steps in B yourself
+ 
  
  PARSING
  ---
@@ -64,6 +79,10 @@
 
 - (id)initWithSource:(SVGKSource *)doc;
 
+/*! Adds the default SVG-tag parsers (everything in the SVG namespace); you should always use these, unless you
+ are massively customizing SVGKit's parser! */
+-(void) addDefaultSVGParserExtensions;
+/*! NB: you ALMOST ALWAYS want to first call "addDefaultSVGParserExtensions" */
 - (void) addParserExtension:(NSObject<SVGKParserExtension>*) extension;
 
 

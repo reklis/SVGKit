@@ -42,12 +42,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 + (SVGKParseResult*) parseSourceUsingDefaultSVGKParser:(SVGKSource*) source;
 {
 	SVGKParser *parser = [[[SVGKParser alloc] initWithSource:source] autorelease];
-	
-	SVGKParserSVG *subParserSVG = [[[SVGKParserSVG alloc] init] autorelease];
-	SVGKParserPatternsAndGradients *subParserGradients = [[[SVGKParserPatternsAndGradients alloc] init] autorelease];
-	
-	[parser.parserExtensions addObject:subParserSVG];
-	[parser.parserExtensions addObject:subParserGradients];
+	[parser addDefaultSVGParserExtensions];
 	
 	SVGKParseResult* result = [parser parseSynchronously];
 	
@@ -77,6 +72,15 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	[_elementStack release];
 	self.parserExtensions = nil;
 	[super dealloc];
+}
+
+-(void) addDefaultSVGParserExtensions
+{
+	SVGKParserSVG *subParserSVG = [[[SVGKParserSVG alloc] init] autorelease];
+	SVGKParserPatternsAndGradients *subParserGradients = [[[SVGKParserPatternsAndGradients alloc] init] autorelease];
+	
+	[self addParserExtension:subParserSVG];
+	[self addParserExtension:subParserGradients];
 }
 
 - (void) addParserExtension:(NSObject<SVGKParserExtension>*) extension
