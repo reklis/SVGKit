@@ -3,7 +3,9 @@
 @protocol SVGKParserExtension;
 #import "SVGKParserExtension.h"
 
+#import "Node.h"
+
 @interface SVGKParserStackItem : NSObject
 @property(nonatomic,retain) NSObject<SVGKParserExtension>* parserForThisItem;
-@property(nonatomic,retain) NSObject* item;
+@property(nonatomic,retain) Node* item;
 @end

@@ -63,7 +63,7 @@ static NSDictionary *elementMap;
 	return [NSMutableArray arrayWithArray:[elementMap allKeys]];
 }
 
-- (NSObject*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem 
+- (Node*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem 
 {
 	if( [[self supportedNamespaces] containsObject:XMLNSURI] )
 	{
@@ -195,26 +195,15 @@ static NSDictionary *elementMap;
 		return false;
 }
 
--(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem *)parentStackItem
+-(void) addChildObject:(Node*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem *)parentStackItem
 {
 	SVGElement *parentElement = (SVGElement*) parent;
 	
-	if( [child isKindOfClass:[SVGElement class]] )
-	{
-		SVGElement *childElement = (SVGElement*) child;
+		Node *childNode = (Node*) child;
 		
-		if ( parent != nil )
-		{
-			[parentElement appendChild:childElement];			
-		}
-	}
-	else
+	if ( parent != nil )
 	{
-		/*!
-		 Unknown tag
-		 */
-		
-		NSAssert( FALSE, @"Asked to add unrecognized child tag of type = %@ to parent = %@", [child class], parent );
+		[parentElement appendChild:childNode];
 	}
 }
 

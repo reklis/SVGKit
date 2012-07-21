@@ -43,7 +43,7 @@
 	return [NSMutableArray arrayWithObjects:@"pattern", @"gradient", nil];
 }
 
-- (NSObject*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
+- (Node*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
 		
 	NSAssert( FALSE, @"Patterns and gradients are not supported by SVGKit yet - no-one has implemented them" );
 	
@@ -57,7 +57,7 @@
 		return false;
 }
 
--(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult *)parseResult
+-(void) addChildObject:(Node*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult *)parseResult
 {
 	NSAssert( FALSE, @"Patterns and gradients are not supported by SVGKit yet - no-one has implemented them" );
 }

@@ -21,6 +21,8 @@
 @class SVGKParseResult;
 #import "SVGKParseResult.h"
 
+#import "Node.h"
+
 /*! Experimental: allow SVGKit parser-extensions to insert custom data into an SVGKParseResult */
 #define ENABLE_PARSER_EXTENSIONS_CUSTOM_DATA 0
 
@@ -38,8 +40,16 @@
  */
 -(NSArray*) supportedTags;
 
-- (NSObject*)handleStartElement:(NSString *)name document:(SVGKSource*) document namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
--(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
+/*!
+ Because SVG-DOM uses DOM, custom parsers can return any object they like - so long as its some kind of
+ subclass of DOM's Node class
+ */
+- (Node*)handleStartElement:(NSString *)name document:(SVGKSource*) document namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
+/*!
+ Because SVG-DOM uses DOM, custom parsers MUST be prepared to accept child-nodes of any class that's a
+ valid subclass of DOM's Node class
+ */
+-(void) addChildObject:(Node*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
 -(void) parseContent:(NSMutableString*) content forItem:(NSObject*) item;
 -(BOOL) createdItemShouldStoreContent:(NSObject*) item;
 

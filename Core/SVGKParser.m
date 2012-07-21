@@ -176,7 +176,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 			{
 				SVGKParserStackItem* parentStackItem = [_elementStack lastObject];
 				
-				NSObject* subParserResult = [subParser handleStartElement:name document:source namePrefix:prefix namespaceURI:XMLNSURI attributes:attributes parseResult:self.currentParseRun parentStackItem:parentStackItem];
+				Node* subParserResult = [subParser handleStartElement:name document:source namePrefix:prefix namespaceURI:XMLNSURI attributes:attributes parseResult:self.currentParseRun parentStackItem:parentStackItem];
 				
 					NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([attributes objectForKey:@"id"] != nil?[attributes objectForKey:@"id"]:@"(none)"), subParser );
 					
