@@ -49,7 +49,7 @@
  Because SVG-DOM uses DOM, custom parsers MUST be prepared to accept child-nodes of any class that's a
  valid subclass of DOM's Node class
  */
--(void) addChildObject:(Node*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
+-(void) addChildObject:(Node*)child toObject:(Node*)parent parseResult:(SVGKParseResult*) parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem;
 -(void) parseContent:(NSMutableString*) content forItem:(NSObject*) item;
 -(BOOL) createdItemShouldStoreContent:(NSObject*) item;
 

@@ -195,15 +195,11 @@ static NSDictionary *elementMap;
 		return false;
 }
 
--(void) addChildObject:(Node*)child toObject:(NSObject*)parent parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem *)parentStackItem
+-(void) addChildObject:(Node*)child toObject:(Node*)parent parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem *)parentStackItem
 {
-	SVGElement *parentElement = (SVGElement*) parent;
-	
-		Node *childNode = (Node*) child;
-		
 	if ( parent != nil )
 	{
-		[parentElement appendChild:childNode];
+		[parent appendChild:child];
 	}
 }
 
