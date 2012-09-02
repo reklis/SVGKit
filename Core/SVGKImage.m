@@ -291,6 +291,11 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 		return layer;
 	}
 	
+	/**
+	 TODO / FIXME: at this point, we should also detect if anything in the current SVGElement ("element") has
+	 changed the viewBox - if it has, we should modify the "preTransform" before applying it to sub-nodes / child
+	 nodes
+	 */
 	for (SVGElement *child in element.childNodes )
 	{
 		if ([child conformsToProtocol:@protocol(SVGLayeredElement)]) {
