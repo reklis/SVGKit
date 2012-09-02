@@ -55,34 +55,20 @@ void CGPathAddRoundedRect (CGMutablePathRef path, CGRect rect, CGFloat radius) {
 	CGPathCloseSubpath(path);
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
-	[super parseAttributes:attributes parseResult:parseResult];
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	id value = nil;
+	_x = [[self getAttribute:@"x"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"x"])) {
-		_x = [value floatValue];
-	}
+	_y = [[self getAttribute:@"y"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"y"])) {
-		_y = [value floatValue];
-	}
+	_width = [[self getAttribute:@"width"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"width"])) {
-		_width = [value floatValue];
-	}
+	_height = [[self getAttribute:@"height"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"height"])) {
-		_height = [value floatValue];
-	}
+	_rx = [[self getAttribute:@"rx"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"rx"])) {
-		_rx = [value floatValue];
-	}
-	
-	if ((value = [attributes objectForKey:@"ry"])) {
-		_ry = [value floatValue];
-	}
+	_ry = [[self getAttribute:@"ry"] floatValue];
 	
 	CGMutablePathRef path = CGPathCreateMutable();
 	CGRect rect = CGRectMake(_x, _y, _width, _height);

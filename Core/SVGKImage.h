@@ -35,7 +35,9 @@
  
  */
 
-#import "SKBasicDataTypes.h"
+#import <UIKit/UIKit.h>
+
+#import "SVGLength.h"
 #import "SVGDocument.h"
 #import "SVGElement.h"
 #import "SVGSVGElement.h"
@@ -55,8 +57,8 @@
 @property (nonatomic, readonly) UIImage* UIImage; /** generates an image on the fly */
 #endif
 
-@property (nonatomic, readonly) SVGLength svgWidth;
-@property (nonatomic, readonly) SVGLength svgHeight;
+@property (nonatomic, readonly) SVGLength* svgWidth;
+@property (nonatomic, readonly) SVGLength* svgHeight;
 @property (nonatomic, retain, readonly) SVGKSource* source;
 @property (nonatomic, retain, readonly) SVGKParseResult* parseErrorsAndWarnings;
 

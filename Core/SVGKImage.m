@@ -10,8 +10,8 @@
 
 @interface SVGKImage ()
 
-@property (nonatomic, readwrite) SVGLength svgWidth;
-@property (nonatomic, readwrite) SVGLength svgHeight;
+@property (nonatomic, readwrite) SVGLength* svgWidth;
+@property (nonatomic, readwrite) SVGLength* svgHeight;
 @property (nonatomic, retain, readwrite) SVGKParseResult* parseErrorsAndWarnings;
 
 @property (nonatomic, retain, readwrite) SVGKSource* source;
@@ -73,8 +73,8 @@
 - (id)initWithParsedSVG:(SVGKParseResult *)parseResult {
 	self = [super init];
 	if (self) {
-		self.svgWidth = SVGLengthZero;
-		self.svgHeight = SVGLengthZero;
+		self.svgWidth = [SVGLength svgLengthZero];
+		self.svgHeight = [SVGLength svgLengthZero];
 		
 		self.parseErrorsAndWarnings = parseResult;
 		
@@ -151,7 +151,7 @@
 
 -(CGSize)size
 {
-	return CGSizeMake( SVGLengthAsApplePoints(self.svgWidth), SVGLengthAsApplePoints(self.svgHeight));
+	return CGSizeMake( [self.svgWidth pixelsValue], [self.svgHeight pixelsValue] );
 }
 
 -(CGFloat)scale
@@ -323,7 +323,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 		
 		// TODO: calc the correct transform!
 		CGRect frameViewBox = self.DOMTree.viewBoxFrame;
-		CGRect frameImage = CGRectMake(0,0, SVGLengthAsPixels( self.DOMTree.width), SVGLengthAsPixels( self.DOMTree.height ) );
+		CGRect frameImage = CGRectMake(0,0, [self.DOMTree.width pixelsValue], [self.DOMTree.height pixelsValue] );
 		
 		if( ! CGRectIsEmpty( frameViewBox ) )
 			preTransform = CGAffineTransformMakeScale( frameImage.size.width / frameViewBox.size.width, frameImage.size.height / frameViewBox.size.height);

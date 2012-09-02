@@ -31,19 +31,13 @@
     [super dealloc];
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult
 {
-    [super parseAttributes:attributes parseResult:parseResult];
+    [super postProcessAttributesAddingErrorsTo:parseResult];
     
-	id value = nil;
+	_x = [[self getAttribute:@"x"] floatValue];
     
-	if ((value = [attributes objectForKey:@"x"])) {
-		_x = [value floatValue];
-	}
-    
-	if ((value = [attributes objectForKey:@"y"])) {
-		_y = [value floatValue];
-	}
+	_y = [[self getAttribute:@"y"] floatValue];
     
     // TODO: class
     // TODO: style

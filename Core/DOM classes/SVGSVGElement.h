@@ -49,8 +49,13 @@
 #import "SVGElement.h"
 #import "SVGViewSpec.h"
 
-#pragma mark - most of the SVG* types (SVGLength, SVGNumber, etc) are in this imported header
-#import "SKBasicDataTypes.h"
+#pragma mark - the SVG* types (SVGLength, SVGNumber, etc)
+#import "SVGAngle.h"
+#import "SVGLength.h"
+#import "SVGNumber.h"
+#import "SVGPoint.h"
+#import "SVGRect.h"
+#import "SVGTransform.h"
 
 #pragma mark - a few raw DOM imports are required for SVG DOM, but not many
 #import "Element.h"
@@ -62,10 +67,10 @@
 
 
 
-@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength x;
-@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength y;
-@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength width;
-@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength height;
+@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* x;
+@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* y;
+@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* width;
+@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* height;
 @property (nonatomic, readonly) NSString* contentScriptType;
 @property (nonatomic, readonly) NSString* contentStyleType;
 @property (nonatomic, readonly) SVGRect viewport;
@@ -93,7 +98,7 @@
 -(BOOL) checkEnclosure:(SVGElement*) element rect:(SVGRect) rect;
 -(void) deselectAll;
 -(SVGNumber) createSVGNumber;
--(SVGLength) createSVGLength;
+-(SVGLength*) createSVGLength;
 -(SVGAngle*) createSVGAngle;
 -(SVGPoint*) createSVGPoint;
 -(SVGMatrix*) createSVGMatrix;

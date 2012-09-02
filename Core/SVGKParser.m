@@ -15,6 +15,8 @@
 
 #import "SVGDocument_Mutable.h" // so we can modify the SVGDocuments we're parsing
 
+#import "Node.h"
+
 @interface SVGKParser()
 @property(nonatomic,retain, readwrite) SVGKSource* source;
 @property(nonatomic,retain, readwrite) SVGKParseResult* currentParseRun;
@@ -60,7 +62,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 		self.source = s;
 		
 		_storedChars = [NSMutableString new];
-		_elementStack = [NSMutableArray new];
+		_stackOfParserExtensions = [NSMutableArray new];
 	}
 	return self;
 }
@@ -69,7 +71,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	self.currentParseRun = nil;
 	self.source = nil;
 	[_storedChars release];
-	[_elementStack release];
+	[_stackOfParserExtensions release];
 	self.parserExtensions = nil;
 	[super dealloc];
 }
@@ -96,6 +98,8 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 - (SVGKParseResult*) parseSynchronously
 {
 	self.currentParseRun = [[SVGKParseResult new] autorelease];
+	_parentOfCurrentNode = nil;
+	[_stackOfParserExtensions removeAllObjects];
 	
 	/*
 	// 1. while (source has chunks of BYTES)
@@ -171,42 +175,60 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
  */
 
 
-- (void)handleStartElement:(NSString *)name namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes {
+- (void)handleStartElement:(NSString *)name namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes
+{
+	BOOL parsingRootTag = FALSE;
 	
-		for( NSObject<SVGKParserExtension>* subParser in self.parserExtensions )
+	if( _parentOfCurrentNode == nil )
+		parsingRootTag = TRUE;
+	
+	/**
+	 Search for a Parser Extension to handle this XML tag ...
+	 
+	 (most tags are handled by the default SVGParserSVG - but if you have other XML embedded in your SVG, you'll
+	 have custom parser extentions too)
+	 */
+	for( NSObject<SVGKParserExtension>* subParser in self.parserExtensions )
+	{
+		if( [[subParser supportedNamespaces] containsObject:XMLNSURI]
+		   && [[subParser supportedTags] containsObject:name] )
 		{
-			if( [[subParser supportedNamespaces] containsObject:XMLNSURI]
-			&& [[subParser supportedTags] containsObject:name] )
-			{
-				SVGKParserStackItem* parentStackItem = [_elementStack lastObject];
-				
-				Node* subParserResult = [subParser handleStartElement:name document:source namePrefix:prefix namespaceURI:XMLNSURI attributes:attributes parseResult:self.currentParseRun parentStackItem:parentStackItem];
-				
-					NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([attributes objectForKey:@"id"] != nil?[attributes objectForKey:@"id"]:@"(none)"), subParser );
-					
-					SVGKParserStackItem* stackItem = [[[SVGKParserStackItem alloc] init] autorelease];;
-					stackItem.parserForThisItem = subParser;
-					stackItem.item = subParserResult;
-					
-					[_elementStack addObject:stackItem];
-					
-					if ([subParser createdItemShouldStoreContent:stackItem.item]) {
-						[_storedChars setString:@""];
-						_storingChars = YES;
-					}
-					else {
-						_storingChars = NO;
-					}
-					return;
-				
+			[_stackOfParserExtensions addObject:subParser];
+			
+			/** Parser Extenstion creates a node for us */
+			Node* subParserResult = [subParser handleStartElement:name document:source namePrefix:prefix namespaceURI:XMLNSURI attributes:attributes parseResult:self.currentParseRun parentNode:_parentOfCurrentNode];
+			
+			_parentOfCurrentNode = subParserResult;
+			
+			NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([attributes objectForKey:@"id"] != nil?[attributes objectForKey:@"id"]:@"(none)"), subParser );
+			
+			/** Add the new (partially parsed) node to the parent node in tree
+			 
+			 (need this for some of the parsing, later on, where we need to be able to read up
+			 the tree to make decisions about the data - this is REQUIRED by the SVG Spec)
+			 */
+			[subParserResult appendChild:subParserResult]; // this is a DOM method: should NOT have side-effects
+			
+			if ([subParser createdNodeShouldStoreContent:subParserResult]) {
+				[_storedChars setString:@""];
+				_storingChars = YES;
 			}
-			// otherwise ignore it - the parser extension didn't recognise the element
+			else {
+				_storingChars = NO;
+			}
+			
+			if( parsingRootTag )
+			{
+				currentParseRun.parsedDocument.rootElement = (SVGSVGElement*) subParserResult;
+			}
+			
+			return;
 		}
+		// otherwise ignore it - the parser extension didn't recognise the element
+	}
 	
-	NSLog(@"[%@] ERROR: could not find a parser for tag: <%@:%@>; adding empty placeholder", [self class], prefix, name );
-	
-	SVGKParserStackItem* emptyItem = [[[SVGKParserStackItem alloc] init] autorelease];
-	[_elementStack addObject:emptyItem];
+	/*! this was an unmatched tag - we have no parser for it, so we're pruning it from the tree */
+	NSLog(@"[%@] WARN: found a non-parsed tag (</%@>) - this will NOT be added to the output tree", [self class], name );
 }
 
 
@@ -282,51 +304,40 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 - (void)handleEndElement:(NSString *)name {
 	//DELETE DEBUG NSLog(@"ending element, name = %@", name);
 	
-	SVGKParserStackItem* stackItem = [_elementStack lastObject];
 	
-	[_elementStack removeLastObject];
+	NSObject* lastobject = [_stackOfParserExtensions lastObject];
 	
-	if( stackItem.parserForThisItem == nil )
+	[_stackOfParserExtensions removeLastObject];
+	
+	if( lastobject == [NSNull null] )
 	{
 		/*! this was an unmatched tag - we have no parser for it, so we're pruning it from the tree */
 		NSLog(@"[%@] WARN: ended non-parsed tag (</%@>) - this will NOT be added to the output tree", [self class], name );
 	}
 	else
 	{
-		SVGKParserStackItem* parentStackItem = [_elementStack lastObject];
+		NSObject<SVGKParserExtension>* parser = (NSObject<SVGKParserExtension>*)lastobject;
+		NSObject<SVGKParserExtension>* parentParser = [_stackOfParserExtensions lastObject];
 		
-		NSObject<SVGKParserExtension>* parserHandlingTheParentItem = parentStackItem.parserForThisItem;
-
-		BOOL closingRootTag = FALSE;
-		if( parentStackItem.item == nil )
-		{
-			/**
-			 Special case: we've hit the closing of the root tag.
-			 
-			 Because each parser-extension MIGHT need to do cleanup / post-processing on the end tag,
-			 we need to ensure that whichever class parsed the root tag gets one final callback to tell it that the end
-			 tag has been reached
-			 */
-			
-			closingRootTag = TRUE;
-			parserHandlingTheParentItem = stackItem.parserForThisItem;
-		}
+	
+		NSLog(@"[%@] DEBUG-PARSER: ended tag (</%@>), handled by parser (%@) with parent parsed by %@", [self class], name, parser, parentParser );
 		
-		NSLog(@"[%@] DEBUG-PARSER: ended tag (</%@>): telling parser (%@) to add that item to tree-parent = %@", [self class], name, parserHandlingTheParentItem, parentStackItem.item );
-		[parserHandlingTheParentItem addChildObject:stackItem.item toObject:parentStackItem.item parseResult:self.currentParseRun parentStackItem:parentStackItem];
-		
-		if ( [stackItem.parserForThisItem createdItemShouldStoreContent:stackItem.item]) {
-			[stackItem.parserForThisItem parseContent:_storedChars forItem:stackItem.item];
+		/**
+		 At this point, the "parent of current node" is still set to the node we're
+		 closing - because we haven't finished closing it yet
+		 */
+		if ( [parser createdNodeShouldStoreContent:_parentOfCurrentNode]) {
+			[parser handleStringContent:_storedChars forNode:_parentOfCurrentNode];
 			
 			[_storedChars setString:@""];
 			_storingChars = NO;
 		}
-		
-		if( closingRootTag )
-		{
-			currentParseRun.parsedDocument.rootElement = (SVGSVGElement*) stackItem.item;
-		}
 	}
+	
+	/** Update the _parentOfCurrentNod to point to the parent of the node we just closed...
+	 */
+	_parentOfCurrentNode = _parentOfCurrentNode.parentNode;
+	
 }
 
 static void	endElementSAX (void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI) {

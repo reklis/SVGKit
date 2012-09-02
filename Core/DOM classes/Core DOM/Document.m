@@ -97,7 +97,7 @@
 // Introduced in DOM Level 2:
 -(Element*) createElementNS:(NSString*) namespaceURI qualifiedName:(NSString*) qualifiedName
 {
-	Element* newElement = [[Element alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:[NSURL URLWithString:namespaceURI]];
+	Element* newElement = [[Element alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:[NSURL URLWithString:namespaceURI] attributes:nil];
 	
 	NSLog( @"[%@] WARNING: SVG Spec, missing feature: if there are known attributes with default values, Attr nodes representing them SHOULD BE automatically created and attached to the element.", [self class] );
 	

@@ -63,7 +63,7 @@ static NSDictionary *elementMap;
 	return [NSMutableArray arrayWithArray:[elementMap allKeys]];
 }
 
-- (Node*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem*) parentStackItem 
+- (Node*) handleStartElement:(NSString *)name document:(SVGKSource*) SVGKSource namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes parseResult:(SVGKParseResult *)parseResult parentNode:(Node*) parentNode
 {
 	if( [[self supportedNamespaces] containsObject:XMLNSURI] )
 	{
@@ -94,8 +94,8 @@ static NSDictionary *elementMap;
 		
 		NSString* qualifiedName = (prefix == nil) ? name : [NSString stringWithFormat:@"%@:%@", prefix, name];
 		/** NB: must supply a NON-qualified name if we have no specific prefix here ! */
-		SVGElement *element = [[[elementClass alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:XMLNSURI ] autorelease];
-		[element parseAttributes:attributes parseResult:parseResult];
+		SVGElement *element = [[[elementClass alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:XMLNSURI attributes:attributes] autorelease];
+		[element postProcessAttributesAddingErrorsTo:parseResult];
 		
 		/** special case: <svg:svg ... version="XXX"> */
 		if( [@"svg" isEqualToString:name] )
@@ -130,7 +130,7 @@ static NSDictionary *elementMap;
 			BOOL overwriteRootSVGDocument = FALSE;
 			BOOL overwriteRootOfTree = FALSE;
 			
-			if( parentStackItem == nil )
+			if( parentNode == nil )
 			{
 				/** This start element is the first item in the document
 				 PS: xcode has a new bug for Lion: it can't format single-line comments with two asterisks. This line added because Xcode sucks.
@@ -180,7 +180,7 @@ static NSDictionary *elementMap;
 	return nil;
 }
 
--(BOOL) createdItemShouldStoreContent:(NSObject*) item
+-(BOOL) createdNodeShouldStoreContent:(Node*) item
 {
 	if( [item isKindOfClass:[SVGElement class]] )
 	{
@@ -195,17 +195,9 @@ static NSDictionary *elementMap;
 		return false;
 }
 
--(void) addChildObject:(Node*)child toObject:(Node*)parent parseResult:(SVGKParseResult *)parseResult parentStackItem:(SVGKParserStackItem *)parentStackItem
+-(void) handleStringContent:(NSMutableString*) content forNode:(Node*) node
 {
-	if ( parent != nil )
-	{
-		[parent appendChild:child];
-	}
-}
-
--(void) parseContent:(NSMutableString*) content forItem:(NSObject*) item
-{
-	SVGElement* element = (SVGElement*) item;
+	SVGElement* element = (SVGElement*) node;
 	
 	[element parseContent:content];
 }

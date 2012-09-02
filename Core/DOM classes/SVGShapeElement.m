@@ -48,18 +48,16 @@
 	_fillType = SVGFillTypeSolid;
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult
 {
-	[super parseAttributes:attributes parseResult:parseResult];
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
 	id value = nil;
 	
-	if ((value = [attributes objectForKey:@"opacity"])) {
-		_opacity = [value floatValue];
-	}
+	_opacity = [[self getAttribute:@"opacity"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"fill"])) {
-		const char *cvalue = [value UTF8String];
+	if ([[self getAttribute:@"fill"] length] > 0 ) {
+		const char *cvalue = [[self getAttribute:@"fill"] UTF8String];
 		
 		if (!strncmp(cvalue, "none", 4)) {
 			_fillType = SVGFillTypeNone;
@@ -74,12 +72,10 @@
 		}
 	}
 	
-	if ((value = [attributes objectForKey:@"stroke-width"])) {
-		_strokeWidth = [value floatValue];
-	}
+	_strokeWidth = [[self getAttribute:@"stroke-width"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"stroke"])) {
-		const char *cvalue = [value UTF8String];
+	if ( [[self getAttribute:@"stroke"] length] > 0 ) {
+		const char *cvalue = [[self getAttribute:@"stroke"] UTF8String];
 		
 		if (!strncmp(cvalue, "none", 4)) {
 			_strokeWidth = 0.0f;
@@ -92,12 +88,12 @@
 		}
 	}
 	
-	if ((value = [attributes objectForKey:@"stroke-opacity"])) {
-		_strokeColor.a = (uint8_t) ([value floatValue] * 0xFF);
+	if ([[self getAttribute:@"stroke-opacity"] length] > 0 ) {
+		_strokeColor.a = (uint8_t) ([[self getAttribute:@"stroke-opacity"] floatValue] * 0xFF);
 	}
 	
-	if ((value = [attributes objectForKey:@"fill-opacity"])) {
-		_fillColor.a = (uint8_t) ([value floatValue] * 0xFF);
+	if ([[self getAttribute:@"fill-opacity"] length] > 0 ) {
+		_fillColor.a = (uint8_t) ([[self getAttribute:@"fill-opacity"] floatValue] * 0xFF);
 	}
 }
 

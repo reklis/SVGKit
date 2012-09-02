@@ -20,15 +20,11 @@
 
 @implementation SVGPathElement
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult
 {
-	[super parseAttributes:attributes parseResult:parseResult];
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	id value = nil;
-	
-	if ((value = [attributes objectForKey:@"d"])) {
-		[self parseData:value];
-	}
+	[self parseData:[self getAttribute:@"d"]];
 }
 
 - (void)parseData:(NSString *)data

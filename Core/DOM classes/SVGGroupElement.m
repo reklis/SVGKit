@@ -29,14 +29,10 @@
 	_opacity = 1.0f;
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
-	[super parseAttributes:attributes parseResult:parseResult];
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	id value = nil;
-	
-	if ((value = [attributes objectForKey:@"opacity"])) {
-		_opacity = [value floatValue];
-	}
+	_opacity = [[self getAttribute:@"opacity"] floatValue];
 }
 
 - (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform

@@ -41,7 +41,6 @@
 #import "SVGKParserExtension.h"
 #import "SVGKParseResult.h"
 
-#import "SVGKParserStackItem.h"
 #import "SVGElement.h"
 
 
@@ -56,7 +55,9 @@
   @private
 	BOOL _storingChars;
 	NSMutableString *_storedChars;
-	NSMutableArray *_elementStack;
+	//NSMutableArray *_elementStack;
+	NSMutableArray * _stackOfParserExtensions;
+	Node * _parentOfCurrentNode;
 }
 
 @property(nonatomic,retain,readonly) SVGKSource* source;

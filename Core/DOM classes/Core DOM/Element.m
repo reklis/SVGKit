@@ -10,17 +10,39 @@
 
 @synthesize tagName;
 
-- (id)initWithLocalName:(NSString*) n {
+- (id)initWithLocalName:(NSString*) n attributes:(NSMutableDictionary*) attributes {
     self = [super initElement:n];
     if (self) {
         self.tagName = n;
+		
+		/** FIXME: read the spec and add two versions of this, one that uses NAMESPACED attributes,
+		 and one that doesn't.
+		 
+		 Yes, DOM is a total Pain In The A** to implement - the different versions are mostly
+		 separate, parallel, specs
+		 */
+		for( NSString* attributeName in attributes.allKeys )
+		{
+			[self setAttribute:attributeName value:[attributes objectForKey:attributeName]];
+		}
     }
     return self;
 }
-- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI {
+- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI attributes:(NSMutableDictionary*) attributes {
     self = [super initElement:n inNameSpaceURI:nsURI];
     if (self) {
         self.tagName = n;
+		
+		/** FIXME: read the spec and add two versions of this, one that uses NAMESPACED attributes,
+		 and one that doesn't.
+		 
+		 Yes, DOM is a total Pain In The A** to implement - the different versions are mostly
+		 separate, parallel, specs
+		 */
+		for( NSString* attributeName in attributes.allKeys )
+		{
+			[self setAttribute:attributeName value:[attributes objectForKey:attributeName]];
+		}
     }
     return self;
 }

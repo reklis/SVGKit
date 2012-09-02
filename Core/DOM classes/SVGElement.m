@@ -67,12 +67,38 @@
 	}
 	else
 	{
-		NSAssert( [self.localName isEqualToString:@"svg"] || [newParent isKindOfClass:[SVGElement class]], @"All SVG nodes must have SVGElement superclasses, unless they are an embedded SVG root node, with tag = SVG" );
+		/**
+		 SVG Spec: we have to set a reference to the "root SVG tag of this part of the tree".
+		 
+		 If the tree is purely SVGElement nodes / subclasses, that's easy.
+		 
+		 But if there are custom nodes in there (any other DOM node, for instance), it gets
+		more tricky. We have to recurse up the tree until we find an SVGElement we can latch
+		 onto
+		 */
 		
 		if( [self isKindOfClass:[SVGSVGElement class]] )
 			self.ownerSVGElement = (SVGSVGElement*) self;
 		else
-			self.ownerSVGElement = ((SVGElement*) newParent).ownerSVGElement;
+		{
+			SVGElement* firstAncestorThatIsSVG = nil;
+			Node* currentAncestor = newParent;
+			
+		//	current ancestor (conquest:bonus node) has nil ancestor because this is being called before its been added to its parent!
+			while( firstAncestorThatIsSVG == nil
+				  && currentAncestor != nil ) // if we run out of tree! This would be an error (see below)
+			{
+				if( [currentAncestor isKindOfClass:[SVGElement class]] )
+					firstAncestorThatIsSVG = (SVGElement*) currentAncestor;
+				else
+					currentAncestor = currentAncestor.parentNode;
+			}
+			
+			NSAssert( firstAncestorThatIsSVG != nil, @"This node has no valid SVG tags as ancestor, but it's not an <svg> tag, so this is an impossible SVG file" );
+			
+			
+			self.ownerSVGElement = firstAncestorThatIsSVG.ownerSVGElement;
+		}
 		
 		[self reCalculateAndSetViewportElementReference];
 	}
@@ -130,15 +156,12 @@
 	// to be overriden by subclasses
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult  {
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult  {
 	// to be overriden by subclasses
 	// make sure super implementation is called
 	
-	id value = nil;
-	
-	if ((value = [attributes objectForKey:@"id"])) {
-		_identifier = [value copy];
-	}
+	if( [[self getAttribute:@"id"] length] > 0 )
+		self.identifier = [self getAttribute:@"id"];
 	
 
 	/**
@@ -160,13 +183,14 @@
 	 
 	 * skewY(<skew-angle>), which specifies a skew transformation along the y-axis.
 	 */
-	if( (value = [attributes objectForKey:@"transform"]) )
+	if( [[self getAttribute:@"transform"] length] > 0 )
 	{
 		/**
 		 http://www.w3.org/TR/SVG/coords.html#TransformAttribute
 		 
 		 The individual transform definitions are separated by whitespace and/or a comma. 
 		 */
+		NSString* value = [self getAttribute:@"transform"];
 		
 #if !(TARGET_OS_IPHONE) && ( !defined( __MAC_10_7 ) || __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_6_7 )
 		NSLog(@"[%@] WARNING: the transform attribute requires OS X 10.7 or above (we need Regular Expressions! Apple was slow to add them :( ). Ignoring TRANSFORMs in SVG!", [self class] );
@@ -319,15 +343,15 @@
 }
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"<%@ %p | id=%@ | prefix:localName=%@:%@ | tagName=%@ | stringValue=%@ | children=%d>", 
+	return [NSString stringWithFormat:@"<%@ %p | id=%@ | prefix:localName=%@:%@ | tagName=%@ | stringValue=%@ | children=%ld>", 
 			[self class], self, _identifier, self.prefix, self.localName, self.tagName, _stringValue, self.childNodes.length];
 }
 
 #pragma mark - Objective-C init methods (not in SVG Spec - the official spec has no explicit way to create nodes, which is clearly a bug in the Spec. Until they fix the spec, we have to do something or else SVG would be unusable)
 
-- (id)initWithLocalName:(NSString*) n
+- (id)initWithLocalName:(NSString*) n attributes:(NSMutableDictionary*) attributes
 {
-	self = [super initWithLocalName:n];
+	self = [super initWithLocalName:n attributes:attributes];
 	if( self )
 	{
 		[self loadDefaults];
@@ -335,9 +359,9 @@
 	}
 	return self;
 }
-- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI
+- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI attributes:(NSMutableDictionary*) attributes
 {
-	self = [super initWithQualifiedName:n inNameSpaceURI:nsURI];
+	self = [super initWithQualifiedName:n inNameSpaceURI:nsURI attributes:attributes];
 	if( self )
 	{
 		[self loadDefaults];

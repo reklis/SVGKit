@@ -9,6 +9,13 @@
 
 #import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
 
+@interface SVGEllipseElement()
+@property (nonatomic, readwrite) CGFloat cx;
+@property (nonatomic, readwrite) CGFloat cy;
+@property (nonatomic, readwrite) CGFloat rx;
+@property (nonatomic, readwrite) CGFloat ry;
+@end
+
 @implementation SVGEllipseElement
 
 @synthesize cx = _cx;
@@ -16,30 +23,19 @@
 @synthesize rx = _rx;
 @synthesize ry = _ry;
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
-	[super parseAttributes:attributes parseResult:parseResult];
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	id value = nil;
+	self.cx = [[self getAttribute:@"cx"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"cx"])) {
-		_cx = [value floatValue];
-	}
+	self.cy = [[self getAttribute:@"cy"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"cy"])) {
-		_cy = [value floatValue];
-	}
+	self.rx = [[self getAttribute:@"rx"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"rx"])) {
-		_rx = [value floatValue];
-	}
+	self.ry = [[self getAttribute:@"ry"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"ry"])) {
-		_ry = [value floatValue];
-	}
-	
-	if ((value = [attributes objectForKey:@"r"])) { // circle
-		_rx = [value floatValue];
-		_ry = _rx;
+	if( [[self getAttribute:@"r"] length] > 0 ) { // circle
+		self.ry = self.rx = [[self getAttribute:@"r"] floatValue];
 	}
 	
 	CGMutablePathRef path = CGPathCreateMutable();

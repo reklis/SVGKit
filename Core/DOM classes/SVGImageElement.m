@@ -33,6 +33,9 @@ CGImageRef SVGImageCGImage(SVGImageRef img)
 #endif
 }
 
+@interface SVGImageElement()
+@property (nonatomic, readwrite) NSString *href;
+@end
 
 @implementation SVGImageElement
 
@@ -49,28 +52,18 @@ CGImageRef SVGImageCGImage(SVGImageRef img)
     [super dealloc];
 }
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
-	id value = nil;
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 
-	if ((value = [attributes objectForKey:@"x"])) {
-		_x = [value floatValue];
-	}
+	_x = [[self getAttribute:@"x"] floatValue];
 
-	if ((value = [attributes objectForKey:@"y"])) {
-		_y = [value floatValue];
-	}
+	_y = [[self getAttribute:@"y"] floatValue];
 
-	if ((value = [attributes objectForKey:@"width"])) {
-		_width = [value floatValue];
-	}
+	_width = [[self getAttribute:@"width"] floatValue];
 
-	if ((value = [attributes objectForKey:@"height"])) {
-		_height = [value floatValue];
-	}
+	_height = [[self getAttribute:@"height"] floatValue];
 
-	if ((value = [attributes objectForKey:@"href"])) {
-		_href = [value retain];
-	}
+	self.href = [self getAttribute:@"href"];
 }
 
 - (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform

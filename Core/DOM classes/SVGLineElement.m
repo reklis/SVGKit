@@ -16,26 +16,16 @@
 @synthesize x2 = _x2;
 @synthesize y2 = _y2;
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
-	[super parseAttributes:attributes parseResult:parseResult];
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	id value = nil;
+	_x1 = [[self getAttribute:@"x1"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"x1"])) {
-		_x1 = [value floatValue];
-	}
+	_y1 = [[self getAttribute:@"y1"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"y1"])) {
-		_y1 = [value floatValue];
-	}
+	_x2 = [[self getAttribute:@"x2"] floatValue];
 	
-	if ((value = [attributes objectForKey:@"x2"])) {
-		_x2 = [value floatValue];
-	}
-	
-	if ((value = [attributes objectForKey:@"y2"])) {
-		_y2 = [value floatValue];
-	}
+	_y2 = [[self getAttribute:@"y2"] floatValue];
 	
 	CGMutablePathRef path = CGPathCreateMutable();
 	CGPathMoveToPoint(path, NULL, _x1, _y1);

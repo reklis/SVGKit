@@ -37,6 +37,7 @@
 {
     self = [super init];
     if (self) {
+		self.nodeType = nt;
         switch( nt )
 		{
 			case SKNodeType_ELEMENT_NODE:

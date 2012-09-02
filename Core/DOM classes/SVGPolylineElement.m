@@ -14,13 +14,12 @@
 
 @implementation SVGPolylineElement
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
-	[super parseAttributes:attributes parseResult:parseResult];
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	id value = nil;
-	
-	if ((value = [attributes objectForKey:@"points"])) {
-		CGMutablePathRef path = createPathFromPointsInString([value UTF8String], NO);
+	if( [[self getAttribute:@"points"] length] > 0 )
+	{
+		CGMutablePathRef path = createPathFromPointsInString([[self getAttribute:@"points"] UTF8String], NO);
 		
 		[self setPathByCopyingPathFromLocalSpace:path];
 		CGPathRelease(path);

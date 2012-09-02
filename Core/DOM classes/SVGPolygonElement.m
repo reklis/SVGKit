@@ -19,14 +19,10 @@
 
 @implementation SVGPolygonElement
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
-	[super parseAttributes:attributes parseResult:parseResult];
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	id value = nil;
-	
-	if ((value = [attributes objectForKey:@"points"])) {
-		[self parseData:value];
-	}
+	[self parseData:[self getAttribute:@"points"]];
 }
 
 /*! According to SVG spec, a 'polygon' is EXACTYLY IDENTICAL to a 'path', if you prepend the letter "M", and

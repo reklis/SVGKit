@@ -6,6 +6,9 @@
 
 #import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
 
 @interface SVGSVGElement()
 @property (nonatomic, readwrite) CGRect viewBoxFrame;
@@ -59,10 +62,9 @@
 	SVGNumber n = { 0 };
 	return n;
 }
--(SVGLength) createSVGLength
+-(SVGLength*) createSVGLength
 {
-	SVGLength l = { 0.0, 0 };
-	return l;
+	return [SVGLength new];
 }
 -(SVGAngle*) createSVGAngle { NSAssert( FALSE, @"Not implemented yet" ); return nil; }
 -(SVGPoint*) createSVGPoint { NSAssert( FALSE, @"Not implemented yet" ); return nil; }
@@ -79,21 +81,15 @@
 
 #pragma mark - Objective C methods needed given our current non-compliant SVG Parser
 
-- (void)parseAttributes:(NSDictionary *)attributes parseResult:(SVGKParseResult *)parseResult {
-	[super parseAttributes:attributes parseResult:parseResult];
+- (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
+	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	id value = nil;
+	self.width = [SVGLength svgLengthFromNSString:[self getAttribute:@"width"]];
 	
-	if ((value = [attributes objectForKey:@"width"])) {
-		self.width = SVGLengthFromNSString( value );
-	}
+	self.height = [SVGLength svgLengthFromNSString:[self getAttribute:@"height"]];
 	
-	if ((value = [attributes objectForKey:@"height"])) {
-		self.height = SVGLengthFromNSString( value );
-	}
-	
-	if( (value = [attributes objectForKey:@"viewBox"])) {
-		NSArray* boxElements = [(NSString*) value componentsSeparatedByString:@" "];
+	if( [[self getAttribute:@"viewBox"] length] > 0 ) {
+		NSArray* boxElements = [[self getAttribute:@"viewBox"] componentsSeparatedByString:@" "];
 		
 		_viewBoxFrame = CGRectMake([[boxElements objectAtIndex:0] floatValue], [[boxElements objectAtIndex:1] floatValue], [[boxElements objectAtIndex:2] floatValue], [[boxElements objectAtIndex:3] floatValue]);
         

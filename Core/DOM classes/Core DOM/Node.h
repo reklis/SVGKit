@@ -102,7 +102,7 @@ typedef enum SKNodeType
 @property(nonatomic,retain,readonly) Node* lastChild;
 @property(nonatomic,retain,readonly) Node* previousSibling;
 @property(nonatomic,retain,readonly) Node* nextSibling;
-@property(nonatomic,retain,readonly) NamedNodeMap* attributes;
+@property(nonatomic,retain,readonly) NamedNodeMap* attributes; /*< NB: according to DOM Spec, this is null if the Node is NOT subclassed as an Element */
 
 // Modified in DOM Level 2:
 @property(nonatomic,retain,readonly) Document* ownerDocument;
