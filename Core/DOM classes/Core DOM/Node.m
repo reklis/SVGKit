@@ -127,6 +127,8 @@
 		self.localName = [nameSpaceParts lastObject];
 		if( [nameSpaceParts count] > 1 )
 			self.prefix = [nameSpaceParts objectAtIndex:0];
+		
+		self.namespaceURI = nsURI;
     }
     return self;
 }

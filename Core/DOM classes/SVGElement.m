@@ -29,7 +29,7 @@
 
 @synthesize identifier = _identifier;
 @synthesize xmlbase;
-@synthesize ownerSVGElement;
+@synthesize rootOfCurrentDocumentFragment;
 @synthesize viewportElement;
 
 @synthesize stringValue = _stringValue;
@@ -43,13 +43,16 @@
 }
 
 /*! As per the SVG Spec, the local reference to "viewportElement" depends on the values of the
- attributes of the node - does it have a "width" attribute? */
--(void) reCalculateAndSetViewportElementReference
+ attributes of the node - does it have a "width" attribute?
+ 
+ NB: by definition, <svg> tags MAY NOT have a width, but they are still viewports */
+-(void) reCalculateAndSetViewportElementReferenceUsingFirstSVGAncestor:(SVGElement*) firstAncestor
 {
-	if( [self.attributes getNamedItem:@"width"] != nil )
+	if( [self.tagName isEqualToString:@"svg"] // if its the <svg> tag, its automatically the viewportElement
+	   || [self.attributes getNamedItem:@"width"] != nil )
 		self.viewportElement =  self;
 	else
-		self.viewportElement = ((SVGElement*) self.parentNode).viewportElement;
+		self.viewportElement = firstAncestor.viewportElement;
 }
 
 /*! Override so that we can automatically set / unset the ownerSVGElement and viewportElement properties,
@@ -62,7 +65,7 @@
 	if( [self isKindOfClass:[SVGSVGElement class]]
 	&& (self.parentNode == nil || ! [self.parentNode isKindOfClass:[SVGElement class]]) )
 	{
-		self.ownerSVGElement = nil;
+		self.rootOfCurrentDocumentFragment = nil;
 		self.viewportElement = nil;
 	}
 	else
@@ -78,71 +81,30 @@
 		 */
 		
 		if( [self isKindOfClass:[SVGSVGElement class]] )
-			self.ownerSVGElement = (SVGSVGElement*) self;
+		{
+			self.rootOfCurrentDocumentFragment = (SVGSVGElement*) self;
+			self.viewportElement = self;
+		}
 		else
 		{
-			SVGElement* firstAncestorThatIsSVG = nil;
 			Node* currentAncestor = newParent;
-			
-		//	current ancestor (conquest:bonus node) has nil ancestor because this is being called before its been added to its parent!
-			while( firstAncestorThatIsSVG == nil
+			SVGElement*	firstAncestorThatIsAnyKindOfSVGElement = nil;
+			while( firstAncestorThatIsAnyKindOfSVGElement == nil
 				  && currentAncestor != nil ) // if we run out of tree! This would be an error (see below)
 			{
 				if( [currentAncestor isKindOfClass:[SVGElement class]] )
-					firstAncestorThatIsSVG = (SVGElement*) currentAncestor;
+					firstAncestorThatIsAnyKindOfSVGElement = (SVGElement*) currentAncestor;
 				else
 					currentAncestor = currentAncestor.parentNode;
 			}
 			
-			NSAssert( firstAncestorThatIsSVG != nil, @"This node has no valid SVG tags as ancestor, but it's not an <svg> tag, so this is an impossible SVG file" );
+			NSAssert( firstAncestorThatIsAnyKindOfSVGElement != nil, @"This node has no valid SVG tags as ancestor, but it's not an <svg> tag, so this is an impossible SVG file" );
 			
 			
-			self.ownerSVGElement = firstAncestorThatIsSVG.ownerSVGElement;
+			self.rootOfCurrentDocumentFragment = firstAncestorThatIsAnyKindOfSVGElement.rootOfCurrentDocumentFragment;
+			[self reCalculateAndSetViewportElementReferenceUsingFirstSVGAncestor:firstAncestorThatIsAnyKindOfSVGElement];
 		}
-		
-		[self reCalculateAndSetViewportElementReference];
 	}
-}
-
-/*! Override so that we can automatically set / unset the viewportElement property,
- as required by SVG Spec */
--(void)setAttributes:(NamedNodeMap *)attributes
-{
-	[super setAttributes:attributes];
-	
-	[self reCalculateAndSetViewportElementReference];
-}
-
-/*! Override so that we can automatically set / unset the viewportElement property,
- as required by SVG Spec */
-
--(void) setAttribute:(NSString*) name value:(NSString*) value
-{
-	[super setAttribute:name value:value];
-	
-	[self reCalculateAndSetViewportElementReference];
-}
--(void) removeAttribute:(NSString*) name
-{
-	[super removeAttribute:name];
-	
-	[self reCalculateAndSetViewportElementReference];
-}
--(Attr*) setAttributeNode:(Attr*) newAttr
-{
-	Attr* a = [super setAttributeNode:newAttr];
-	
-	[self reCalculateAndSetViewportElementReference];
-	
-	return a;
-}
--(Attr*) removeAttributeNode:(Attr*) oldAttr
-{
-	Attr* a = [super removeAttributeNode:oldAttr];
-	
-	[self reCalculateAndSetViewportElementReference];
-	
-	return a;
 }
 
 - (void)dealloc {
@@ -316,7 +278,7 @@
  */
 -(CGAffineTransform) transformAbsolute
 {
-	if( self.viewportElement == nil )
+	if( self.viewportElement == nil ) // this is the outermost, root <svg> tag
 		return self.transformRelative;
 	else
 	{

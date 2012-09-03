@@ -21,7 +21,14 @@
 
 @property (nonatomic, readwrite, retain) NSString *identifier; // 'id' is reserved in Obj-C, so we have to break SVG Spec here, slightly
 @property (nonatomic, retain) NSString* xmlbase;
-@property (nonatomic, retain) SVGSVGElement* ownerSVGElement;
+/*!
+ 
+ http://www.w3.org/TR/SVG/intro.html#TermSVGDocumentFragment
+ 
+ SVG document fragment
+ The XML document sub-tree which starts with an ‘svg’ element. An SVG document fragment can consist of a stand-alone SVG document, or a fragment of a parent XML document enclosed by an ‘svg’ element. When an ‘svg’ element is a descendant of another ‘svg’ element, there are two SVG document fragments, one for each ‘svg’ element. (One SVG document fragment is contained within another SVG document fragment.)
+ */
+@property (nonatomic, retain) SVGSVGElement* rootOfCurrentDocumentFragment;
 
 /*! The viewport is set / re-set whenever an SVG node specifies a "width" (and optionally: a "height") attribute,
  assuming that SVG node is one of: svg, symbol, image, foreignobject
@@ -47,10 +54,11 @@
 
 - (void)parseContent:(NSString *)content;
 
-#pragma mark - Objective-C init methods (not in SVG Spec - the official spec has no explicit way to create nodes, which is clearly a bug in the Spec. Until they fix the spec, we have to do something or else SVG would be unusable)
+#pragma mark - SVG-spec supporting methods that aren't in the Spec itself
 
 - (id)initWithLocalName:(NSString*) n attributes:(NSMutableDictionary*) attributes;
 - (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI attributes:(NSMutableDictionary*) attributes;
 
+-(void) reCalculateAndSetViewportElementReferenceUsingFirstSVGAncestor:(SVGElement*) firstAncestor;
 
 @end

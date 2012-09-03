@@ -198,8 +198,6 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 			/** Parser Extenstion creates a node for us */
 			Node* subParserResult = [subParser handleStartElement:name document:source namePrefix:prefix namespaceURI:XMLNSURI attributes:attributes parseResult:self.currentParseRun parentNode:_parentOfCurrentNode];
 			
-			_parentOfCurrentNode = subParserResult;
-			
 			NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([attributes objectForKey:@"id"] != nil?[attributes objectForKey:@"id"]:@"(none)"), subParser );
 			
 			/** Add the new (partially parsed) node to the parent node in tree
@@ -207,7 +205,9 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 			 (need this for some of the parsing, later on, where we need to be able to read up
 			 the tree to make decisions about the data - this is REQUIRED by the SVG Spec)
 			 */
-			[subParserResult appendChild:subParserResult]; // this is a DOM method: should NOT have side-effects
+			[_parentOfCurrentNode appendChild:subParserResult]; // this is a DOM method: should NOT have side-effects
+			_parentOfCurrentNode = subParserResult;
+			
 			
 			if ([subParser createdNodeShouldStoreContent:subParserResult]) {
 				[_storedChars setString:@""];
@@ -228,7 +228,15 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	}
 	
 	/*! this was an unmatched tag - we have no parser for it, so we're pruning it from the tree */
-	NSLog(@"[%@] WARN: found a non-parsed tag (</%@>) - this will NOT be added to the output tree", [self class], name );
+	NSLog(@"[%@] WARN: found an unrecognized tag (</%@>) - this will get an empty, dumb Node in the DOM", [self class], name );
+	
+	NSString* qualifiedName = (prefix == nil) ? name : [NSString stringWithFormat:@"%@:%@", prefix, name];
+	/** NB: must supply a NON-qualified name if we have no specific prefix here ! */
+	Element *blankElement = [[[Element alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:XMLNSURI attributes:attributes] autorelease];
+	[_parentOfCurrentNode appendChild:blankElement];
+	_parentOfCurrentNode = blankElement;
+	
+	[_stackOfParserExtensions addObject:[NSNull null]]; // so that we can later detect that this tag was NOT parsed
 }
 
 
@@ -334,7 +342,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 		}
 	}
 	
-	/** Update the _parentOfCurrentNod to point to the parent of the node we just closed...
+	/** Update the _parentOfCurrentNode to point to the parent of the node we just closed...
 	 */
 	_parentOfCurrentNode = _parentOfCurrentNode.parentNode;
 	

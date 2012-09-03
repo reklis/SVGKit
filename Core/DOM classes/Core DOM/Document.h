@@ -102,7 +102,7 @@
 -(Attr*) createAttributeNS:(NSString*) namespaceURI qualifiedName:(NSString*) qualifiedName;
 
 // Introduced in DOM Level 2:
--(NodeList*) getElementsByTagNameNS:(NSString*) namespaceURI qualifiedName:(NSString*) localName;
+-(NodeList*) getElementsByTagNameNS:(NSString*) namespaceURI localName:(NSString*) localName;
 
 // Introduced in DOM Level 2:
 -(Element*) getElementById:(NSString*) elementId;
