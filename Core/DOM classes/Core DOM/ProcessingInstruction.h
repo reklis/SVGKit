@@ -20,4 +20,6 @@
 @property(nonatomic,retain,readonly) NSString* target;
 @property(nonatomic,retain,readonly) NSString* data;
 
+-(id) initProcessingInstruction:(NSString*) target value:(NSString*) data;
+
 @end

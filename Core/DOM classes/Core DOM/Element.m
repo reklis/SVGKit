@@ -11,7 +11,7 @@
 @synthesize tagName;
 
 - (id)initWithLocalName:(NSString*) n attributes:(NSMutableDictionary*) attributes {
-    self = [super initElement:n];
+    self = [super initType:SKNodeType_ELEMENT_NODE name:n];
     if (self) {
         self.tagName = n;
 		
@@ -29,7 +29,7 @@
     return self;
 }
 - (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI attributes:(NSMutableDictionary*) attributes {
-    self = [super initElement:n inNameSpaceURI:nsURI];
+    self = [super initType:SKNodeType_ELEMENT_NODE name:n inNamespace:nsURI];
     if (self) {
         self.tagName = n;
 		
@@ -60,7 +60,7 @@
 
 -(void) setAttribute:(NSString*) name value:(NSString*) value
 {
-	Attr* att = [[[Attr alloc] initAttr:name value:value] autorelease];
+	Attr* att = [[[Attr alloc] initWithName:name value:value] autorelease];
 	
 	[self.attributes setNamedItem:att];
 }
@@ -111,7 +111,9 @@
 // Introduced in DOM Level 2:
 -(void) setAttributeNS:(NSString*) namespaceURI qualifiedName:(NSString*) qualifiedName value:(NSString*) value
 {
-	NSAssert( FALSE, @"Not implemented yet" );
+	Attr* att = [[[Attr alloc] initWithNamespace:namespaceURI qualifiedName:qualifiedName value:value] autorelease];
+	
+	[self.attributes setNamedItemNS:att];
 }
 
 // Introduced in DOM Level 2:

@@ -66,15 +66,17 @@ CGImageRef SVGImageCGImage(SVGImageRef img)
 	self.href = [self getAttribute:@"href"];
 }
 
-- (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform
+- (CALayer *) newLayer
 {
+	NSAssert( FALSE, @"NOT SUPPORTED: SVG Image Element . newLayer -- must be upgraded using the algorithm in SVGShapeElement.newLayer");
+	
 	__block CALayer *layer = [[CALayer layer] retain];
 
 	layer.name = self.identifier;
 	[layer setValue:self.identifier forKey:kSVGElementIdentifier];
 	
 	CGRect frame = CGRectMake(_x, _y, _width, _height);
-	frame = CGRectApplyAffineTransform(frame, preTransform);
+	frame = CGRectApplyAffineTransform(frame, [self transformAbsolute]);
 	layer.frame = frame;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{

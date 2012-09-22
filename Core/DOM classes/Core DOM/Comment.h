@@ -13,4 +13,6 @@
 
 @interface Comment : CharacterData
 
+- (id)initWithValue:(NSString*) v;
+
 @end

@@ -28,22 +28,24 @@
 // Introduced in DOM Level 2:
 @synthesize ownerElement;
 
-- (id)initWithName:(NSString*) n {
-    self = [super init];
-    if (self) {
-        self.nodeName = self.name = n;
+- (id)initWithName:(NSString*) n value:(NSString*) v
+{
+    self = [super initType:SKNodeType_ATTRIBUTE_NODE name:n value:v];
+    if (self)
+	{
+		self.name = n;
+		self.value = v;
     }
     return self;
 }
 
-- (id)initWithNamespace:(NSString*) ns qualifiedName:(NSString*) qn {
-    self = [super init];
-    if (self) {
-        self.nodeName = qn;
-		self.namespaceURI = ns;
+- (id)initWithNamespace:(NSString*) ns qualifiedName:(NSString*) qn value:(NSString *)v
+{
+    self = [super initType:SKNodeType_ATTRIBUTE_NODE name:qn value:v inNamespace:ns];
+	if (self)
+	{
 		self.name = qn;
-		
-		NSAssert( FALSE, @"Spec requires us to set two more properties using a process I don't understand: Node.prefix = prefix, extracted from qualifiedName, or null if there is no prefix. Node.localName = local name, extracted from qualifiedName" );
+		self.value = v;
     }
     return self;
 }

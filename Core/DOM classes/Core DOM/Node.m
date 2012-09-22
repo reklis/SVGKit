@@ -33,31 +33,43 @@
 
 @synthesize localName;
 
-- (id)initType:(SKNodeType) nt
+- (id)init
+{
+    NSAssert( FALSE, @"This class has no init method - it MUST NOT be init'd via init - you MUST use one of the multi-argument constructors instead" );
+	
+    return nil;
+}
+
+- (id)initType:(SKNodeType) nt name:(NSString*) n value:(NSString*) v
 {
     self = [super init];
     if (self) {
 		self.nodeType = nt;
         switch( nt )
 		{
-			case SKNodeType_ELEMENT_NODE:
-			{
-				self.attributes = [[[NamedNodeMap alloc] init] autorelease];
-			}break;
 				
 			case SKNodeType_ATTRIBUTE_NODE:
-			case SKNodeType_TEXT_NODE:
 			case SKNodeType_CDATA_SECTION_NODE:
-			case SKNodeType_ENTITY_REFERENCE_NODE:
-			case SKNodeType_ENTITY_NODE:
-			case SKNodeType_PROCESSING_INSTRUCTION_NODE:
 			case SKNodeType_COMMENT_NODE:
+			case SKNodeType_PROCESSING_INSTRUCTION_NODE:
+			case SKNodeType_TEXT_NODE:
+			{
+				self.nodeName = n;
+				self.nodeValue = v;
+			}break;
+			
+				
 			case SKNodeType_DOCUMENT_NODE:
 			case SKNodeType_DOCUMENT_TYPE_NODE:
 			case SKNodeType_DOCUMENT_FRAGMENT_NODE:
+			case SKNodeType_ENTITY_REFERENCE_NODE:
+			case SKNodeType_ENTITY_NODE:
 			case SKNodeType_NOTATION_NODE:
+			case SKNodeType_ELEMENT_NODE:
 			{
+				NSAssert( FALSE, @"NodeType = %i cannot be init'd with a value; nodes of that type have no value in the DOM spec", nt);
 				
+				self = nil;
 			}break;
 		}
 		
@@ -66,111 +78,87 @@
     return self;
 }
 
-- (id)initAttr:(NSString*) n value:(NSString*) v {
-    self = [self initType:SKNodeType_ATTRIBUTE_NODE];
+- (id)initType:(SKNodeType) nt name:(NSString*) n
+{
+    self = [super init];
     if (self) {
-        self.nodeName = n;
-		self.nodeValue = v;
-    }
-    return self;
-}
-- (id)initCDATASection:(NSString*) n value:(NSString*) v {
-    self = [self initType:SKNodeType_CDATA_SECTION_NODE];
-    if (self) {
-        self.nodeName = n;
-		self.nodeValue = v;
-    }
-    return self;
-}
-- (id)initComment:(NSString*) n value:(NSString*) v {
-    self = [self initType:SKNodeType_COMMENT_NODE];
-    if (self) {
-        self.nodeName = n;
-		self.nodeValue = v;
-    }
-    return self;
-}
-- (id)initDocument:(NSString*) n {
-    self = [self initType:SKNodeType_DOCUMENT_NODE];
-    if (self) {
-        self.nodeName = n;
-    }
-    return self;
-}
-- (id)initDocumentFragment:(NSString*) n {
-    self = [self initType:SKNodeType_DOCUMENT_FRAGMENT_NODE];
-    if (self) {
-        self.nodeName = n;
-    }
-    return self;
-}
-- (id)initDocumentType:(NSString*) n {
-    self = [self initType:SKNodeType_DOCUMENT_TYPE_NODE];
-    if (self) {
-        self.nodeName = n;
-    }
-    return self;
-}
-- (id)initElement:(NSString*) n {
-    self = [self initType:SKNodeType_ELEMENT_NODE];
-    if (self) {
-        self.nodeName = n;
-    }
-    return self;
-}
-- (id)initElement:(NSString*) n inNameSpaceURI:(NSString*) nsURI {
-    self = [self initType:SKNodeType_ELEMENT_NODE];
-    if (self) {
-        self.nodeName = n;
+		self.nodeType = nt;
+        switch( nt )
+		{
+				
+			case SKNodeType_ATTRIBUTE_NODE:
+			case SKNodeType_CDATA_SECTION_NODE:
+			case SKNodeType_COMMENT_NODE:
+			case SKNodeType_PROCESSING_INSTRUCTION_NODE:
+			case SKNodeType_TEXT_NODE:
+			{
+				NSAssert( FALSE, @"NodeType = %i cannot be init'd without a value; nodes of that type MUST have a value in the DOM spec", nt);
+				
+				self = nil;
+			}break;
+				
+				
+			case SKNodeType_DOCUMENT_NODE:
+			case SKNodeType_DOCUMENT_TYPE_NODE:
+			case SKNodeType_DOCUMENT_FRAGMENT_NODE:
+			case SKNodeType_ENTITY_REFERENCE_NODE:
+			case SKNodeType_ENTITY_NODE:
+			case SKNodeType_NOTATION_NODE:
+			{
+				self.nodeName = n;
+			}break;
+				
+			case SKNodeType_ELEMENT_NODE:
+			{
+				
+				self.nodeName = n;
+				
+				self.attributes = [[[NamedNodeMap alloc] init] autorelease];
+			}break;
+		}
 		
-		NSArray* nameSpaceParts = [n componentsSeparatedByString:@":"];
-		self.localName = [nameSpaceParts lastObject];
-		if( [nameSpaceParts count] > 1 )
-			self.prefix = [nameSpaceParts objectAtIndex:0];
-		
-		self.namespaceURI = nsURI;
+		self.childNodes = [[[NodeList alloc] init] autorelease];
     }
     return self;
 }
 
-- (id)initEntity:(NSString*) n {
-    self = [self initType:SKNodeType_ENTITY_NODE];
-    if (self) {
-        self.nodeName = n;
-    }
-    return self;
-}
-- (id)initEntityReference:(NSString*) n {
-    self = [self initType:SKNodeType_ENTITY_REFERENCE_NODE];
-    if (self) {
-        self.nodeName = n;
-    }
-    return self;
-}
-- (id)initNotation:(NSString*) n {
-    self = [self initType:SKNodeType_NOTATION_NODE];
-    if (self) {
-        self.nodeName = n;
-    }
-    return self;
-}
-- (id)initProcessingInstruction:(NSString*) n value:(NSString*) v {
-    self = [self initType:SKNodeType_PROCESSING_INSTRUCTION_NODE];
-    if (self) {
-        self.nodeName = n;
-		self.nodeValue = v;
-    }
-    return self;
-}
-- (id)initText:(NSString*) n value:(NSString*) v {
-    self = [self initType:SKNodeType_TEXT_NODE];
-    if (self) {
-        self.nodeName = n;
-		self.nodeValue = v;
-    }
-    return self;
+
+#pragma mark - Objective-C init methods DOM LEVEL 2 (preferred init - safer/better!)
+-(void) postInitNamespaceHandling:(NSString*) nsURI
+{
+	NSArray* nameSpaceParts = [self.nodeName componentsSeparatedByString:@":"];
+	self.localName = [nameSpaceParts lastObject];
+	if( [nameSpaceParts count] > 1 )
+		self.prefix = [nameSpaceParts objectAtIndex:0];
+		
+	self.namespaceURI = nsURI;
 }
 
+- (id)initType:(SKNodeType) nt name:(NSString*) n inNamespace:(NSString*) nsURI
+{
+	self = [self initType:nt name:n];
+	
+	if( self )
+	{
+		[self postInitNamespaceHandling:nsURI];
+	}
+	
+	return self;
+}
+
+- (id)initType:(SKNodeType) nt name:(NSString*) n value:(NSString*) v inNamespace:(NSString*) nsURI
+{
+	self = [self initType:nt name:n value:v];
+	
+	if( self )
+	{
+		[self postInitNamespaceHandling:nsURI];
+	}
+	
+	return self;
+}
+
+#pragma mark - Official DOM method implementations
 
 -(Node*) insertBefore:(Node*) newChild refChild:(Node*) refChild
 {

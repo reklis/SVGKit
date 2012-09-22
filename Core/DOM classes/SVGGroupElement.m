@@ -35,7 +35,7 @@
 	_opacity = [[self getAttribute:@"opacity"] floatValue];
 }
 
-- (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform
+- (CALayer *) newLayer
 {
 	
 	CALayer* _layer = [[CALayerWithChildHitTest layer] retain];
@@ -53,26 +53,28 @@
 }
 
 - (void)layoutLayer:(CALayer *)layer {
-	NSArray *sublayers = [layer sublayers];
 	CGRect mainRect = CGRectZero;
 	
-	for (NSUInteger n = 0; n < [sublayers count]; n++) {
-		CALayer *currentLayer = [sublayers objectAtIndex:n];
-		
+	/** Adam: make a frame thats the UNION of all sublayers frames */
+	for ( CALayer *currentLayer in [layer sublayers] )
+	{
 		CGRect subLayerFrame = currentLayer.frame;
-		
-		if (n == 0) {
-			mainRect = subLayerFrame;
-		}
-		else {
-			mainRect = CGRectUnion(mainRect, subLayerFrame);
-		}
+		mainRect = CGRectUnion(mainRect, subLayerFrame);
 	}
 	
 	layer.frame = mainRect;
 	
-	// TODO: this code looks insanely wrong to me. WTF is it doing? Why? WHY?
-	for (CALayer *currentLayer in sublayers) {
+	/** Adam:(dont know why this is here): set each sublayer to have a frame the same size as the parent frame, but with 0 offset.
+	 
+	 Adam: if I understand this correctly, the person who wrote it should have just written:
+	 
+	 "currentLayer.bounds = layer.frame"
+	 
+	 i.e. make every layer have the same size as the parent layer.
+	 
+	 But whoever wrote this didn't document their bad code, so I have no idea if thats correct or not
+	 */
+	for (CALayer *currentLayer in [layer sublayers]) {
 		CGRect frame = currentLayer.frame;
 		frame.origin.x -= mainRect.origin.x;
 		frame.origin.y -= mainRect.origin.y;

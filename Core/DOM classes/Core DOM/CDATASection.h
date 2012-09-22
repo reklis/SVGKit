@@ -13,4 +13,6 @@
 
 @interface CDATASection : Text
 
+- (id)initWithValue:(NSString*) v;
+
 @end

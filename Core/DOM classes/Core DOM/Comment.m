@@ -10,4 +10,12 @@
 
 @implementation Comment
 
+- (id)initWithValue:(NSString*) v
+{
+    self = [super initType:SKNodeType_COMMENT_NODE name:@"#comment" value:v];
+    if (self) {
+    }
+    return self;
+}
+
 @end

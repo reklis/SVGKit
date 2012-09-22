@@ -10,6 +10,14 @@
 
 @implementation Text
 
+- (id)initWithValue:(NSString*) v
+{
+    self = [super initType:SKNodeType_TEXT_NODE name:@"#text" value:v];
+    if (self) {
+		
+    }
+    return self;
+}
 -(Text*) splitText:(unsigned long) offset;
 {
 	NSAssert( FALSE, @"Not implemented yet" );

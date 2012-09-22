@@ -26,22 +26,22 @@
 
 -(DocumentFragment*) createDocumentFragment
 {
-	return [[[DocumentFragment alloc] initDocumentFragment:nil] autorelease];
+	return [[[DocumentFragment alloc] init] autorelease];
 }
 
 -(Text*) createTextNode:(NSString*) data
 {
-	return [[[Text alloc] initText:nil value:data] autorelease];
+	return [[[Text alloc] initWithValue:data] autorelease];
 }
 
 -(Comment*) createComment:(NSString*) data
 {
-	return [[[Comment alloc] initComment:nil value:data] autorelease];
+	return [[[Comment alloc] initWithValue:data] autorelease];
 }
 
 -(CDATASection*) createCDATASection:(NSString*) data
 {
-	return [[[CDATASection alloc] initCDATASection:nil value:data] autorelease];
+	return [[[CDATASection alloc] initWithValue:data] autorelease];
 }
 
 -(ProcessingInstruction*) createProcessingInstruction:(NSString*) target data:(NSString*) data
@@ -49,9 +49,9 @@
 	return [[[ProcessingInstruction alloc] initProcessingInstruction:target value:data] autorelease];
 }
 
--(Attr*) createAttribute:(NSString*) data
+-(Attr*) createAttribute:(NSString*) n
 {
-	return [[[Attr alloc] initAttr:data value:nil] autorelease];
+	return [[[Attr alloc] initWithName:n value:@""] autorelease];
 }
 
 -(EntityReference*) createEntityReference:(NSString*) data
@@ -89,7 +89,7 @@
 -(Attr*) createAttributeNS:(NSString*) namespaceURI qualifiedName:(NSString*) qualifiedName
 {
 	NSAssert( FALSE, @"This should be re-implemented to share code with createElementNS: method above" );
-	Attr* newAttr = [[[Attr alloc] initWithNamespace:namespaceURI qualifiedName:qualifiedName] autorelease];
+	Attr* newAttr = [[[Attr alloc] initWithNamespace:namespaceURI qualifiedName:qualifiedName value:@""] autorelease];
 	return newAttr;
 }
 
@@ -138,6 +138,7 @@
 				includeThisNode = TRUE;
 			
 			if( !includeThisNode )
+			{
 				if( namespaceURI == nil ) // No namespace? then do a qualified compare
 				{
 					includeThisNode = [parentAsElement.tagName isEqualToString:name];
@@ -146,6 +147,7 @@
 				{
 					includeThisNode = [parentAsElement.localName isEqualToString:name];
 				}
+			}
 			
 			if( includeThisNode )
 			{

@@ -136,23 +136,10 @@ typedef enum SKNodeType
 @property(nonatomic) BOOL hasAttributes;
 
 #pragma mark - Objective-C init methods (not in SVG Spec - you're supposed to use SVGDocument's createXXX methods instead)
-/** Generic init method - used by all the other methods (designated initializer, effectively) */
-- (id)initType:(SKNodeType) nt;
-
-- (id)initAttr:(NSString*) n value:(NSString*) v;
-- (id)initCDATASection:(NSString*) n value:(NSString*) v;
-- (id)initComment:(NSString*) n value:(NSString*) v;
-- (id)initDocument:(NSString*) n;
-- (id)initDocumentFragment:(NSString*) n;
-- (id)initDocumentType:(NSString*) n;
-/*! DOM level 1 (leaves various things set to nil) */
-- (id)initElement:(NSString*) n;
-/*! DOM level 2 (ALWAYS use this if possible: otherwise lots of things left at nil) */
-- (id)initElement:(NSString*) n inNameSpaceURI:(NSString*) nsURI;
-- (id)initEntity:(NSString*) n;
-- (id)initEntityReference:(NSString*) n;
-- (id)initNotation:(NSString*) n;
-- (id)initProcessingInstruction:(NSString*) n value:(NSString*) v;
-- (id)initText:(NSString*) n value:(NSString*) v;
+/** Designated initializers - 2 pairs (one for DOM 1, no namespace, the other for DOM 2, with namespace) of 2 methods (one for nodes that REQUIRE a value, the other for nodes that MUST NOT have a value) */
+- (id)initType:(SKNodeType) nt name:(NSString*) n;
+- (id)initType:(SKNodeType) nt name:(NSString*) n value:(NSString*) v;
+- (id)initType:(SKNodeType) nt name:(NSString*) n inNamespace:(NSString*) nsURI;
+- (id)initType:(SKNodeType) nt name:(NSString*) n value:(NSString*) v inNamespace:(NSString*) nsURI;
 
 @end

@@ -158,6 +158,8 @@ static NSDictionary *elementMap;
 			}
 			if( generateAnSVGDocument )
 			{
+				NSAssert( [element isKindOfClass:[SVGSVGElement class]], @"Trying to create a new internal SVGDocument from a Node that is NOT of type SVGSVGElement (tag: svg). Node was of type: %@", NSStringFromClass([element class]));
+				
 				SVGDocument* newDocument = [[[SVGDocument alloc] init] autorelease];
 				newDocument.rootElement = (SVGSVGElement*) element;
 				

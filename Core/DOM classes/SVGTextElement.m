@@ -69,8 +69,10 @@
 //    "writing-mode" = "lr-tb";
 }
 
-- (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform
+- (CALayer *) newLayer
 {
+	NSAssert( FALSE, @"NOT SUPPORTED: SVG Text Element . newLayer -- must be upgraded using the algorithm in SVGShapeElement.newLayer");
+	
 #if TARGET_OS_IPHONE
     NSString* textToDraw = self.stringValue;
     
@@ -82,7 +84,7 @@
     [label setName:self.identifier];
     [label setFont:_fontFamily];
     [label setFontSize:_fontSize];  
-    [label setFrame:CGRectApplyAffineTransform( CGRectMake(_x, _y, sizeOfTextRect.width, sizeOfTextRect.height), preTransform ) ];
+    [label setFrame:CGRectApplyAffineTransform( CGRectMake(_x, _y, sizeOfTextRect.width, sizeOfTextRect.height), [self transformAbsolute] ) ];
     [label setString:textToDraw];
     [label setAlignmentMode:kCAAlignmentLeft];
     [label setForegroundColor:[[UIColor blackColor] CGColor]];

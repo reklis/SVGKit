@@ -16,6 +16,8 @@
 
 @interface Text : CharacterData
 
+- (id)initWithValue:(NSString*) v;
+
 -(Text*) splitText:(unsigned long) offset;
 
 @end

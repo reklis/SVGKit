@@ -22,6 +22,7 @@
 
 @interface Attr : Node
 
+/*! NB: The official DOM spec FAILS TO SPECIFY what the value of "name" is */
 @property(nonatomic,retain,readonly) NSString* name;
 @property(nonatomic,readonly) BOOL specified;
 @property(nonatomic,retain,readonly) NSString* value;
@@ -31,7 +32,7 @@
 
 #pragma mark - ObjC methods
 
-- (id)initWithName:(NSString*) n;
-- (id)initWithNamespace:(NSString*) ns qualifiedName:(NSString*) qn;
+- (id)initWithName:(NSString*) n value:(NSString*) v;
+- (id)initWithNamespace:(NSString*) ns qualifiedName:(NSString*) qn value:(NSString*) v;
 
 @end

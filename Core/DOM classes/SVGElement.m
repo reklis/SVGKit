@@ -269,35 +269,64 @@
 
 }
 
-/*! implemented making heavy use of the self.viewportElement to optimize performance - I believe this is what the
- SVG Spec authors intended
- 
- FIXME: this method could be removed by cut/pasting the code below directly into SVGKImage and its CALayer generation
- code. Previously, this method recursed through the whole tree, but now that it's using the self.viewportElement property
- it's a bit simpler.
+/*! ADAM: SVG Official spec is EXTREMELY BADLY WRITTEN for this aspect (transforms + viewports + viewboxes) - almost all the documentation
+ is "missing" and what's there is mumbo-jumbo appallingly bad English. I've had to do lots of "intelligent guessing" and "trial and error"
+ to work out what the heck the authors were TRYING to say, but failing badly at actually saying.
  */
 -(CGAffineTransform) transformAbsolute
 {
-	if( self.viewportElement == nil ) // this is the outermost, root <svg> tag
-		return self.transformRelative;
+	/**
+	 
+	 Each time you hit a viewPortElement in the DOM Tree, you
+	 have to insert an ADDITIONAL transform into the flow of:
+	 
+	     parent-transform -> child-transform
+	 
+	 has to become:
+	 
+	     parent-transform -> VIEWPORT-TRANSFORM -> child-transform
+	 */
+	
+	CGAffineTransform parentAbsoluteTransform;
+	CGAffineTransform selfRelativeTransform;
+	CGAffineTransform optionalViewportTransform;
+	
+	NSAssert( self.parentNode == nil || [self.parentNode isKindOfClass:[SVGElement class]], @"I don't know what to do when parent node is NOT an SVG element of some kind; presumably, this is when SVG root node gets embedded inside something else? The Spec IS VERY BADLY WRITTEN and doesn't clearly define ANYTHING here, and provides very few examples" );
+	
+	/** PARENT absolute */
+	SVGElement* parentSVGElement = (SVGElement*) self.parentNode;
+	if( self.parentNode == nil)
+		parentAbsoluteTransform = CGAffineTransformIdentity;
+	else
+		parentAbsoluteTransform = [parentSVGElement transformAbsolute];
+	
+	/** SELF relative */
+	selfRelativeTransform = self.transformRelative;
+	
+	/** VIEWPORT relative */
+	if( self.viewportElement != self )
+		optionalViewportTransform = CGAffineTransformIdentity;
 	else
 	{
-		/**
-		 If this node altered the viewport, then the "inherited" info is whatever its parent had.
-		 
-		 Otherwise, its whatever the pre-saved self.viewportElement is using.
-		 
-		 NB: this is an optimization that is built-in to the SVG spec; previous implementation in SVGKit
-		 recursed up the entire tree of SVGElement's, even though most SVGElement's are NOT ALLOWED to
-		 redefine the viewport
-		 */
-		if( self.viewportElement == self )
-		{
-			return CGAffineTransformConcat( self.transformRelative, ((SVGElement*) self.parentNode).viewportElement.transformAbsolute );
-		}
+		NSAssert( [self isKindOfClass:[SVGSVGElement class]], @"I don't know how to handle a VIEWPORT element that is NOT an <svg> tag. The SVG Spec is appallingly badly written, provides zero guidance, and zero examples. Someone will need to investigate as soon as we have an example!");
+		
+		SVGSVGElement* selfAsSVGTag = (SVGSVGElement*) self;
+		CGRect frameViewBox = selfAsSVGTag.viewBoxFrame;
+		CGRect frameViewport = CGRectMake(0,0, [selfAsSVGTag.width pixelsValue], [selfAsSVGTag.height pixelsValue] );
+		
+		if( ! CGRectIsEmpty( frameViewBox ) )
+			optionalViewportTransform = CGAffineTransformMakeScale( frameViewport.size.width / frameViewBox.size.width, frameViewport.size.height / frameViewBox.size.height);
 		else
-			return [self.viewportElement transformAbsolute];
+			optionalViewportTransform = CGAffineTransformIdentity;
 	}
+	
+	
+	/** SELF absolute */
+	CGAffineTransform result = CGAffineTransformConcat( selfRelativeTransform, CGAffineTransformConcat( optionalViewportTransform, parentAbsoluteTransform));
+	
+	NSLog( @"[%@] self.transformAbsolute: returning: affine( (%2.1f %2.1f %2.1f %2.1f), (%2.1f %2.1f)", [self class], result.a, result.b, result.c, result.d, result.tx, result.ty);
+	
+	return result;
 }
 
 - (void)parseContent:(NSString *)content {

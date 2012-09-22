@@ -52,8 +52,6 @@
 {
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	id value = nil;
-	
 	_opacity = [[self getAttribute:@"opacity"] floatValue];
 	
 	if ([[self getAttribute:@"fill"] length] > 0 ) {
@@ -67,7 +65,7 @@
 			_fillType = SVGFillTypeNone;
 		}
 		else {
-			_fillColor = SVGColorFromString([value UTF8String]);
+			_fillColor = SVGColorFromString(cvalue);
 			_fillType = SVGFillTypeSolid;
 		}
 	}
@@ -108,14 +106,13 @@
 	}
 }
 
-- (CALayer *) newLayerPreTransformed:(CGAffineTransform) preTransform {
+- (CALayer *) newLayer
+{
 	CAShapeLayer* _shapeLayer = [[CAShapeLayerWithHitTest layer] retain];
 	_shapeLayer.name = self.identifier;
 		[_shapeLayer setValue:self.identifier forKey:kSVGElementIdentifier];
 	_shapeLayer.opacity = _opacity;
-	
-	CGAffineTransform svgEffectiveTransform = [((SVGElement*)self) transformAbsolute];
-	
+		
 #if OUTLINE_SHAPES
 	
 #if TARGET_OS_IPHONE
@@ -125,27 +122,13 @@
 	_shapeLayer.borderWidth = 1.0f;
 #endif
 	
-	/**
-	 We've parsed this shape using the size values specified RAW inside the SVG.
-	 
-	 Before we attempt to *render* it, we need to convert those values into
-	 screen-space.
-	 
-	 Most SVG docs have screenspace == unit space - but some docs have an explicit "viewBox"
-	 attribute on the SVG document. As per the SVG spec, this defines an alternative
-	 conversion from unit space to screenspace
-	 
-	 NB: if you DO NOT do this, many SVG's will *crash* your system, because they use ultra-large co-ordinate systems,
-	 and "assume" you will scale them down to sane numbers before rendering. e.g. many Wikipedia maps are specified in
-	 "hundreds of thousands" of pixels (or higher) - which would lead to multi-gigabyte images in memory, enough to crash
-	 most OS's
-	 */
-	CGAffineTransform transformAbsoluteThenGlobalViewBoxFix = CGAffineTransformConcat(svgEffectiveTransform, preTransform);
-	
+	/** transform our LOCAL path into ABSOLUTE space */
+	CGAffineTransform transformAbsolute = [self transformAbsolute];
 	CGMutablePathRef pathToPlaceInLayer = CGPathCreateMutable();
-	CGPathAddPath( pathToPlaceInLayer, &transformAbsoluteThenGlobalViewBoxFix, _pathRelative);	
+	CGPathAddPath( pathToPlaceInLayer, &transformAbsolute, _pathRelative);
 	
-    CGRect rect = CGPathGetPathBoundingBox( _pathRelative );
+	/** find out the ABSOLUTE BOUNDING BOX of our transformed path */
+    CGRect localPathBB = CGPathGetPathBoundingBox( _pathRelative );
 	//DEBUG ONLY: CGRect unTransformedPathBB = CGPathGetBoundingBox( _pathRelative );
 	CGRect transformedPathBB = CGPathGetBoundingBox( pathToPlaceInLayer );
 	
@@ -153,7 +136,7 @@
 	 because Apple didn't provide a BOOL to disable that "feature", we have to pre-shift the path forwards by the amount it
 	 will be shifted backwards */
 	CGPathRef finalPath = CGPathCreateByOffsettingPath( pathToPlaceInLayer, transformedPathBB.origin.x, transformedPathBB.origin.y );
-
+	
 	/** Can't use this - iOS 5 only! path = CGPathCreateCopyByTransformingPath(path, transformFromSVGUnitsToScreenUnits ); */
 	
 	_shapeLayer.path = finalPath;
@@ -164,7 +147,7 @@
 	 NB: this line, by changing the FRAME of the layer, has the side effect of also changing the CGPATH's position in absolute
 	 space! This is why we needed the "CGPathRef finalPath =" line a few lines above...
 	 */
-	_shapeLayer.frame = CGRectApplyAffineTransform( rect, CGAffineTransformConcat( svgEffectiveTransform, preTransform ) );
+	_shapeLayer.frame = CGRectApplyAffineTransform( localPathBB, transformAbsolute );
 		
 	//DEBUG ONLY: CGRect shapeLayerFrame = _shapeLayer.frame;
 	
@@ -173,7 +156,7 @@
 		 We have to apply any scale-factor part of the affine transform to the stroke itself (this is bizarre and horrible, yes, but that's the spec for you!)
 		 */
 		CGPoint fakePoint = CGPointMake( _strokeWidth, 0);
-		fakePoint = CGPointApplyAffineTransform( fakePoint, preTransform );
+		fakePoint = CGPointApplyAffineTransform( fakePoint, transformAbsolute );
 		_shapeLayer.lineWidth = fakePoint.x;
 		_shapeLayer.strokeColor = CGColorWithSVGColor(_strokeColor);
 	}

@@ -10,4 +10,12 @@
 
 @implementation DocumentFragment
 
+- (id)init
+{
+    self = [super initType:SKNodeType_DOCUMENT_FRAGMENT_NODE name:nil];
+    if (self) {
+		
+    }
+    return self;
+}
 @end

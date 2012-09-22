@@ -26,4 +26,8 @@
 @property (nonatomic, retain, readonly) NSString* URL;
 @property (nonatomic, retain, readonly) SVGSVGElement* rootElement;
 
+#pragma mark - Objective-C init methods (not part of DOM spec, but necessary!)
+
+- (id)init;
+
 @end

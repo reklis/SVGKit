@@ -1,7 +1,7 @@
 /**
  SVGElement
  
- http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1950641247
+ http://www.w3.org/TR/SVG/types.html#InterfaceSVGElement
 
  NB: "id" is illegal in Objective-C language, so we use "identifier" instead
  

@@ -20,6 +20,16 @@
 @synthesize URL;
 @synthesize rootElement=_rootElement;
 
+
+- (id)init
+{
+    self = [super initType:SKNodeType_DOCUMENT_NODE name:@"#document"];
+    if (self) {
+        
+    }
+    return self;
+}
+
 -(void)setRootElement:(SVGSVGElement *)rootElement
 {
 	[_rootElement release];
