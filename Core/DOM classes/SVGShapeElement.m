@@ -157,9 +157,9 @@
 		/*
 		 We have to apply any scale-factor part of the affine transform to the stroke itself (this is bizarre and horrible, yes, but that's the spec for you!)
 		 */
-		CGPoint fakePoint = CGPointMake( _strokeWidth, 0);
-		fakePoint = CGPointApplyAffineTransform( fakePoint, transformAbsolute );
-		_shapeLayer.lineWidth = fakePoint.x;
+		CGSize fakeSize = CGSizeMake( _strokeWidth, 0 );
+		fakeSize = CGSizeApplyAffineTransform( fakeSize, transformAbsolute );
+		_shapeLayer.lineWidth = fakeSize.width;
 		_shapeLayer.strokeColor = CGColorWithSVGColor(_strokeColor);
 	}
 	
