@@ -162,6 +162,11 @@
 		_shapeLayer.lineWidth = fakeSize.width;
 		_shapeLayer.strokeColor = CGColorWithSVGColor(_strokeColor);
 	}
+	else
+	{
+		_shapeLayer.strokeColor = nil; // This is how you tell Apple that the stroke is disabled; a strokewidth of 0 will NOT achieve this
+		_shapeLayer.lineWidth = 0.0f; // MUST set this explicitly, or Apple assumes 1.0
+	}
 	
 	if (_fillType == SVGFillTypeNone) {
 		_shapeLayer.fillColor = nil;

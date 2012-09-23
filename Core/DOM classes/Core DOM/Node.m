@@ -313,7 +313,7 @@
 		default:
 			nodeTypeName = @"N/A (DATA IS MISSING FROM NODE INSTANCE)";
 	}
-	return [NSString stringWithFormat:@"Node: %@ (%@) @@%ld attributes + %ld x children", self.nodeName, nodeTypeName, self.attributes.length, self.childNodes.length];
+	return [NSString stringWithFormat:@"Node: %@ (%@) value:[%@] @@%ld attributes + %ld x children", self.nodeName, nodeTypeName, [self.nodeValue length]<11 ? self.nodeValue : [NSString stringWithFormat:@"%@...",[self.nodeValue substringToIndex:10]], self.attributes.length, self.childNodes.length];
 }
 
 @end

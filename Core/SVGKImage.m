@@ -286,7 +286,6 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 
 - (CALayer *)newLayerWithElement:(SVGElement <SVGLayeredElement> *)element
 {
-	
 	CALayer *layer = [element newLayer];
 	
 	NSLog(@"[%@] DEBUG: converted SVG element (class:%@) to CALayer (class:%@ frame:%@) for id = %@", [self class], NSStringFromClass([element class]), NSStringFromClass([layer class]), NSStringFromCGRect( layer.frame ), element.identifier);
@@ -295,11 +294,6 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 		return layer;
 	}
 	
-	/**
-	 TODO / FIXME: at this point, we should also detect if anything in the current SVGElement ("element") has
-	 changed the viewBox - if it has, we should modify the "preTransform" before applying it to sub-nodes / child
-	 nodes
-	 */
 	for (SVGElement *child in element.childNodes )
 	{
 		if ([child conformsToProtocol:@protocol(SVGLayeredElement)]) {
@@ -313,8 +307,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 		}
 	}
 	
-	//ADAM: no explanation for WTF this if statement is for! : if (element != self.DOMTree)
-		[element layoutLayer:layer];
+	[element layoutLayer:layer];
 	
     [layer setNeedsDisplay];
 	
@@ -327,19 +320,6 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 		return nil;
 	else
 	{
-		/****
-		 
-		 delete all this if it works without it
-		 
-		CGAffineTransform preTransform = CGAffineTransformIdentity;
-		
-		// TODO: calc the correct transform!
-		CGRect frameViewBox = self.DOMTree.viewBoxFrame;
-		CGRect frameImage = CGRectMake(0,0, [self.DOMTree.width pixelsValue], [self.DOMTree.height pixelsValue] );
-		
-		if( ! CGRectIsEmpty( frameViewBox ) )
-			preTransform = CGAffineTransformMakeScale( frameImage.size.width / frameViewBox.size.width, frameImage.size.height / frameViewBox.size.height);
-		*/
 		return [self newLayerWithElement:self.DOMTree];
 	}
 }
