@@ -91,7 +91,8 @@
 	
 	self.height = [SVGLength svgLengthFromNSString:[self getAttribute:@"height"]];
 	
-	if( [[self getAttribute:@"viewBox"] length] > 0 ) {
+	if( [[self getAttribute:@"viewBox"] length] > 0 )
+	{
 		NSArray* boxElements = [[self getAttribute:@"viewBox"] componentsSeparatedByString:@" "];
 		
 		_viewBoxFrame = CGRectMake([[boxElements objectAtIndex:0] floatValue], [[boxElements objectAtIndex:1] floatValue], [[boxElements objectAtIndex:2] floatValue], [[boxElements objectAtIndex:3] floatValue]);

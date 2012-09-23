@@ -48,11 +48,33 @@
  NB: by definition, <svg> tags MAY NOT have a width, but they are still viewports */
 -(void) reCalculateAndSetViewportElementReferenceUsingFirstSVGAncestor:(SVGElement*) firstAncestor
 {
-	if( [self.tagName isEqualToString:@"svg"] // if its the <svg> tag, its automatically the viewportElement
-	   || [self.attributes getNamedItem:@"width"] != nil )
+	// NB the root svg element IS a viewport, but SVG Spec defines it as NOT a viewport, and so we will overwrite this later
+	BOOL isTagAllowedToBeAViewport = [self.tagName isEqualToString:@"svg"] || [self.tagName isEqualToString:@"image"] || [self.tagName isEqualToString:@"foreignObject"];
+	
+	BOOL isTagDefiningAViewport = [self.attributes getNamedItem:@"width"] != nil || [self.attributes getNamedItem:@"height"] != nil;
+		
+	if( isTagAllowedToBeAViewport && isTagDefiningAViewport )
+	{
+		NSLog(@"[%@] WARNING: setting self (tag = %@) to be a viewport", [self class], self.tagName );
 		self.viewportElement =  self;
+	}
 	else
-		self.viewportElement = firstAncestor.viewportElement;
+	{
+		SVGElement* ancestorsViewport = firstAncestor.viewportElement;
+		
+		if( ancestorsViewport == nil )
+		{
+			/**
+			 Because of the poorly-designed SVG Spec on Viewports, all the children of the root
+			 SVG node will find that their ancestor has a nil viewport! (this is defined in the spec)
+			 
+			 So, in that special case, we INSTEAD guess that the ancestor itself was the viewport...
+			 */
+			self.viewportElement = firstAncestor;
+		}
+		else
+			self.viewportElement = ancestorsViewport;
+	}
 }
 
 /*! Override so that we can automatically set / unset the ownerSVGElement and viewportElement properties,
@@ -103,6 +125,8 @@
 			
 			self.rootOfCurrentDocumentFragment = firstAncestorThatIsAnyKindOfSVGElement.rootOfCurrentDocumentFragment;
 			[self reCalculateAndSetViewportElementReferenceUsingFirstSVGAncestor:firstAncestorThatIsAnyKindOfSVGElement];
+			
+			NSLog(@"viewport Element = %@ ... for node/element = %@", self.viewportElement, self.tagName);
 		}
 	}
 }
@@ -261,9 +285,6 @@
 			}
 			else
 			{
-				NSLog(@"command = '%@' ... scale = 'scale'", command);
-				BOOL isScale = [command isEqualToString:@"scale"];
-				
 				NSAssert( FALSE, @"Not implemented yet: transform = %@ %@", command, transformString );
 			}
 		}];
@@ -309,7 +330,9 @@
 	selfRelativeTransform = self.transformRelative;
 	
 	/** VIEWPORT relative */
-	if( self.viewportElement != self )
+	if( self.viewportElement != nil // if it's nil, it means THE OPPOSITE of what you'd expect - it means that it IS the viewport element - SVG Spec REQUIRES this
+	&& self.viewportElement != self // if it's some-other-object, then: we simply don't need to worry about it
+	   )
 		optionalViewportTransform = CGAffineTransformIdentity;
 	else
 	{
