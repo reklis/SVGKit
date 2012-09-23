@@ -19,12 +19,16 @@
 - (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
+	if( [[self getAttribute:@"x1"] length] > 0 )
 	_x1 = [[self getAttribute:@"x1"] floatValue];
 	
+	if( [[self getAttribute:@"y1"] length] > 0 )
 	_y1 = [[self getAttribute:@"y1"] floatValue];
 	
+	if( [[self getAttribute:@"x2"] length] > 0 )
 	_x2 = [[self getAttribute:@"x2"] floatValue];
 	
+	if( [[self getAttribute:@"y2"] length] > 0 )
 	_y2 = [[self getAttribute:@"y2"] floatValue];
 	
 	CGMutablePathRef path = CGPathCreateMutable();

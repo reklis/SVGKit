@@ -32,6 +32,7 @@
 - (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
+	if( [[self getAttribute:@"opacity"] length] > 0 )
 	_opacity = [[self getAttribute:@"opacity"] floatValue];
 }
 

@@ -174,6 +174,8 @@
 			NSString* command = [transformString substringToIndex:loc.location];
 			NSArray* parameterStrings = [[transformString substringFromIndex:loc.location+1] componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@","]];
 			
+			command = [command stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
+			
 			if( [command isEqualToString:@"translate"] )
 			{
 				CGFloat xtrans = [(NSString*)[parameterStrings objectAtIndex:0] floatValue];
@@ -259,6 +261,9 @@
 			}
 			else
 			{
+				NSLog(@"command = '%@' ... scale = 'scale'", command);
+				BOOL isScale = [command isEqualToString:@"scale"];
+				
 				NSAssert( FALSE, @"Not implemented yet: transform = %@ %@", command, transformString );
 			}
 		}];

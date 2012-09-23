@@ -52,6 +52,7 @@
 {
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
+	if( [[self getAttribute:@"opacity"] length] > 0 )
 	_opacity = [[self getAttribute:@"opacity"] floatValue];
 	
 	if ([[self getAttribute:@"fill"] length] > 0 ) {
@@ -70,7 +71,8 @@
 		}
 	}
 	
-	_strokeWidth = [[self getAttribute:@"stroke-width"] floatValue];
+	if( [[self getAttribute:@"stroke-width"] length] > 0 )
+		_strokeWidth = [[self getAttribute:@"stroke-width"] floatValue];
 	
 	if ( [[self getAttribute:@"stroke"] length] > 0 ) {
 		const char *cvalue = [[self getAttribute:@"stroke"] UTF8String];

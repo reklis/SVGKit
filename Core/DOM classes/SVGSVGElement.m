@@ -84,6 +84,9 @@
 - (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
+	NSAssert( [[self getAttribute:@"width"] length] > 0, @"Not supported yet: <svg> tag that is missing an explicit width attribute");
+	NSAssert( [[self getAttribute:@"height"] length] > 0, @"Not supported yet: <svg> tag that is missing an explicit height attribute");
+	
 	self.width = [SVGLength svgLengthFromNSString:[self getAttribute:@"width"]];
 	
 	self.height = [SVGLength svgLengthFromNSString:[self getAttribute:@"height"]];

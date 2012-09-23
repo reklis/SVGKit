@@ -35,8 +35,10 @@
 {
     [super postProcessAttributesAddingErrorsTo:parseResult];
     
+	if( [[self getAttribute:@"x"] length] > 0 )
 	_x = [[self getAttribute:@"x"] floatValue];
     
+	if( [[self getAttribute:@"y"] length] > 0 )
 	_y = [[self getAttribute:@"y"] floatValue];
     
     // TODO: class

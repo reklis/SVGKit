@@ -47,9 +47,18 @@
     return self;
 }
 
-
 -(NSString*) getAttribute:(NSString*) name
 {
+	/**
+	 WARNING: the definition in the spec WILL CORRUPT all Objective-C code.
+	 
+	 The spec - instead of defining 'nil' - defines "" (empty string) as the
+	 correct response.
+	 
+	 But in most of the modern, C-based, (non-scripting) languages, "" means 0.
+	 
+	 Very dangerous!
+	 */
 	Attr* result = (Attr*) [self.attributes getNamedItem:name];
 	
 	if( result == nil || result.value == nil )

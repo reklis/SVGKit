@@ -55,14 +55,19 @@ CGImageRef SVGImageCGImage(SVGImageRef img)
 - (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 
+	if( [[self getAttribute:@"x"] length] > 0 )
 	_x = [[self getAttribute:@"x"] floatValue];
 
+	if( [[self getAttribute:@"y"] length] > 0 )
 	_y = [[self getAttribute:@"y"] floatValue];
 
+	if( [[self getAttribute:@"width"] length] > 0 )
 	_width = [[self getAttribute:@"width"] floatValue];
 
+	if( [[self getAttribute:@"height"] length] > 0 )
 	_height = [[self getAttribute:@"height"] floatValue];
 
+	if( [[self getAttribute:@"href"] length] > 0 )
 	self.href = [self getAttribute:@"href"];
 }
 

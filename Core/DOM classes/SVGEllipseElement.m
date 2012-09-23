@@ -26,12 +26,16 @@
 - (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
+	if( [[self getAttribute:@"cx"] length] > 0 )
 	self.cx = [[self getAttribute:@"cx"] floatValue];
 	
+	if( [[self getAttribute:@"cy"] length] > 0 )
 	self.cy = [[self getAttribute:@"cy"] floatValue];
 	
+	if( [[self getAttribute:@"rx"] length] > 0 )
 	self.rx = [[self getAttribute:@"rx"] floatValue];
 	
+	if( [[self getAttribute:@"ry"] length] > 0 )
 	self.ry = [[self getAttribute:@"ry"] floatValue];
 	
 	if( [[self getAttribute:@"r"] length] > 0 ) { // circle
