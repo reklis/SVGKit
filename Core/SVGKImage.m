@@ -8,6 +8,17 @@
 
 #import "SVGKParserSVG.h"
 
+#ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+@interface SVGKImageCacheLine : NSObject
+@property(nonatomic) int numberOfInstances;
+@property(nonatomic,retain) SVGKImage* mainInstance;
+@end
+@implementation SVGKImageCacheLine
+@synthesize numberOfInstances;
+@synthesize mainInstance;
+@end
+#endif
+
 @interface SVGKImage ()
 
 @property (nonatomic, readwrite) SVGLength* svgWidth;
@@ -19,6 +30,10 @@
 @property (nonatomic, retain, readwrite) SVGDocument* DOMDocument;
 @property (nonatomic, retain, readwrite) SVGSVGElement* DOMTree; // needs renaming + (possibly) replacing by DOMDocument
 @property (nonatomic, retain, readwrite) CALayer* CALayerTree;
+#ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+@property (nonatomic, retain, readwrite) NSString* nameUsedToInstantiate;
+#endif
+
 
 #pragma mark - UIImage methods cloned and re-implemented as SVG intelligent methods
 //NOT DEFINED: what is the scale for a SVGKImage? @property(nonatomic,readwrite) CGFloat            scale __OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_4_0);
@@ -35,8 +50,26 @@
 @synthesize source;
 @synthesize parseErrorsAndWarnings;
 
+#ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+static NSMutableDictionary* globalSVGKImageCache;
+#endif
+
 + (SVGKImage *)imageNamed:(NSString *)name {
 	NSParameterAssert(name != nil);
+    
+#ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+    if( globalSVGKImageCache == nil )
+    {
+        globalSVGKImageCache = [NSMutableDictionary new];
+    }
+    
+    SVGKImageCacheLine* cacheLine = [globalSVGKImageCache valueForKey:name];
+    if( cacheLine != nil )
+    {
+        cacheLine.numberOfInstances ++;
+        return cacheLine.mainInstance;
+    }
+#endif
 	
 	NSBundle *bundle = [NSBundle mainBundle];
 	
@@ -57,7 +90,19 @@
 		return nil;
 	}
 	
-	return [self imageWithContentsOfFile:path];
+	SVGKImage* result = [self imageWithContentsOfFile:path];
+    
+#ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+    result->cameFromGlobalCache = TRUE;
+    result.nameUsedToInstantiate = name;
+    
+    SVGKImageCacheLine* newCacheLine = [[[SVGKImageCacheLine alloc] init] autorelease];
+    newCacheLine.mainInstance = result;
+    
+    [globalSVGKImageCache setValue:newCacheLine forKey:name];
+#endif
+    
+    return result;
 }
 
 + (SVGKImage*) imageWithContentsOfURL:(NSURL *)url {
@@ -125,11 +170,33 @@
 	return [self initWithSource:[SVGKSource sourceFromURL:url]];
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
+#ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+    if( self->cameFromGlobalCache )
+    {
+        SVGKImageCacheLine* cacheLine = [globalSVGKImageCache valueForKey:self.nameUsedToInstantiate];
+        cacheLine.numberOfInstances --;
+        
+        if( cacheLine.numberOfInstances < 1 )
+        {
+            [globalSVGKImageCache removeObjectForKey:self.nameUsedToInstantiate];
+        }
+    }
+#endif
+
+    self.svgWidth = nil;
+    self.svgHeight = nil;
+    self.source = nil;
+    self.parseErrorsAndWarnings = nil;
+    
+    self.DOMDocument = nil;
 	self.DOMTree = nil;
 	self.CALayerTree = nil;
-	self.source = nil;
-	self.parseErrorsAndWarnings = nil;
+#ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+    self.nameUsedToInstantiate = nil;
+#endif
+        
 	[super dealloc];
 }
 

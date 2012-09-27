@@ -47,10 +47,15 @@
 #import "SVGKSource.h"
 #import "SVGKParseResult.h"
 
+#define ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED // if ENABLED, then ALL instances created with imageNamed: are shared, and are NEVER RELEASED
+
 @class SVGDefsElement;
 
 @interface SVGKImage : NSObject // doesn't extend UIImage because Apple made UIImage immutable
 {
+#ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+    BOOL cameFromGlobalCache;
+#endif
 }
 
 #if TARGET_OS_IPHONE
@@ -65,6 +70,9 @@
 @property (nonatomic, retain, readonly) SVGDocument* DOMDocument;
 @property (nonatomic, retain, readonly) SVGSVGElement* DOMTree; // needs renaming + (possibly) replacing by DOMDocument
 @property (nonatomic, retain, readonly) CALayer* CALayerTree;
+#ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+@property (nonatomic, retain, readonly) NSString* nameUsedToInstantiate;
+#endif
 
 
 #pragma mark - methods to quick load an SVG as an image
