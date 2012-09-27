@@ -2,9 +2,9 @@
 
 @implementation SVGKImageView
 
-@synthesize image;
-@synthesize scaleMultiplier;
-@synthesize tileContents;
+@synthesize image = _image;
+@synthesize scaleMultiplier = _scaleMultiplier;
+@synthesize tileContents = _tileContents;
 
 - (id)init
 {
@@ -24,6 +24,35 @@
 		self.backgroundColor = [UIColor clearColor];
     }
     return self;
+}
+
+/** Override default method purely so that it triggers a need to re-display (get Apple to call drawRect: again)
+ Can't use Apple's KVO because it doesn't work and they provide no way to debug it */
+-(void)setImage:(SVGKImage *)newImage
+{
+    [_image release];
+    _image = newImage;
+    [_image retain];
+    
+    [self setNeedsDisplay];
+}
+
+/** Override default method purely so that it triggers a need to re-display (get Apple to call drawRect: again)
+ Can't use Apple's KVO because it doesn't work and they provide no way to debug it */
+-(void)setScaleMultiplier:(CGSize)newScaleMultiplier
+{
+    _scaleMultiplier = newScaleMultiplier;
+    
+    [self setNeedsDisplay];
+}
+
+/** Override default method purely so that it triggers a need to re-display (get Apple to call drawRect: again)
+ Can't use Apple's KVO because it doesn't work and they provide no way to debug it */
+-(void)setTileContents:(BOOL)newTileContents
+{
+    _tileContents = newTileContents;
+    
+    [self setNeedsDisplay];
 }
 
 -(void)drawRect:(CGRect)rect
