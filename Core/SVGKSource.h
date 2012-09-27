@@ -15,16 +15,16 @@
 
 #import <Foundation/Foundation.h>
 
-@interface SVGKSourceReader : NSObject
+@protocol SVGKSourceReader <NSObject>
 @end
 
-@interface SVGKSourceFileReader : SVGKSourceReader
+@interface SVGKSourceFileReader : NSObject <SVGKSourceReader>
 {
     FILE *fileHandle;
 }
 @end
 
-@interface SVGKSourceURLReader : SVGKSourceReader
+@interface SVGKSourceURLReader : NSObject <SVGKSourceReader>
 @property(nonatomic,retain) NSData* httpDataFullyDownloaded;
 @end
 
@@ -38,8 +38,8 @@
 +(SVGKSource*) sourceFromFilename:(NSString*) p;
 +(SVGKSource*) sourceFromURL:(NSURL*) u;
 
--(SVGKSourceReader*) newReader:(NSError**) error;
--(void) closeReader:(SVGKSourceReader*) reader;
--(int) reader:(SVGKSourceReader*) reader readNextChunk:(char *) chunk maxBytes:(int) READ_CHUNK_SZ;
+-(NSObject<SVGKSourceReader>*) newReader:(NSError**) error;
+-(void) closeReader:(NSObject<SVGKSourceReader>*) reader;
+-(int) reader:(NSObject<SVGKSourceReader>*) reader readNextChunk:(char *) chunk maxBytes:(int) READ_CHUNK_SZ;
 
 @end

@@ -44,7 +44,7 @@
 	return d;
 }
 
--(SVGKSourceReader*) newReader:(NSError**) error
+-(NSObject<SVGKSourceReader>*) newReader:(NSError**) error
 {
 	/**
 	 Is this file being loaded from disk?
@@ -102,7 +102,7 @@
 
 }
 
--(void) closeReader:(SVGKSourceReader*) reader
+-(void) closeReader:(NSObject<SVGKSourceReader>*) reader
 {
 	/**
 	 Is this file being loaded from disk?
@@ -118,7 +118,7 @@
 	}
 }
 
--(int) reader:(SVGKSourceReader*) reader readNextChunk:(char *) chunk maxBytes:(int) READ_CHUNK_SZ
+-(int) reader:(NSObject<SVGKSourceReader>*) reader readNextChunk:(char *) chunk maxBytes:(int) READ_CHUNK_SZ
 {
 	/**
 	 Is this file being loaded from disk?

@@ -109,7 +109,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	*/
 	
 	NSError* error = nil;
-	SVGKSourceReader* reader = [source newReader:&error];
+	NSObject<SVGKSourceReader>* reader = [source newReader:&error];
 	if( error != nil )
 	{
 		[currentParseRun addSourceError:error];
