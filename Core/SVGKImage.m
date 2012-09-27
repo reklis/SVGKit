@@ -241,7 +241,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 -(CALayer*) newCopyPositionedAbsoluteLayerWithIdentifier:(NSString *)identifier
 {
 	CALayer* originalLayer = [self layerWithIdentifier:identifier];
-	CALayer* clonedLayer = [[[[originalLayer class] alloc] init] autorelease];
+	CALayer* clonedLayer = [[[originalLayer class] alloc] init];
 	
 	clonedLayer.frame = originalLayer.frame;
 	if( [originalLayer isKindOfClass:[CAShapeLayer class]] )

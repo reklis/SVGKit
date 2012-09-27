@@ -109,10 +109,12 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	*/
 	
 	NSError* error = nil;
-	id handle = [source newHandle:&error];
+	SVGKSourceReader* reader = [source newReader:&error];
 	if( error != nil )
 	{
 		[currentParseRun addSourceError:error];
+        [source closeReader:reader];
+        [reader release];
 		return  currentParseRun;
 	}
 	char buff[READ_CHUNK_SZ];
@@ -123,7 +125,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	{
 		// 1. while (source has chunks of BYTES)
 		// 2.   read a chunk from source, send to libxml
-		int bytesRead = [source handle:handle readNextChunk:(char *)&buff maxBytes:READ_CHUNK_SZ];
+		int bytesRead = [source reader:reader readNextChunk:(char *)&buff maxBytes:READ_CHUNK_SZ];
 		while( bytesRead > 0 )
 		{
 			int libXmlParserParseError = xmlParseChunk(ctx, buff, bytesRead, 0);
@@ -148,12 +150,13 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 				break;
 			}
 			
-			bytesRead = [source handle:handle readNextChunk:(char *)&buff maxBytes:READ_CHUNK_SZ];
+			bytesRead = [source reader:reader readNextChunk:(char *)&buff maxBytes:READ_CHUNK_SZ];
 		}
 	}
 	
-	[source closeHandle:handle]; // close the handle NO MATTER WHAT
-	
+	[source closeReader:reader]; // close the handle NO MATTER WHAT
+	[reader release];
+    
 	if (!currentParseRun.libXMLFailed)
 		xmlParseChunk(ctx, NULL, 0, 1); // EOF
 	

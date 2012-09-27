@@ -1,6 +1,23 @@
 
 #import "SVGKSource.h"
 
+@implementation SVGKSourceFileReader
+-(void) setFileHandle:(FILE*) f
+{
+    fileHandle = f;
+}
+
+-(FILE*) fileHandle
+{
+    return fileHandle;
+}
+@end
+
+@implementation SVGKSourceURLReader
+@synthesize httpDataFullyDownloaded;
+@end
+
+
 @implementation SVGKSource
 
 @synthesize svgLanguageVersion;
@@ -27,7 +44,7 @@
 	return d;
 }
 
--(id) newHandle:(NSError**) error
+-(SVGKSourceReader*) newReader:(NSError**) error
 {
 	/**
 	 Is this file being loaded from disk?
@@ -50,7 +67,7 @@
 		
 		NSURLRequest* request = [NSURLRequest requestWithURL:self.URL];
 		
-		httpData = [[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error] retain];
+		httpData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
 		
 		if( error != nil )
 		{
@@ -58,11 +75,14 @@
 			return nil;
 		}
 		
-		return httpData;
+        SVGKSourceURLReader* urlReader = [[SVGKSourceURLReader alloc] init];
+        urlReader.httpDataFullyDownloaded = httpData;
+        
+		return urlReader;
 	}
 	else
 	{
-		FILE *file;
+		FILE *file; // C is wonderful (ly obscure, with mem management)
 		const char *cPath = [self.filePath fileSystemRepresentation];
 		file = fopen(cPath, "r");
 		
@@ -74,12 +94,15 @@
 																		 nil]];
 		}
 		
-		return [[NSValue valueWithPointer:file] retain]; // objc cannot cope with using C-pointers as pointers, without some help
+        SVGKSourceFileReader* fileReader = [[SVGKSourceFileReader alloc] init];
+        fileReader.fileHandle = file;
+        
+		return fileReader;
 	}
 
 }
 
--(void) closeHandle:(id) handle
+-(void) closeReader:(SVGKSourceReader*) reader
 {
 	/**
 	 Is this file being loaded from disk?
@@ -91,13 +114,11 @@
 	}
 	else
 	{
-		FILE *file = [handle pointerValue]; // objc cannot cope with using C-pointers as pointers, without some help
-		
-		fclose(file);
+		fclose([((SVGKSourceFileReader*)reader) fileHandle]);
 	}
 }
 
--(int) handle:(id) handle readNextChunk:(char *) chunk maxBytes:(int) READ_CHUNK_SZ
+-(int) reader:(SVGKSourceReader*) reader readNextChunk:(char *) chunk maxBytes:(int) READ_CHUNK_SZ
 {
 	/**
 	 Is this file being loaded from disk?
@@ -105,25 +126,27 @@
 	 */
 	if( self.hasSourceURL )
 	{
-		NSData* httpData = handle;
-		const char* dataAsBytes = [httpData bytes];
-		int dataLength = [httpData length];
+        SVGKSourceURLReader* urlReader = (SVGKSourceURLReader*) reader;
+        
+		const char* dataAsBytes = [urlReader.httpDataFullyDownloaded bytes];
+		int dataLength = [urlReader.httpDataFullyDownloaded length];
 		
 		int actualBytesCopied = MIN( dataLength, READ_CHUNK_SZ );
 		memcpy( chunk, dataAsBytes, actualBytesCopied);
 		
 		/** trim the copied bytes out of the 'handle' NSData object */
 		NSRange newRange = { actualBytesCopied, dataLength - actualBytesCopied };
-		handle = [httpData subdataWithRange:newRange];
+		urlReader.httpDataFullyDownloaded = [urlReader.httpDataFullyDownloaded subdataWithRange:newRange];
 		
 		return actualBytesCopied;
 	}
 	else
 	{
+        SVGKSourceFileReader* fileReader = (SVGKSourceFileReader*) reader;
+        
 		size_t bytesRead = 0;
-		FILE *file = [handle pointerValue]; // objc cannot cope with using C-pointers as pointers, without some help
-		
-		bytesRead = fread(chunk, 1, READ_CHUNK_SZ, file);
+
+		bytesRead = fread(chunk, 1, READ_CHUNK_SZ, [fileReader fileHandle]);
 		
 		return bytesRead;
 	}

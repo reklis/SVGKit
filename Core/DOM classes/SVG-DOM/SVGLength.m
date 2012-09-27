@@ -19,7 +19,7 @@
 
 +(SVGLength*) svgLengthZero
 {
-	SVGLength* result = [SVGLength new];
+	SVGLength* result = [[SVGLength new] autorelease];
 	result.value = 0.0f;
 	
 	return result;
@@ -27,7 +27,7 @@
 
 +(SVGLength*) svgLengthFromNSString:(NSString*) s
 {
-	SVGLength* result = [SVGLength new];
+	SVGLength* result = [[SVGLength new] autorelease];
 	
 	result.value = [s floatValue];
 	

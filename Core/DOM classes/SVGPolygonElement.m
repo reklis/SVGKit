@@ -53,7 +53,7 @@
 											  isRelative:FALSE];
 	
     
-	lastCoordinate = [SVGKPointsAndPathsParser readCloseCommand:[NSScanner scannerWithString:@"z"]
+	[SVGKPointsAndPathsParser readCloseCommand:[NSScanner scannerWithString:@"z"]
 									   path:path
 								 relativeTo:lastCoordinate];
 	

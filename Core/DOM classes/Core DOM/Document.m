@@ -21,7 +21,7 @@
 	
 	NSLog( @"[%@] WARNING: SVG Spec, missing feature: if there are known attributes with default values, Attr nodes representing them SHOULD BE automatically created and attached to the element.", [self class] );
 	
-	return newElement;
+	return newElement; /** NOTE: clang says this is a leak - it is NOT, it is a REQUIRED RETAIN COUNT, as per SVG Spec */
 }
 
 -(DocumentFragment*) createDocumentFragment
@@ -62,7 +62,7 @@
 
 -(NodeList*) getElementsByTagName:(NSString*) data
 {
-	NodeList* accumulator = [[NodeList alloc] init];
+	NodeList* accumulator = [[[NodeList alloc] init] autorelease];
 	[self privateGetElementsByName:data inNamespace:nil childrenOfElement:self.documentElement addToList:accumulator];
 	
 	return accumulator;
@@ -82,7 +82,7 @@
 	
 	NSLog( @"[%@] WARNING: SVG Spec, missing feature: if there are known attributes with default values, Attr nodes representing them SHOULD BE automatically created and attached to the element.", [self class] );
 	
-	return newElement;
+	return newElement; /** NOTE: clang says this is a leak - it is NOT, it is a REQUIRED RETAIN COUNT, as per SVG Spec */
 }
 
 // Introduced in DOM Level 2:
@@ -96,7 +96,7 @@
 // Introduced in DOM Level 2:
 -(NodeList*) getElementsByTagNameNS:(NSString*) namespaceURI localName:(NSString*) localName
 {
-	NodeList* accumulator = [[NodeList alloc] init];
+	NodeList* accumulator = [[[NodeList alloc] init] autorelease];
 	[self privateGetElementsByName:localName inNamespace:namespaceURI childrenOfElement:self.documentElement addToList:accumulator];
 	
 	return accumulator;

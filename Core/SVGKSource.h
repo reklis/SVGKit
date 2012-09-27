@@ -15,6 +15,19 @@
 
 #import <Foundation/Foundation.h>
 
+@interface SVGKSourceReader : NSObject
+@end
+
+@interface SVGKSourceFileReader : SVGKSourceReader
+{
+    FILE *fileHandle;
+}
+@end
+
+@interface SVGKSourceURLReader : SVGKSourceReader
+@property(nonatomic,retain) NSData* httpDataFullyDownloaded;
+@end
+
 @interface SVGKSource : NSObject
 
 @property(nonatomic,retain) NSString* svgLanguageVersion; /*< <svg version=""> */
@@ -25,8 +38,8 @@
 +(SVGKSource*) sourceFromFilename:(NSString*) p;
 +(SVGKSource*) sourceFromURL:(NSURL*) u;
 
--(id) newHandle:(NSError**) error;
--(void) closeHandle:(id) handle;
--(int) handle:(id) handle readNextChunk:(char *) chunk maxBytes:(int) READ_CHUNK_SZ;
+-(SVGKSourceReader*) newReader:(NSError**) error;
+-(void) closeReader:(SVGKSourceReader*) reader;
+-(int) reader:(SVGKSourceReader*) reader readNextChunk:(char *) chunk maxBytes:(int) READ_CHUNK_SZ;
 
 @end

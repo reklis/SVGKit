@@ -64,7 +64,7 @@
 }
 -(SVGLength*) createSVGLength
 {
-	return [SVGLength new];
+	return [SVGLength new]; /** NOTE: clang says this is a leak - it is NOT, it is a REQUIRED RETAIN COUNT, as per SVG Spec */
 }
 -(SVGAngle*) createSVGAngle { NSAssert( FALSE, @"Not implemented yet" ); return nil; }
 -(SVGPoint*) createSVGPoint { NSAssert( FALSE, @"Not implemented yet" ); return nil; }
