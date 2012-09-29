@@ -21,8 +21,8 @@
 
 @interface SVGKImage ()
 
-@property (nonatomic, readwrite) SVGLength* svgWidth;
-@property (nonatomic, readwrite) SVGLength* svgHeight;
+@property (nonatomic, retain, readwrite) SVGLength* svgWidth;
+@property (nonatomic, retain, readwrite) SVGLength* svgHeight;
 @property (nonatomic, retain, readwrite) SVGKParseResult* parseErrorsAndWarnings;
 
 @property (nonatomic, retain, readwrite) SVGKSource* source;

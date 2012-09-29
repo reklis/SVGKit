@@ -34,7 +34,7 @@ CGImageRef SVGImageCGImage(SVGImageRef img)
 }
 
 @interface SVGImageElement()
-@property (nonatomic, readwrite) NSString *href;
+@property (nonatomic, retain, readwrite) NSString *href;
 @end
 
 @implementation SVGImageElement

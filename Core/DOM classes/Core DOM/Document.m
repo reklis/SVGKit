@@ -21,7 +21,7 @@
 	
 	NSLog( @"[%@] WARNING: SVG Spec, missing feature: if there are known attributes with default values, Attr nodes representing them SHOULD BE automatically created and attached to the element.", [self class] );
 	
-	return newElement; /** NOTE: clang says this is a leak - it is NOT, it is a REQUIRED RETAIN COUNT, as per SVG Spec */
+	return newElement;
 }
 
 -(DocumentFragment*) createDocumentFragment
@@ -82,7 +82,7 @@
 	
 	NSLog( @"[%@] WARNING: SVG Spec, missing feature: if there are known attributes with default values, Attr nodes representing them SHOULD BE automatically created and attached to the element.", [self class] );
 	
-	return newElement; /** NOTE: clang says this is a leak - it is NOT, it is a REQUIRED RETAIN COUNT, as per SVG Spec */
+	return newElement;
 }
 
 // Introduced in DOM Level 2:

@@ -19,6 +19,6 @@
 @property (nonatomic, readonly) CGFloat width;
 @property (nonatomic, readonly) CGFloat height;
 
-@property (nonatomic, readonly) NSString *href;
+@property (nonatomic, retain, readonly) NSString *href;
 
 @end

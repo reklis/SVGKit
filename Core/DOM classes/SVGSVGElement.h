@@ -67,21 +67,21 @@
 
 
 
-@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* x;
-@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* y;
-@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* width;
-@property (nonatomic, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* height;
-@property (nonatomic, readonly) NSString* contentScriptType;
-@property (nonatomic, readonly) NSString* contentStyleType;
+@property (nonatomic, retain, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* x;
+@property (nonatomic, retain, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* y;
+@property (nonatomic, retain, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* width;
+@property (nonatomic, retain, readonly) /*FIXME: should be SVGAnimatedLength instead*/ SVGLength* height;
+@property (nonatomic, retain, readonly) NSString* contentScriptType;
+@property (nonatomic, retain, readonly) NSString* contentStyleType;
 @property (nonatomic, readonly) SVGRect viewport;
 @property (nonatomic, readonly) float pixelUnitToMillimeterX;
 @property (nonatomic, readonly) float pixelUnitToMillimeterY;
 @property (nonatomic, readonly) float screenPixelToMillimeterX;
 @property (nonatomic, readonly) float screenPixelToMillimeterY;
 @property (nonatomic, readonly) BOOL useCurrentView;
-@property (nonatomic, readonly) SVGViewSpec* currentView;
+@property (nonatomic, retain, readonly) SVGViewSpec* currentView;
 @property (nonatomic, readonly) float currentScale;
-@property (nonatomic, readonly) SVGPoint* currentTranslate;
+@property (nonatomic, retain, readonly) SVGPoint* currentTranslate;
 
 -(long) suspendRedraw:(long) maxWaitMilliseconds;
 -(void) unsuspendRedraw:(long) suspendHandleID;
@@ -98,7 +98,7 @@
 -(BOOL) checkEnclosure:(SVGElement*) element rect:(SVGRect) rect;
 -(void) deselectAll;
 -(SVGNumber) createSVGNumber;
--(SVGLength*) createSVGLength;
+-(SVGLength*) createSVGLength __attribute__((ns_returns_retained));
 -(SVGAngle*) createSVGAngle;
 -(SVGPoint*) createSVGPoint;
 -(SVGMatrix*) createSVGMatrix;

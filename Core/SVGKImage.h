@@ -62,8 +62,8 @@
 @property (nonatomic, readonly) UIImage* UIImage; /** generates an image on the fly */
 #endif
 
-@property (nonatomic, readonly) SVGLength* svgWidth;
-@property (nonatomic, readonly) SVGLength* svgHeight;
+@property (nonatomic, retain, readonly) SVGLength* svgWidth;
+@property (nonatomic, retain, readonly) SVGLength* svgHeight;
 @property (nonatomic, retain, readonly) SVGKSource* source;
 @property (nonatomic, retain, readonly) SVGKParseResult* parseErrorsAndWarnings;
 

@@ -82,7 +82,7 @@
 @property(nonatomic,retain,readonly) Element*          documentElement;
 
 
--(Element*) createElement:(NSString*) tagName;
+-(Element*) createElement:(NSString*) tagName __attribute__((ns_returns_retained));
 -(DocumentFragment*) createDocumentFragment;
 -(Text*) createTextNode:(NSString*) data;
 -(Comment*) createComment:(NSString*) data;
@@ -96,7 +96,7 @@
 -(Node*) importNode:(Node*) importedNode deep:(BOOL) deep;
 
 // Introduced in DOM Level 2:
--(Element*) createElementNS:(NSString*) namespaceURI qualifiedName:(NSString*) qualifiedName;
+-(Element*) createElementNS:(NSString*) namespaceURI qualifiedName:(NSString*) qualifiedName __attribute__((ns_returns_retained));
 
 // Introduced in DOM Level 2:
 -(Attr*) createAttributeNS:(NSString*) namespaceURI qualifiedName:(NSString*) qualifiedName;
