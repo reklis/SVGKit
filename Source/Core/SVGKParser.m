@@ -12,6 +12,8 @@
 
 @class SVGKParserPatternsAndGradients;
 #import "SVGKParserPatternsAndGradients.h"
+@class SVGKParserDefsAndUse;
+#import "SVGKParserDefsAndUse.h"
 
 #import "SVGDocument_Mutable.h" // so we can modify the SVGDocuments we're parsing
 
@@ -39,6 +41,7 @@ static void	charactersFoundSAX(void * ctx, const xmlChar * ch, int len);
 static void errorEncounteredSAX(void * ctx, const char * msg, ...);
 
 static NSString *NSStringFromLibxmlString (const xmlChar *string);
+static NSMutableDictionary *NSDictionaryFromLibxmlNamespaces (const xmlChar **namespaces, int namespaces_ct);
 static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **attrs, int attr_ct);
 
 + (SVGKParseResult*) parseSourceUsingDefaultSVGKParser:(SVGKSource*) source;
@@ -80,9 +83,11 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 {
 	SVGKParserSVG *subParserSVG = [[[SVGKParserSVG alloc] init] autorelease];
 	SVGKParserPatternsAndGradients *subParserGradients = [[[SVGKParserPatternsAndGradients alloc] init] autorelease];
+	SVGKParserDefsAndUse *subParserDefsAndUse = [[[SVGKParserDefsAndUse alloc] init] autorelease];
 	
 	[self addParserExtension:subParserSVG];
 	[self addParserExtension:subParserGradients];
+	[self addParserExtension:subParserDefsAndUse];
 }
 
 - (void) addParserExtension:(NSObject<SVGKParserExtension>*) extension
@@ -178,7 +183,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
  */
 
 
-- (void)handleStartElement:(NSString *)name namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributes:(NSMutableDictionary *)attributes
+- (void)handleStartElement:(NSString *)name namePrefix:(NSString*)prefix namespaceURI:(NSString*) XMLNSURI attributeObjects:(NSMutableDictionary *) attributeObjects
 {
 	BOOL parsingRootTag = FALSE;
 	
@@ -199,9 +204,9 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 			[_stackOfParserExtensions addObject:subParser];
 			
 			/** Parser Extenstion creates a node for us */
-			Node* subParserResult = [subParser handleStartElement:name document:source namePrefix:prefix namespaceURI:XMLNSURI attributes:attributes parseResult:self.currentParseRun parentNode:_parentOfCurrentNode];
+			Node* subParserResult = [subParser handleStartElement:name document:source namePrefix:prefix namespaceURI:XMLNSURI attributes:attributeObjects parseResult:self.currentParseRun parentNode:_parentOfCurrentNode];
 			
-			NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([attributes objectForKey:@"id"] != nil?[attributes objectForKey:@"id"]:@"(none)"), subParser );
+			NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([((Attr*)[attributeObjects objectForKey:@"id"]) value] != nil?[((Attr*)[attributeObjects objectForKey:@"id"]) value]:@"(none)"), subParser );
 			
 			/** Add the new (partially parsed) node to the parent node in tree
 			 
@@ -235,7 +240,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	
 	NSString* qualifiedName = (prefix == nil) ? name : [NSString stringWithFormat:@"%@:%@", prefix, name];
 	/** NB: must supply a NON-qualified name if we have no specific prefix here ! */
-	Element *blankElement = [[[Element alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:XMLNSURI attributes:attributes] autorelease];
+	Element *blankElement = [[[Element alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:XMLNSURI attributes:attributeObjects] autorelease];
 	[_parentOfCurrentNode appendChild:blankElement];
 	_parentOfCurrentNode = blankElement;
 	
@@ -251,13 +256,14 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	
 	NSString *stringLocalName = NSStringFromLibxmlString(localname);
 	NSString *stringPrefix = NSStringFromLibxmlString(prefix);
-	NSMutableDictionary *attrs = NSDictionaryFromLibxmlAttributes(attributes, nb_attributes);	
+	NSMutableDictionary *namespacesByPrefix = NSDictionaryFromLibxmlNamespaces(namespaces, nb_namespaces);
+	NSMutableDictionary *attributeObjects = NSDictionaryFromLibxmlAttributes(attributes, nb_attributes);
 	NSString *stringURI = NSStringFromLibxmlString(URI);
 	
 	/** Set a default Namespace for rest of this document if one is included in the attributes */
 	if( self.defaultXMLNamespaceForThisParseRun == nil )
 	{
-		NSString* newDefaultNamespace = [attrs objectForKey:@"xmlns"];
+		NSString* newDefaultNamespace = [namespacesByPrefix valueForKey:@""];
 		if( newDefaultNamespace != nil )
 		{
 			self.defaultXMLNamespaceForThisParseRun = newDefaultNamespace;
@@ -277,6 +283,12 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 		 */
 		
 		stringURI = self.defaultXMLNamespaceForThisParseRun;
+	}
+	
+	for( Attr* newAttribute in attributeObjects.allValues )
+	{
+		if( newAttribute.namespaceURI == nil )
+			newAttribute.namespaceURI = self.defaultXMLNamespaceForThisParseRun;
 	}
 	
 #if DEBUG_VERBOSE_LOG_EVERY_TAG
@@ -309,7 +321,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	}
 #endif
 	
-	[self handleStartElement:stringLocalName namePrefix:stringPrefix namespaceURI:stringURI attributes:attrs];
+	[self handleStartElement:stringLocalName namePrefix:stringPrefix namespaceURI:stringURI attributeObjects:attributeObjects];
 }
 
 - (void)handleEndElement:(NSString *)name {
@@ -481,6 +493,26 @@ static NSString *NSStringFromLibxmlString (const xmlChar *string) {
 		return [NSString stringWithUTF8String:(const char *) string];
 }
 
+static NSMutableDictionary *NSDictionaryFromLibxmlNamespaces (const xmlChar **namespaces, int namespaces_ct)
+{
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+	
+	for (int i = 0; i < namespaces_ct * 2; i += 2)
+	{
+		NSString* prefix = NSStringFromLibxmlString(namespaces[i]);
+		NSString* uri = NSStringFromLibxmlString(namespaces[i+1]);
+		
+		if( prefix == nil )
+			prefix = @""; // Special case: Apple dictionaries can't handle null keys
+		
+		[dict setObject:uri
+				 forKey:prefix];
+	}
+	
+	return [dict autorelease];
+}
+
+
 static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **attrs, int attr_ct) {
 	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
 	
@@ -493,8 +525,17 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 		strncpy(val, begin, vlen);
 		val[vlen] = '\0';
 		
-		[dict setObject:[NSString stringWithUTF8String:val]
-				 forKey:NSStringFromLibxmlString(attrs[i])];
+		NSString* localName = NSStringFromLibxmlString(attrs[i]);
+		NSString* prefix = NSStringFromLibxmlString(attrs[i+1]);
+		NSString* uri = NSStringFromLibxmlString(attrs[i+2]);
+		NSString* value = [NSString stringWithUTF8String:val];
+		
+		NSString* qname = (prefix == nil) ? localName : [NSString stringWithFormat:@"%@:%@", prefix, localName];
+		
+		Attr* newAttribute = [[Attr alloc] initWithNamespace:uri qualifiedName:qname value:value];
+		
+		[dict setObject:newAttribute
+				 forKey:qname];
 	}
 	
 	return [dict autorelease];
@@ -503,10 +544,10 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 #define MAX_ACCUM 256
 #define MAX_NAME 256
 
-+(NSDictionary *) NSDictionaryFromCSSAttributes: (NSString *)css {
++(NSDictionary *) NSDictionaryFromCSSAttributes: (Attr*) styleAttribute {
 	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
 	
-	const char *cstr = [css UTF8String];
+	const char *cstr = [styleAttribute.value UTF8String];
 	size_t len = strlen(cstr);
 	
 	char name[MAX_NAME];
@@ -536,8 +577,10 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 		else if (c == ';' || c == '\0') {
 			accum[accumIdx] = '\0';
 			
-			[dict setObject:[NSString stringWithUTF8String:accum]
-					 forKey:[NSString stringWithUTF8String:name]];
+			Attr* newAttribute = [[[Attr alloc] initWithNamespace:styleAttribute.namespaceURI qualifiedName:[NSString stringWithUTF8String:name] value:[NSString stringWithUTF8String:accum]] autorelease];
+			
+			[dict setObject:newAttribute
+					 forKey:newAttribute.localName];
 			
 			bzero(name, MAX_NAME);
 			

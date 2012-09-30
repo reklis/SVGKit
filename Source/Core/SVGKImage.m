@@ -5,6 +5,7 @@
 #import "SVGKParser.h"
 #import "SVGTitleElement.h"
 #import "SVGPathElement.h"
+#import "SVGUseElement.h"
 
 #import "SVGKParserSVG.h"
 
@@ -357,11 +358,22 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 	
 	NSLog(@"[%@] DEBUG: converted SVG element (class:%@) to CALayer (class:%@ frame:%@) for id = %@", [self class], NSStringFromClass([element class]), NSStringFromClass([layer class]), NSStringFromCGRect( layer.frame ), element.identifier);
 	
-	if ( element.childNodes.length < 1 ) {
+	NodeList* childNodes = element.childNodes;
+	
+	/**
+	 Special handling for <use> tags - they have to masquerade invisibly as the node they are referring to
+	 */
+	if( [element isKindOfClass:[SVGUseElement class]] )
+	{
+		SVGUseElement* useElement = (SVGUseElement*) element;
+		childNodes = useElement.instanceRoot.correspondingElement.childNodes;
+	}
+	
+	if ( childNodes.length < 1 ) {
 		return layer;
 	}
 	
-	for (SVGElement *child in element.childNodes )
+	for (SVGElement *child in childNodes )
 	{
 		if ([child conformsToProtocol:@protocol(SVGLayeredElement)]) {
 			CALayer *sublayer = [self newLayerWithElement:(id<SVGLayeredElement>)child];

@@ -36,20 +36,47 @@
 
 -(Node*) getNamedItem:(NSString*) name
 {
-	return [self.internalDictionary objectForKey:name];
+	Node* simpleResult = [self.internalDictionary objectForKey:name];
+	
+	if( simpleResult == nil )
+	{
+		/**
+		 Check the namespaces in turn, to see if we can find this node in one of them
+		 
+		 NB: according to spec, this behaviour is:
+		 
+		    "The result depends on the implementation"
+		 
+		 I've chosen to implement it the most user-friendly way possible. It is NOT the best
+		 solution IMHO - the spec authors should have defined the outcome!
+		 */
+		
+		for( NSString* key in [self.internalDictionaryOfNamespaces allKeys] )
+		{
+			simpleResult = [self getNamedItemNS:key localName:name];
+			if( simpleResult != nil )
+				break;
+		}
+	}
+	
+	return simpleResult;
 }
 
 -(Node*) setNamedItem:(Node*) arg
 {
-	Node* oldNode = [self.internalDictionary objectForKey:arg.nodeName];
+	NSAssert( [[self.internalDictionaryOfNamespaces allKeys] count] < 1, @"WARNING: you are using namespaced attributes in parallel with non-namespaced. According to the DOM Spec, this leads to UNDEFINED behaviour. This is insane - you do NOT want to be doing this! Crashing deliberately...." );
 	
-	[self.internalDictionary setObject:arg forKey:arg.nodeName];
+	Node* oldNode = [self.internalDictionary objectForKey:arg.localName];
+	
+	[self.internalDictionary setObject:arg forKey:arg.localName];
 	
 	return oldNode;
 }
 
 -(Node*) removeNamedItem:(NSString*) name
 {
+	NSAssert( [[self.internalDictionaryOfNamespaces allKeys] count] < 1, @"WARNING: you are using namespaced attributes in parallel with non-namespaced. According to the DOM Spec, this leads to UNDEFINED behaviour. This is insane - you do NOT want to be doing this! Crashing deliberately...." );
+	
 	Node* oldNode = [self.internalDictionary objectForKey:name];
 	
 	[self.internalDictionary removeObjectForKey:name];
@@ -106,9 +133,9 @@
 		namespaceDict = [NSMutableDictionary dictionary];
 		[self.internalDictionaryOfNamespaces setObject:namespaceDict forKey:arg.namespaceURI];
 	}
-	Node* oldNode = [namespaceDict objectForKey:arg.nodeName];
+	Node* oldNode = [namespaceDict objectForKey:arg.localName];
 					   
-	[namespaceDict setObject:arg forKey:arg.nodeName];
+	[namespaceDict setObject:arg forKey:arg.localName];
 	
 	return oldNode;
 }

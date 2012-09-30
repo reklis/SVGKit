@@ -26,3 +26,7 @@ Location_European_nation_states
 	 
 	 uk-only.svg, Europe_states_reduced.svg
 	 -- Adam Martin's modified versions of Location_European_nation_states, same license
+	 
+Reinel_compass_rose.svg
+     -- Creative Commons
+     -- http://commons.wikimedia.org/wiki/File:Reinel_compass_rose.svg

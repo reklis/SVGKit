@@ -15,12 +15,6 @@
     if (self) {
         self.tagName = n;
 		
-		/** FIXME: read the spec and add two versions of this, one that uses NAMESPACED attributes,
-		 and one that doesn't.
-		 
-		 Yes, DOM is a total Pain In The A** to implement - the different versions are mostly
-		 separate, parallel, specs
-		 */
 		for( NSString* attributeName in attributes.allKeys )
 		{
 			[self setAttribute:attributeName value:[attributes objectForKey:attributeName]];
@@ -28,20 +22,15 @@
     }
     return self;
 }
-- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI attributes:(NSMutableDictionary*) attributes {
+- (id)initWithQualifiedName:(NSString*) n inNameSpaceURI:(NSString*) nsURI attributes:(NSMutableDictionary *)attributes
+{
     self = [super initType:SKNodeType_ELEMENT_NODE name:n inNamespace:nsURI];
     if (self) {
         self.tagName = n;
 		
-		/** FIXME: read the spec and add two versions of this, one that uses NAMESPACED attributes,
-		 and one that doesn't.
-		 
-		 Yes, DOM is a total Pain In The A** to implement - the different versions are mostly
-		 separate, parallel, specs
-		 */
-		for( NSString* attributeName in attributes.allKeys )
+		for( Attr* attribute in attributes.allValues )
 		{
-			[self setAttribute:attributeName value:[attributes objectForKey:attributeName]];
+			[self.attributes setNamedItemNS:attribute];
 		}
     }
     return self;
@@ -113,8 +102,12 @@
 // Introduced in DOM Level 2:
 -(NSString*) getAttributeNS:(NSString*) namespaceURI localName:(NSString*) localName
 {
-	NSAssert( FALSE, @"Not implemented yet" );
-	return nil;
+	Attr* result = (Attr*) [self.attributes getNamedItemNS:namespaceURI localName:localName];
+	
+	if( result == nil || result.value == nil )
+		return @""; // according to spec
+	else
+		return result.value;
 }
 
 // Introduced in DOM Level 2:
@@ -134,8 +127,9 @@
 // Introduced in DOM Level 2:
 -(Attr*) getAttributeNodeNS:(NSString*) namespaceURI localName:(NSString*) localName
 {
-	NSAssert( FALSE, @"Not implemented yet" );
-	return nil;
+	Attr* result = (Attr*) [self.attributes getNamedItemNS:namespaceURI localName:localName];
+	
+	return result;
 }
 
 // Introduced in DOM Level 2:

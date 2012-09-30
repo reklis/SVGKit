@@ -72,7 +72,7 @@
 - (SVGKParseResult*) parseSynchronously;
 
 
-+(NSDictionary *) NSDictionaryFromCSSAttributes: (NSString *)css;
++(NSDictionary *) NSDictionaryFromCSSAttributes: (Attr*) styleAttribute;
 
 
 

@@ -29,7 +29,6 @@ static NSDictionary *elementMap;
 			elementMap = [[NSDictionary dictionaryWithObjectsAndKeys:
 						   [SVGSVGElement class], @"svg",
                           [SVGCircleElement class], @"circle",
-                          [SVGDefsElement class], @"defs",
                           [SVGDescriptionElement class], @"description",
                           [SVGEllipseElement class], @"ellipse",
                           [SVGGroupElement class], @"g",
@@ -74,7 +73,7 @@ static NSDictionary *elementMap;
 			NSLog(@"Support for '%@' element has not been implemented", name);
 		}
 		
-		id style = nil;
+		Attr* style = nil;
 		
 		if ((style = [attributes objectForKey:@"style"])) {
 			[attributes removeObjectForKey:@"style"];

@@ -4,6 +4,7 @@
 #import "NodeList+Mutable.h" // needed for access to underlying array, because SVG doesnt specify how lists are made mutable
 
 @interface Document()
+-(Element*) privateGetElementById:(NSString*) idValue childrenOfElement:(Node*) parent;
 /*! private method used in implementation of the MULTIPLE getElementsByTagName methods */
 -(void) privateGetElementsByName:(NSString*) name inNamespace:(NSString*) namespaceURI childrenOfElement:(Node*) parent addToList:(NodeList*) accumulator;
 @end
@@ -105,14 +106,33 @@
 // Introduced in DOM Level 2:
 -(Element*) getElementById:(NSString*) elementId
 {
-	/**
-	 Hard-coding this to SVG, where only attributes tagged "id" are ID attributes
-	 */
-	NSAssert( FALSE, @"At this point, we have to recurse down the tree looking at the id's of each SVG element. This is already implemented in old SVGKit, need to copy/paste/debug the code" );
-	return nil;
+	return [self privateGetElementById:elementId childrenOfElement:self.documentElement];
 }
 
 #pragma mark - Non-Spec methods required to implement the Spec methods
+
+-(Element*) privateGetElementById:(NSString*) idValue childrenOfElement:(Node*) parent
+{
+	/** According to spec, this is only valid for ELEMENT nodes */
+	if( [parent isKindOfClass:[Element class]] )
+	{
+			Element* parentAsElement = (Element*) parent;
+			
+		if( [[parentAsElement getAttribute:@"id"] isEqualToString:idValue])
+			return parentAsElement;
+	}
+	
+	for( Node* childNode in parent.childNodes )
+	{
+		Element* childResult = [self privateGetElementById:idValue childrenOfElement:childNode];
+		
+		if( childResult != nil )
+			return childResult;
+	}
+	
+	return nil;
+}
+
 
 /*! This useful method provides both the DOM level 1 and the DOM level 2 implementations of searching the tree for a node - because THEY ARE DIFFERENT
  yet very similar

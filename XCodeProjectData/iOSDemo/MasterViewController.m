@@ -17,7 +17,7 @@
 - (id)init
 {
     if (self) {
-        self.sampleNames = [NSMutableArray arrayWithObjects: @"australia_states_blank", @"Monkey", @"Blank_Map-Africa", @"Note", @"Lion", @"Map", @"CurvedDiamond", @"Text", @"Location_European_nation_states", @"uk-only", @"Europe_states_reduced", nil];
+        self.sampleNames = [NSMutableArray arrayWithObjects: @"australia_states_blank", @"Reinel_compass_rose", @"Monkey", @"Blank_Map-Africa", @"Note", @"Lion", @"Map", @"CurvedDiamond", @"Text", @"Location_European_nation_states", @"uk-only", @"Europe_states_reduced", @"Compass_rose_pale", nil];
     }
 	
 	/** Apple really sucks. They keep randomly changing which init methods they call, BREAKING ALL EXISTING CODE */
