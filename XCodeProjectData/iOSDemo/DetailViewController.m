@@ -40,13 +40,29 @@
 	self.toolbar = nil;
 	self.detailItem = nil;
 	
+	self.name = nil;
+	self.exportText = nil;
+	self.exportLog = nil;
+	self.layerExporter = nil;
+	self.scrollViewForSVG = nil;
+	self.contentView = nil;
+	self.viewActivityIndicator = nil;
+	
 	[super dealloc];
 }
 
 #pragma mark - CRITICAL: this method makes Apple render SVGs in sharp focus
 
--(void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale
+-(void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)finalScale
 {
+	/** NB: very important! The "finalScale" paramter to this method is SLIGHTLY DIFFERENT from the scale that Apple reports in the other delegate methods
+	 
+	 This is very confusing, clearly it's bit of a hack - the other methods get called
+	 at slightly the wrong time, and so their data is slightly wrong (out-by-one animation step).
+	 
+	 ONLY the values passed as params to this method are correct!
+	 */
+	
 	/**
 	 
 	 Apple's implementation of zooming is EXTREMELY poorly designed; it's a hack onto a class
@@ -62,7 +78,7 @@
 	 but that's how Apple has documented / implemented it!)
 	 */
 	view.transform = CGAffineTransformIdentity; // this alters view.frame! But *not* view.bounds
-	view.bounds = CGRectApplyAffineTransform( view.bounds, CGAffineTransformMakeScale(scale, scale));
+	view.bounds = CGRectApplyAffineTransform( view.bounds, CGAffineTransformMakeScale(finalScale, finalScale));
 	[view setNeedsDisplay];
 	
 	/**
@@ -72,8 +88,8 @@
 	     ... because they "forgot" to store it anywhere (they read your view.transform as if it were a private
 			 variable inside UIScrollView! This causes MANY bugs in applications :( )
 	 */
-	self.scrollViewForSVG.minimumZoomScale /= scale;
-	self.scrollViewForSVG.maximumZoomScale /= scale;
+	self.scrollViewForSVG.minimumZoomScale /= finalScale;
+	self.scrollViewForSVG.maximumZoomScale /= finalScale;
 }
 
 #pragma mark - rest of class
@@ -83,7 +99,8 @@
 		[detailItem release];
 		detailItem = [newDetailItem retain];
 		
-		self.view; // REQUIRED: this class is badly designed, it relies upon the view being visible before .detailedItem is set :(
+		// FIXME: re-write this class so that this method does NOT require self.view to exist
+		[self view]; // Apple's design to trigger the creation of view. Original design of THIS class is that it breaks if view isn't already existing
 		[self loadResource:newDetailItem];
 	}
 	
@@ -103,7 +120,7 @@
 	
 	if( document == nil )
 	{
-				[[[UIAlertView alloc] initWithTitle:@"SVG parse failed" message:@"Total failure. See console log" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+				[[[[UIAlertView alloc] initWithTitle:@"SVG parse failed" message:@"Total failure. See console log" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease] show];
 	}
 	else
 	{
@@ -133,7 +150,7 @@
 	}
 	else
 	{
-		[[[UIAlertView alloc] initWithTitle:@"SVG parse failed" message:[NSString stringWithFormat:@"%i fatal errors, %i warnings. First fatal = %@",[document.parseErrorsAndWarnings.errorsFatal count],[document.parseErrorsAndWarnings.errorsRecoverable count]+[document.parseErrorsAndWarnings.warnings count], ((NSError*)[document.parseErrorsAndWarnings.errorsFatal objectAtIndex:0]).localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+		[[[[UIAlertView alloc] initWithTitle:@"SVG parse failed" message:[NSString stringWithFormat:@"%i fatal errors, %i warnings. First fatal = %@",[document.parseErrorsAndWarnings.errorsFatal count],[document.parseErrorsAndWarnings.errorsRecoverable count]+[document.parseErrorsAndWarnings.warnings count], ((NSError*)[document.parseErrorsAndWarnings.errorsFatal objectAtIndex:0]).localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease] show];
 	}
 	}
 	

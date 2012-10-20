@@ -30,7 +30,7 @@
 		
 		for( Attr* attribute in attributes.allValues )
 		{
-			[self.attributes setNamedItemNS:attribute];
+			[self.attributes setNamedItemNS:attribute inNodeNamespace:nsURI];
 		}
     }
     return self;

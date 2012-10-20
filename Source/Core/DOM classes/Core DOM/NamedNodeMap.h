@@ -48,4 +48,8 @@
 // Introduced in DOM Level 2:
 -(Node*) removeNamedItemNS:(NSString*) namespaceURI localName:(NSString*) localName;
 
+#pragma mark - MISSING METHOD FROM SVG Spec, without which you cannot parse documents (don't understand how they intended you to fulfil the spec without this method)
+
+-(Node*) setNamedItemNS:(Node*) arg inNodeNamespace:(NSString*) nodesNamespace;
+
 @end

@@ -1,6 +1,9 @@
 #import "SVGKImageView.h"
 
 @implementation SVGKImageView
+{
+	NSString* internalContextPointerBecauseApplesDemandsIt;
+}
 
 @synthesize image = _image;
 @synthesize scaleMultiplier = _scaleMultiplier;
@@ -13,29 +16,58 @@
     return nil;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+	return [self initWithSVGKImage:nil];
+}
+
 - (id)initWithSVGKImage:(SVGKImage*) im
 {
+	if( im == nil )
+	{
+		NSLog(@"[%@] WARNING: you have initialized an SVGKImageView with a blank image (nil). Possibly because you're using Storyboars or NIBs which Apple won't allow anyone to use with 3rd party code", [self class]);
+	}
+	
     self = [super init];
     if (self)
 	{
+		internalContextPointerBecauseApplesDemandsIt = @"Apple wrote the addObserver / KVO notification API wrong in the first place and now requires developers to pass around pointers to fake objects to make up for the API deficicineces. You have to have one of these pointers per object, and they have to be internal and private. They serve no real value.";
+		
 		self.image = im;
 		self.frame = CGRectMake( 0,0, im.CALayerTree.frame.size.width, im.CALayerTree.frame.size.height ); // default: 0,0 to width x height of original image
 		self.scaleMultiplier = CGSizeMake(1.0, 1.0);
 		self.backgroundColor = [UIColor clearColor];
 		
-		[self addObserver:self forKeyPath:@"layer" options:NSKeyValueObservingOptionNew context:nil];
-		[self.layer addObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:nil];
-		
+		[self addObserver:self forKeyPath:@"layer" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+		[self.layer addObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+		[self addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+		[self addObserver:self forKeyPath:@"scaleMultiplier" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+		[self addObserver:self forKeyPath:@"tileContents" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [self removeObserver:self  forKeyPath:@"layer" context:internalContextPointerBecauseApplesDemandsIt];
+	[self.layer removeObserver:self forKeyPath:@"transform" context:internalContextPointerBecauseApplesDemandsIt];
+	
+	[self removeObserver:self forKeyPath:@"image" context:internalContextPointerBecauseApplesDemandsIt];
+	[self removeObserver:self forKeyPath:@"scaleMultiplier" context:internalContextPointerBecauseApplesDemandsIt];
+	[self removeObserver:self forKeyPath:@"tileContents" context:internalContextPointerBecauseApplesDemandsIt];
+	
+	self.image = nil;
+	
+    [super dealloc];
 }
 
 /** Trigger a call to re-display (at higher or lower draw-resolution) (get Apple to call drawRect: again) */
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	//[self setNeedsDisplay];
+	[self setNeedsDisplay];
 }
 
+#if APPLE_KVO_ISNT_WORKING
 /** Override default method purely so that it triggers a need to re-display (get Apple to call drawRect: again)
  Can't use Apple's KVO because it doesn't work and they provide no way to debug it */
 -(void)setImage:(SVGKImage *)newImage
@@ -64,6 +96,7 @@
     
     [self setNeedsDisplay];
 }
+#endif
 
 -(void)drawRect:(CGRect)rect
 {

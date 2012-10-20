@@ -14,6 +14,8 @@
 #import "SVGKParserPatternsAndGradients.h"
 @class SVGKParserDefsAndUse;
 #import "SVGKParserDefsAndUse.h"
+@class SVGKParserDOM;
+#import "SVGKParserDOM.h"
 
 #import "SVGDocument_Mutable.h" // so we can modify the SVGDocuments we're parsing
 
@@ -84,14 +86,18 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	SVGKParserSVG *subParserSVG = [[[SVGKParserSVG alloc] init] autorelease];
 	SVGKParserPatternsAndGradients *subParserGradients = [[[SVGKParserPatternsAndGradients alloc] init] autorelease];
 	SVGKParserDefsAndUse *subParserDefsAndUse = [[[SVGKParserDefsAndUse alloc] init] autorelease];
+	SVGKParserDOM *subParserXMLDOM = [[[SVGKParserDOM alloc] init] autorelease];
 	
 	[self addParserExtension:subParserSVG];
 	[self addParserExtension:subParserGradients];
 	[self addParserExtension:subParserDefsAndUse];
+	[self addParserExtension:subParserXMLDOM];
 }
 
 - (void) addParserExtension:(NSObject<SVGKParserExtension>*) extension
 {
+	// TODO: Should check for conflicts between this parser-extension and our existing parser-extensions, and issue warnings for any we find
+	
 	if( self.parserExtensions == nil )
 	{
 		self.parserExtensions = [NSMutableArray array];
@@ -196,8 +202,36 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 	 (most tags are handled by the default SVGParserSVG - but if you have other XML embedded in your SVG, you'll
 	 have custom parser extentions too)
 	 */
+	NSObject<SVGKParserExtension>* defaultParserForThisNamespace = nil;
+	NSObject<SVGKParserExtension>* defaultParserForEverything = nil;
 	for( NSObject<SVGKParserExtension>* subParser in self.parserExtensions )
 	{
+		// TODO: rather than checking for the default parser on every node, we should stick them in a Dictionar at the start and re-use them when needed
+		/**
+		 First: check if this parser is a "default" / fallback parser. If so, skip it, and only use it
+		 AT THE VERY END after checking all other parsers
+		 */
+		BOOL shouldBreakBecauseParserIsADefault = FALSE;
+		
+		if( [[subParser supportedNamespaces] count] == 0 )
+		{
+			defaultParserForEverything = subParser;
+			shouldBreakBecauseParserIsADefault = TRUE;
+		}
+		
+		if( [[subParser supportedNamespaces] containsObject:XMLNSURI]
+		   && [[subParser supportedTags] count] == 0 )
+		{
+			defaultParserForThisNamespace = subParser;
+			shouldBreakBecauseParserIsADefault = TRUE;
+		}
+		
+		if( shouldBreakBecauseParserIsADefault )
+			continue;
+			
+		/**
+		 Now we know it's a specific parser, check if it handles this particular node
+		 */
 		if( [[subParser supportedNamespaces] containsObject:XMLNSURI]
 		   && [[subParser supportedTags] containsObject:name] )
 		{
@@ -232,19 +266,49 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 			
 			return;
 		}
-		// otherwise ignore it - the parser extension didn't recognise the element
 	}
 	
-	/*! this was an unmatched tag - we have no parser for it, so we're pruning it from the tree */
-	NSLog(@"[%@] WARN: found an unrecognized tag (</%@>) - this will get an empty, dumb Node in the DOM", [self class], name );
+	/**
+	 IF we had a specific matching parser, we would have returned already.
+	 
+	 Since we haven't, it means we have to try the default parsers instead
+	 */
+	NSObject<SVGKParserExtension>* eventualParser = defaultParserForThisNamespace != nil ? defaultParserForThisNamespace : defaultParserForEverything;
+	NSAssert( eventualParser != nil, @"Found a tag (prefix:%@ name:%@) that was rejected by all the parsers available. Perhaps you forgot to include a default parser (usually: SVGKParserDOM, which will handle any / all XML tags)", prefix, name );
 	
-	NSString* qualifiedName = (prefix == nil) ? name : [NSString stringWithFormat:@"%@:%@", prefix, name];
-	/** NB: must supply a NON-qualified name if we have no specific prefix here ! */
-	Element *blankElement = [[[Element alloc] initWithQualifiedName:qualifiedName inNameSpaceURI:XMLNSURI attributes:attributeObjects] autorelease];
-	[_parentOfCurrentNode appendChild:blankElement];
-	_parentOfCurrentNode = blankElement;
+	NSLog(@"[%@] WARN: found a tag with no namespace parser: (</%@>), using default parser(%@)", [self class], name, eventualParser );
 	
-	[_stackOfParserExtensions addObject:[NSNull null]]; // so that we can later detect that this tag was NOT parsed
+	
+	[_stackOfParserExtensions addObject:eventualParser];
+	
+	/** Parser Extenstion creates a node for us */
+	Node* subParserResult = [eventualParser handleStartElement:name document:source namePrefix:prefix namespaceURI:XMLNSURI attributes:attributeObjects parseResult:self.currentParseRun parentNode:_parentOfCurrentNode];
+	
+	NSLog(@"[%@] tag: <%@:%@> id=%@ -- handled by subParser: %@", [self class], prefix, name, ([((Attr*)[attributeObjects objectForKey:@"id"]) value] != nil?[((Attr*)[attributeObjects objectForKey:@"id"]) value]:@"(none)"), eventualParser );
+	
+	/** Add the new (partially parsed) node to the parent node in tree
+	 
+	 (need this for some of the parsing, later on, where we need to be able to read up
+	 the tree to make decisions about the data - this is REQUIRED by the SVG Spec)
+	 */
+	[_parentOfCurrentNode appendChild:subParserResult]; // this is a DOM method: should NOT have side-effects
+	_parentOfCurrentNode = subParserResult;
+	
+	
+	if ([eventualParser createdNodeShouldStoreContent:subParserResult]) {
+		[_storedChars setString:@""];
+		_storingChars = YES;
+	}
+	else {
+		_storingChars = NO;
+	}
+	
+	if( parsingRootTag )
+	{
+		currentParseRun.parsedDocument.rootElement = (SVGSVGElement*) subParserResult;
+	}
+	
+	return;
 }
 
 
@@ -321,6 +385,11 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	}
 #endif
 	
+	if( stringURI == nil && stringPrefix == nil )
+	{
+		NSLog(@"[%@] WARNING: Your input SVG contains tags that have no namespace, and your document doesn't define a default namespace. This is always incorrect - it means some of your SVG data will be ignored, and usually means you have a typo in there somewhere. Tag with no namespace: <%@>", [self class], stringLocalName );
+	}
+		  
 	[self handleStartElement:stringLocalName namePrefix:stringPrefix namespaceURI:stringURI attributeObjects:attributeObjects];
 }
 
@@ -332,29 +401,21 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	
 	[_stackOfParserExtensions removeLastObject];
 	
-	if( lastobject == [NSNull null] )
-	{
-		/*! this was an unmatched tag - we have no parser for it, so we're pruning it from the tree */
-		NSLog(@"[%@] WARN: ended non-parsed tag (</%@>) - this will NOT be added to the output tree", [self class], name );
-	}
-	else
-	{
-		NSObject<SVGKParserExtension>* parser = (NSObject<SVGKParserExtension>*)lastobject;
-		NSObject<SVGKParserExtension>* parentParser = [_stackOfParserExtensions lastObject];
-		
+	NSObject<SVGKParserExtension>* parser = (NSObject<SVGKParserExtension>*)lastobject;
+	NSObject<SVGKParserExtension>* parentParser = [_stackOfParserExtensions lastObject];
 	
-		NSLog(@"[%@] DEBUG-PARSER: ended tag (</%@>), handled by parser (%@) with parent parsed by %@", [self class], name, parser, parentParser );
+	
+	NSLog(@"[%@] DEBUG-PARSER: ended tag (</%@>), handled by parser (%@) with parent parsed by %@", [self class], name, parser, parentParser );
+	
+	/**
+	 At this point, the "parent of current node" is still set to the node we're
+	 closing - because we haven't finished closing it yet
+	 */
+	if ( [parser createdNodeShouldStoreContent:_parentOfCurrentNode]) {
+		[parser handleStringContent:_storedChars forNode:_parentOfCurrentNode];
 		
-		/**
-		 At this point, the "parent of current node" is still set to the node we're
-		 closing - because we haven't finished closing it yet
-		 */
-		if ( [parser createdNodeShouldStoreContent:_parentOfCurrentNode]) {
-			[parser handleStringContent:_storedChars forNode:_parentOfCurrentNode];
-			
-			[_storedChars setString:@""];
-			_storingChars = NO;
-		}
+		[_storedChars setString:@""];
+		_storingChars = NO;
 	}
 	
 	/** Update the _parentOfCurrentNode to point to the parent of the node we just closed...
@@ -532,7 +593,7 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 		
 		NSString* qname = (prefix == nil) ? localName : [NSString stringWithFormat:@"%@:%@", prefix, localName];
 		
-		Attr* newAttribute = [[Attr alloc] initWithNamespace:uri qualifiedName:qname value:value];
+		Attr* newAttribute = [[[Attr alloc] initWithNamespace:uri qualifiedName:qname value:value] autorelease];
 		
 		[dict setObject:newAttribute
 				 forKey:qname];

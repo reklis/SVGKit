@@ -83,13 +83,14 @@
 
 
 -(Element*) createElement:(NSString*) tagName __attribute__((ns_returns_retained));
--(DocumentFragment*) createDocumentFragment;
--(Text*) createTextNode:(NSString*) data;
--(Comment*) createComment:(NSString*) data;
--(CDATASection*) createCDATASection:(NSString*) data;
--(ProcessingInstruction*) createProcessingInstruction:(NSString*) target data:(NSString*) data;
--(Attr*) createAttribute:(NSString*) data;
--(EntityReference*) createEntityReference:(NSString*) data;
+-(DocumentFragment*) createDocumentFragment __attribute__((ns_returns_retained));
+-(Text*) createTextNode:(NSString*) data __attribute__((ns_returns_retained));
+-(Comment*) createComment:(NSString*) data __attribute__((ns_returns_retained));
+-(CDATASection*) createCDATASection:(NSString*) data __attribute__((ns_returns_retained));
+-(ProcessingInstruction*) createProcessingInstruction:(NSString*) target data:(NSString*) data __attribute__((ns_returns_retained));
+-(Attr*) createAttribute:(NSString*) data __attribute__((ns_returns_retained));
+-(EntityReference*) createEntityReference:(NSString*) data __attribute__((ns_returns_retained));
+
 -(NodeList*) getElementsByTagName:(NSString*) data;
 
 // Introduced in DOM Level 2:

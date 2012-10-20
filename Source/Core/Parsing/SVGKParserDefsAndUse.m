@@ -29,7 +29,7 @@
 
 -(SVGElementInstance*) convertSVGElementToElementInstanceTree:(SVGElement*) original outermostUseElement:(SVGUseElement*) outermostUseElement
 {
-	SVGElementInstance* instance = [[SVGElementInstance alloc] init];
+	SVGElementInstance* instance = [[[SVGElementInstance alloc] init] autorelease];
 	instance.correspondingElement = original;
 	instance.correspondingUseElement = outermostUseElement;
 	
@@ -69,13 +69,13 @@
 			[useElement postProcessAttributesAddingErrorsTo:parseResult]; // handles "transform" and "style"
 			
 			if( [attributes valueForKey:@"x"] != nil )
-				useElement.x = [SVGLength svgLengthFromNSString:[[attributes valueForKey:@"x"] value]];
+				useElement.x = [SVGLength svgLengthFromNSString:[((Attr*)[attributes valueForKey:@"x"]) value]];
 			if( [attributes valueForKey:@"y"] != nil )
-				useElement.x = [SVGLength svgLengthFromNSString:[[attributes valueForKey:@"y"] value]];
+				useElement.x = [SVGLength svgLengthFromNSString:[((Attr*)[attributes valueForKey:@"y"]) value]];
 			if( [attributes valueForKey:@"width"] != nil )
-				useElement.x = [SVGLength svgLengthFromNSString:[[attributes valueForKey:@"width"] value]];
+				useElement.x = [SVGLength svgLengthFromNSString:[((Attr*)[attributes valueForKey:@"width"]) value]];
 			if( [attributes valueForKey:@"height"] != nil )
-				useElement.x = [SVGLength svgLengthFromNSString:[[attributes valueForKey:@"height"] value]];
+				useElement.x = [SVGLength svgLengthFromNSString:[((Attr*)[attributes valueForKey:@"height"]) value]];
 			
 			NSString* hrefAttribute = [useElement getAttributeNS:@"http://www.w3.org/1999/xlink" localName:@"href"];
 			

@@ -27,32 +27,32 @@
 
 -(DocumentFragment*) createDocumentFragment
 {
-	return [[[DocumentFragment alloc] init] autorelease];
+	return [[DocumentFragment alloc] init];
 }
 
 -(Text*) createTextNode:(NSString*) data
 {
-	return [[[Text alloc] initWithValue:data] autorelease];
+	return [[Text alloc] initWithValue:data];
 }
 
 -(Comment*) createComment:(NSString*) data
 {
-	return [[[Comment alloc] initWithValue:data] autorelease];
+	return [[Comment alloc] initWithValue:data];
 }
 
 -(CDATASection*) createCDATASection:(NSString*) data
 {
-	return [[[CDATASection alloc] initWithValue:data] autorelease];
+	return [[CDATASection alloc] initWithValue:data];
 }
 
 -(ProcessingInstruction*) createProcessingInstruction:(NSString*) target data:(NSString*) data
 {
-	return [[[ProcessingInstruction alloc] initProcessingInstruction:target value:data] autorelease];
+	return [[ProcessingInstruction alloc] initProcessingInstruction:target value:data];
 }
 
 -(Attr*) createAttribute:(NSString*) n
 {
-	return [[[Attr alloc] initWithName:n value:@""] autorelease];
+	return [[Attr alloc] initWithName:n value:@""];
 }
 
 -(EntityReference*) createEntityReference:(NSString*) data

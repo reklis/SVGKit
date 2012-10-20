@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		661008971632ED5B00DD3C38 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 661008961632ED5B00DD3C38 /* Default-568h@2x.png */; };
 		661A0DCF161727CF008D5FBE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 661A0DCE161727CF008D5FBE /* UIKit.framework */; };
 		661A0DD1161727CF008D5FBE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 661A0DD0161727CF008D5FBE /* Foundation.framework */; };
 		661A0DD3161727CF008D5FBE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 661A0DD2161727CF008D5FBE /* CoreGraphics.framework */; };
@@ -59,6 +60,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		661008961632ED5B00DD3C38 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		661A0DCA161727CF008D5FBE /* iOSDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		661A0DCE161727CF008D5FBE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		661A0DD0161727CF008D5FBE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -120,6 +122,7 @@
 		661A0DBF161727CF008D5FBE = {
 			isa = PBXGroup;
 			children = (
+				661008961632ED5B00DD3C38 /* Default-568h@2x.png */,
 				6649F4FF1617CF2900F1A064 /* Reinel_compass_rose.svg */,
 				6649E1021617574600AFE92A /* SVGKit-iOS.xcodeproj */,
 				6649E0AC1617479200AFE92A /* QuartzCore.framework */,
@@ -309,6 +312,7 @@
 				661D722A16177655005899EA /* iPhoneDetailViewController.xib in Resources */,
 				661D722B16177655005899EA /* MasterViewController_iPad.xib in Resources */,
 				661D722C16177655005899EA /* MasterViewController_iPhone.xib in Resources */,
+				661008971632ED5B00DD3C38 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
