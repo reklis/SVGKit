@@ -86,8 +86,9 @@
 - (id)initWithData:(NSData *)data;
 
 #pragma mark - UIImage methods cloned and re-implemented as SVG intelligent methods
-@property(nonatomic,readonly) CGSize             size;             // reflects orientation setting. size is in pixels
-@property(nonatomic,readonly) CGFloat            scale __OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_4_0);
+
+/** The natural / preferred size of the SVG (SVG's are infinitely scalable, by definition). This is saved in the original image by the image's author */
+@property(nonatomic,readonly) CGSize             size;
 
 /**
  
@@ -101,21 +102,24 @@
 - (void)drawAtPoint:(CGPoint)point;                                                        // mode = kCGBlendModeNormal, alpha = 1.0
 
 #pragma mark - unsupported / unimplemented UIImage methods (should add as a feature)
+
+/** This has no meaning for an SVGImage.
+ 
+ TODO: *possibly* we could make this writeable, and say "when you request a CALayerTree, it gets scaled by this"
+ */
+@property(nonatomic,readonly) CGFloat            scale;
+
 - (void)drawAtPoint:(CGPoint)point blendMode:(CGBlendMode)blendMode alpha:(CGFloat)alpha;
 - (void)drawInRect:(CGRect)rect;                                                           // mode = kCGBlendModeNormal, alpha = 1.0
 - (void)drawInRect:(CGRect)rect blendMode:(CGBlendMode)blendMode alpha:(CGFloat)alpha;
 
 - (void)drawAsPatternInRect:(CGRect)rect; // draws the image as a CGPattern
+
 // animated images. When set as UIImageView.image, animation will play in an infinite loop until removed. Drawing will render the first image
 #if TARGET_OS_IPHONE
-
-
-
-
 + (UIImage *)animatedImageNamed:(NSString *)name duration:(NSTimeInterval)duration ;//__OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_5_0); read sequnce of files with suffix starting at 0 or 1
 + (UIImage *)animatedResizableImageNamed:(NSString *)name capInsets:(UIEdgeInsets)capInsets duration:(NSTimeInterval)duration ;//__OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_5_0); // squence of files
 + (UIImage *)animatedImageWithImages:(NSArray *)images duration:(NSTimeInterval)duration ;//__OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_5_0);
-
 #endif
 /**
  
