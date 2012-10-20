@@ -57,12 +57,15 @@ static NSMutableDictionary* globalSVGKImageCache;
 #pragma mark - Respond to low-memory warnings by dumping the global static cache
 +(void) initialize
 {
-	[[NSNotificationCenter defaultCenter] addObserver:[SVGKImage class] selector:@selector(didReceiveMemoryWarningNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+	if( self == [SVGKImage class]) // Have to protect against subclasses ADDITIONALLY calling this, as a "[super initialize] line
+	{
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarningNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+	}
 }
 
 +(void) didReceiveMemoryWarningNotification:(NSNotification*) notification
 {
-	NSLog(@"[%@] Low-mem; purging cache of %i SVGKImage's...", [SVGKImage class], [globalSVGKImageCache count] );
+	NSLog(@"[%@] Low-mem; purging cache of %i SVGKImage's...", self, [globalSVGKImageCache count] );
 	
 	[globalSVGKImageCache removeAllObjects]; // once they leave the cache, if they are no longer referred to, they should automatically dealloc
 }
