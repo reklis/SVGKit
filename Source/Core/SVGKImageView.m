@@ -38,24 +38,57 @@
 		self.scaleMultiplier = CGSizeMake(1.0, 1.0);
 		self.backgroundColor = [UIColor clearColor];
 		
-		[self addObserver:self forKeyPath:@"layer" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
-		[self.layer addObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
-		[self addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
-		[self addObserver:self forKeyPath:@"scaleMultiplier" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
-		[self addObserver:self forKeyPath:@"tileContents" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+		if( self.disableAutoRedrawAtHighestResolution )
+			;
+		else
+			[self addAllInternalObservers];
     }
     return self;
 }
 
-- (void)dealloc
+-(void) addAllInternalObservers
 {
-    [self removeObserver:self  forKeyPath:@"layer" context:internalContextPointerBecauseApplesDemandsIt];
+	[self addObserver:self forKeyPath:@"layer" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+	[self.layer addObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+	[self addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+	[self addObserver:self forKeyPath:@"scaleMultiplier" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+	[self addObserver:self forKeyPath:@"tileContents" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+}
+
+-(void) removeAllInternalObservers
+{
+	[self removeObserver:self  forKeyPath:@"layer" context:internalContextPointerBecauseApplesDemandsIt];
 	[self.layer removeObserver:self forKeyPath:@"transform" context:internalContextPointerBecauseApplesDemandsIt];
 	
 	[self removeObserver:self forKeyPath:@"image" context:internalContextPointerBecauseApplesDemandsIt];
 	[self removeObserver:self forKeyPath:@"scaleMultiplier" context:internalContextPointerBecauseApplesDemandsIt];
 	[self removeObserver:self forKeyPath:@"tileContents" context:internalContextPointerBecauseApplesDemandsIt];
+}
+
+-(void)setDisableAutoRedrawAtHighestResolution:(BOOL)newValue
+{
+	if( newValue == _disableAutoRedrawAtHighestResolution )
+		return;
 	
+	_disableAutoRedrawAtHighestResolution = newValue;
+	
+	if( self.disableAutoRedrawAtHighestResolution ) // disabled, so we have to remove the observers
+	{
+		[self removeAllInternalObservers];
+	}
+	else // newly-enabled ... must add the observers
+	{
+		[self addAllInternalObservers];
+	}
+}
+
+- (void)dealloc
+{
+	if( self.disableAutoRedrawAtHighestResolution )
+		;
+	else
+		[self removeAllInternalObservers];
+    
 	self.image = nil;
 	
     [super dealloc];
@@ -64,39 +97,11 @@
 /** Trigger a call to re-display (at higher or lower draw-resolution) (get Apple to call drawRect: again) */
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	[self setNeedsDisplay];
+	if( self.disableAutoRedrawAtHighestResolution )
+		;
+	else
+		[self setNeedsDisplay];
 }
-
-#if APPLE_KVO_ISNT_WORKING
-/** Override default method purely so that it triggers a need to re-display (get Apple to call drawRect: again)
- Can't use Apple's KVO because it doesn't work and they provide no way to debug it */
--(void)setImage:(SVGKImage *)newImage
-{
-    [_image release];
-    _image = newImage;
-    [_image retain];
-    
-    [self setNeedsDisplay];
-}
-
-/** Override default method purely so that it triggers a need to re-display (get Apple to call drawRect: again)
- Can't use Apple's KVO because it doesn't work and they provide no way to debug it */
--(void)setScaleMultiplier:(CGSize)newScaleMultiplier
-{
-    _scaleMultiplier = newScaleMultiplier;
-    
-    [self setNeedsDisplay];
-}
-
-/** Override default method purely so that it triggers a need to re-display (get Apple to call drawRect: again)
- Can't use Apple's KVO because it doesn't work and they provide no way to debug it */
--(void)setTileContents:(BOOL)newTileContents
-{
-    _tileContents = newTileContents;
-    
-    [self setNeedsDisplay];
-}
-#endif
 
 -(void)drawRect:(CGRect)rect
 {

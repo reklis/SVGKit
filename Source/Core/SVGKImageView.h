@@ -25,6 +25,7 @@
 @property(nonatomic,retain) SVGKImage* image;
 @property(nonatomic) CGSize scaleMultiplier;
 @property(nonatomic) BOOL tileContents;
+@property(nonatomic) BOOL disableAutoRedrawAtHighestResolution;
 
 - (id)initWithSVGKImage:(SVGKImage*) im;
 

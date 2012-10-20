@@ -130,6 +130,8 @@
 		
 		self.contentView = [[[SVGKImageView alloc] initWithSVGKImage:document] autorelease];
 		
+		NSLog(@"[%@] WARNING: workaround for Apple bugs: UIScrollView spams tiny changes to the transform to the content view; currently, we have NO WAY of efficiently measuring whether or not to re-draw the SVGKImageView. As a temporary solution, we are DISABLING the SVGKImageView's auto-redraw-at-higher-resolution code - in general, you do NOT want to do this", [self class]);
+		
 		if (_name) {
 			[_name release];
 			_name = nil;
