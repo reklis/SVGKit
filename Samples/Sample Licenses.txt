@@ -2,6 +2,10 @@ This file exists to document where each sample file came from, in case anyone ne
 
 Also, it's helpful to know which SVG-editing software created / exported each file - helps us to check compatibility with particular editors.
 
+australia_states_blank.svg
+     -- Creative Commons
+     -- http://commons.wikimedia.org/wiki/File:Australia_states_blank.svg
+	 
 Blank_Map-Africa.svg
      -- Public Domain, c.f. - http://en.wikipedia.org/wiki/File:Blank_Map-Africa.svg
 	 
@@ -19,3 +23,10 @@ test-wave-1.svg
 Location_European_nation_states
      -- Creative Commons
 	 -- http://en.wikipedia.org/wiki/File:Location_European_nation_states.svg
+	 
+	 uk-only.svg, Europe_states_reduced.svg
+	 -- Adam Martin's modified versions of Location_European_nation_states, same license
+	 
+Reinel_compass_rose.svg
+     -- Creative Commons
+     -- http://commons.wikimedia.org/wiki/File:Reinel_compass_rose.svg

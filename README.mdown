@@ -3,6 +3,85 @@ SVGKit
 
 SVGKit is a Cocoa framework for rendering SVG files as Core Animation layers. All shapes are represented by instances of the `CAShapeLayer` class, and are, by design, animatable. SVGKit is compatible with the latest iOS SDK's.
 
+BRANCH: "transforms"
+======
+
+This specific branch contains a MASSIVE re-factor of the original SVGKit, aiming to make it easier to use in your apps. Please read the "usage" instructions carefully - they have changed from previous SVGKit versions!
+
+
+Usage - Basic (iPhone/iPad)
+-----
+
+To use this, you must:
+  1. Load an SVG file
+  2. EITHER:
+    2a. Convert the document to CALayer's which Apple can render
+    2b. Read the SVG data directly by looking at the tree of SVGElement subclasses
+
+
+2a: The easiest way to do this is:
+  1. SVGKImage *im = [SVGKImage imageNamed:@"my_svg_file"]; //this loads the file, parses the SVG, and outputs an SVGImage object
+  2. [self.view.layer addSublayer:im.CALayerTree]; // SVGKImage can export itself as Apple's CALayer's
+
+...and if you want to display the same SVG somewhere else simultaneously, you don't have to re-parse it, you can just call:
+  3. [self.view.layer addSublayer:[im newCALayerTree]; // Creates a clone of the CALayers, you can edit without affecting originals
+
+
+2b:  The easiest way to do this is:
+  1. SVGKImage *im = [SVGKImage imageNamed:@"my_svg_file"]; //this loads the file, parses the SVG, and outputs an SVGImage object
+  2. SVGSVGElement* rootOfTree = im.DOMTree; // NB: this is a partial implementation of the official "SVG DOM" standard. See the header file for this class and its superclass to see what you can do with it
+
+
+Advanced Features (this branch/fork only!) (iPhone/iPad)
+=====
+
+FEATURE 1: load SVG from web, or from disk
+-----
+  - [SVGKParser parse: (SVGKSource*)]; // anything that's an "SVGKSource" can be parsed
+
+  - [SVGKSource sourceWithFile:@"monkey.svg"]; // create a source from disk...
+  - [SVGKSource sourceWithURL:@"http://upload.wikimedia.org/wikipedia/commons/f/fd/Ghostscript_Tiger.svg"]; // create a source from disk...
+
+
+FEATURE 2: search an SVG file for particular tags / nodes / elements:
+-----
+  - Find all <svg:g> and <g> tags: NodeList* gElements = [svgImage.DOMDocument getElementsByTagName:@"g"];
+  - Find ALL tags (from root of SVG down): NodeList* allElements = [svgImage.DOMDocument getElementsByTagName:@"*"];
+
+FEATURE 3: resize your SVG file to any size:
+-----
+  - COMPLICATED: c.f. this thread: https://github.com/adamgit/SVGKit/issues/7
+
+FEATURE 4: automatic scaling of your SVG to fit in memory
+-----
+  - AUTOMATIC: SVG files are scaled to fit the co-ordinate system as required/intended by spec
+  - ...many files that ran out of memory in previous versions of SVGKit now render OK
+
+FEATURE 5: Access to the DOM Document Object Model
+-----
+  - PARTIALLY IMPLEMENTED: SVGKImage.DOMDocument is a true DOMDocument, but many of the methods aren't fully implemented
+
+FEATURE 6: Retrieve any part of your SVG document positioned correctly in space
+-----
+  - [((SVGKImage*) image).newCopyPositionedAbsoluteLayerWithIdentifier:@"id of the SVG tag / node /element"];
+  - NB: this MUST return a copy, because it's moving your layer out of the tree and into a fresh CALayer of its own
+
+FEATURE X: detailed information on whether and WHY parsing failed:
+-----
+  - (SVGKParser*).currentParseRun.warnings; // array of NSError objects, each one a "WARNING" from the parser
+  - (SVGKParser*).currentParseRun.errorsFatal; // array of NSError objects, each one a "FATAL ERROR" from the parser - if your SVG didn't render at all, this is why!
+  - (SVGKParser*).currentParseRun.errorsRecoverable; // array of NSError objects, each one a "RECOVERABLE ERROR" from the parser - if your SVG didn't render correctly, this is why! (although you probably still got to see something)
+
+  - (SVGKImage*).parseErrorsAndWarnings; // this is a convenience pointer to (SVGKParser*).currentParseRun used above
+
+Usage - OS X
+-----
+
+UNSUPPORTED: the code exists, but none of the maintainers have used it recently, so we're not even sure if the OS X build still works!
+
+Feel free to report any issues or suggest improvements in the issue tracker
+
+
 Installation
 -----
 
@@ -24,52 +103,3 @@ iOS (iPhone/iPad):
   9. (Optional but recommended): Add the framework "libxml2.dylib"
 
 OS X: ...this needs updating; some minor code changes are needed to "fix" this project. The OS X framework currently DOES NOT BUILD because iOS classes are being referenced in a couple of places.
-
-
-Usage - iPhone/iPad
------
-
-To use this, you must:
-  1. Load an SVG file, using SVGDocument (this parses the SVG)
-  2. Convert the document to CALayer's which Apple can render, using SVGDocumentView
-
-NB: if you want to render the same SVG in different places on screen, create an additional SVGDocumentView for each instance. That way, you don't have to re-parse the SVG source file each time.
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-	// Override point for customization after application launch.
-	[self.window makeKeyAndVisible];
-	
-	NSString* svgFilename = @"Monkey";
-	
-	NSLog( @"[%@] Loading SVG document, filename = %@", [self class], svgFilename );
-	
-	/** Optional: if you're using the parser extensions, add them here
-	[SVGDocument addSVGParserExtension:[[SVGParserConquest alloc] init]];
-	*/
-
-	SVGDocument* svgDocument = [SVGDocument documentNamed:svgFilename];
-
-	SVGDocumentView* docView = [SVGDocumentView documentViewWithDocument:svgDocument];
-		
-	[self.window.layer addSublayer:docView.rootLayer];	
-	
-    return YES;
-}
-
-Usage - OS X
------
-
-First, initialize an instance of `SVGDocument`, the model object which encompasses the entire SVG element tree. This can be accomplished using the `initWithContentsOfFile:` initializer. To load a SVG file which resides in your application bundle, use the `documentNamed:` class method and pass in a file name (without the extension). The `SVGDocument` class encapsulates certain document metadata, including width, height, version, title, and description.
-
-	SVGDocument *document = [SVGDocument documentNamed:@"Monkey"]; // located in the application bundle
-
-On Mac OS X, make sure your instance of `NSView` is layer-backed. The layer tree can be accessed using the `layerTree` method on `SVGDocument`, for example:
-
-	NSView *ourView = ... ;
-	[ourView setWantsLayer:YES];
-	[ourView.layer addSublayer:[document layerTree]];
-
-Your SVG file should now be rendered on-screen. You can query for specific layers by using the `layerWithIdentifier:` method, also defined on `SVGDocument`. The identifier corresponds to the `id` attribute defined on elements. Once a reference to a subclass of `CALayer` is returned, its properties can be animated using implicit or explicit [Core Animation](http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CoreAnimation_guide/Articles/AnimatingLayers.html%23//apple_ref/doc/uid/TP40006085-SW1) animations.
-
-Feel free to report any issues or suggest improvements in the issue tracker
