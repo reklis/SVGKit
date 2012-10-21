@@ -11,9 +11,9 @@
   - [self.view addSubview: skv];
  
  Advanced usage:
-  - to make the contents shrink to half their actual size, set self.scaleMultiplier = CGSizeMake( 0.5f, 0.5f );
+  - to make the contents shrink to half their actual size, and tile to fill, set self.tileRatio = CGSizeMake( 2.0f, 2.0f );
      NOTE: I'd prefer to do this view UIViewContentMode, but Apple didn't make it extensible
-  - to make the contents "tile" to fill the frame of the ImageView, set self.tileContents = TRUE;
+  - to disable tiling completely (might help with draw performance), set self.tileRatio = CGSizeZero
  
  Performance:
   - NOTE: the way this works - calling Apple's renderInContext: method - MAY BE artificially slow, because of Apple's implementation
@@ -23,8 +23,7 @@
 @interface SVGKImageView : UIView
 
 @property(nonatomic,retain) SVGKImage* image;
-@property(nonatomic) CGSize scaleMultiplier;
-@property(nonatomic) BOOL tileContents;
+@property(nonatomic) CGSize tileRatio;
 @property(nonatomic) BOOL disableAutoRedrawAtHighestResolution;
 @property(nonatomic) BOOL showBorder; /*< mostly for debugging - adds a coloured 1-pixel border around the image */
 
