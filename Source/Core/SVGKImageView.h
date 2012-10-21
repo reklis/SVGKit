@@ -26,6 +26,7 @@
 @property(nonatomic) CGSize scaleMultiplier;
 @property(nonatomic) BOOL tileContents;
 @property(nonatomic) BOOL disableAutoRedrawAtHighestResolution;
+@property(nonatomic) BOOL showBorder; /*< mostly for debugging - adds a coloured 1-pixel border around the image */
 
 - (id)initWithSVGKImage:(SVGKImage*) im;
 

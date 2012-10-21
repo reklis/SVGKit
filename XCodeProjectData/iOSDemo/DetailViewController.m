@@ -51,6 +51,11 @@
 	[super dealloc];
 }
 
+-(void)viewDidLoad
+{
+	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Debug" style:UIBarButtonItemStyleBordered target:self action:@selector(showHideBorder:)] autorelease];
+}
+
 #pragma mark - CRITICAL: this method makes Apple render SVGs in sharp focus
 
 -(void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)finalScale
@@ -132,6 +137,10 @@
 		
 		NSLog(@"[%@] WARNING: workaround for Apple bugs: UIScrollView spams tiny changes to the transform to the content view; currently, we have NO WAY of efficiently measuring whether or not to re-draw the SVGKImageView. As a temporary solution, we are DISABLING the SVGKImageView's auto-redraw-at-higher-resolution code - in general, you do NOT want to do this", [self class]);
 		
+		self.contentView.disableAutoRedrawAtHighestResolution = TRUE;
+		
+		self.contentView.showBorder = FALSE;
+		
 		if (_name) {
 			[_name release];
 			_name = nil;
@@ -177,6 +186,22 @@
 	animation.toValue = [NSNumber numberWithFloat:-0.1f];
 	
 	[layer addAnimation:animation forKey:@"shakingHead"];
+}
+
+- (IBAction) showHideBorder:(id)sender
+{
+	self.contentView.showBorder = ! self.contentView.showBorder;
+	
+	/**
+	 NB: normally, the following would NOT be needed - the SVGKImageView would automatically
+	 detect it needs to be re-drawn.
+	 
+	 But ... because we're doing zooming in this class, and Apple's zooming causes huge performance problems,
+	 we disabled the auto-redraw in the loadResource: method above.
+	 
+	 So, now, we have to manually tell the SVGKImageView to redraw
+	 */
+	[self.contentView setNeedsDisplay];
 }
 
 - (void)splitViewController:(UISplitViewController *)svc

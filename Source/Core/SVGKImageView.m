@@ -53,6 +53,7 @@
 	[self addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
 	[self addObserver:self forKeyPath:@"scaleMultiplier" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
 	[self addObserver:self forKeyPath:@"tileContents" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+	[self addObserver:self forKeyPath:@"showBorder" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
 }
 
 -(void) removeAllInternalObservers
@@ -63,6 +64,7 @@
 	[self removeObserver:self forKeyPath:@"image" context:internalContextPointerBecauseApplesDemandsIt];
 	[self removeObserver:self forKeyPath:@"scaleMultiplier" context:internalContextPointerBecauseApplesDemandsIt];
 	[self removeObserver:self forKeyPath:@"tileContents" context:internalContextPointerBecauseApplesDemandsIt];
+	[self removeObserver:self forKeyPath:@"showBorder" context:internalContextPointerBecauseApplesDemandsIt];
 }
 
 -(void)setDisableAutoRedrawAtHighestResolution:(BOOL)newValue
@@ -133,6 +135,12 @@
 			
 			CGContextRestoreGState(context);
 		}
+	
+	if( self.showBorder )
+	{
+		[[UIColor blackColor] set];
+		CGContextStrokeRect(context, rect);
+	}
 }
 
 @end

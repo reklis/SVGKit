@@ -114,15 +114,6 @@
 	_shapeLayer.name = self.identifier;
 		[_shapeLayer setValue:self.identifier forKey:kSVGElementIdentifier];
 	_shapeLayer.opacity = _opacity;
-		
-#if OUTLINE_SHAPES
-	
-#if TARGET_OS_IPHONE
-	_shapeLayer.borderColor = [UIColor redColor].CGColor;
-#endif
-	
-	_shapeLayer.borderWidth = 1.0f;
-#endif
 	
 	/** transform our LOCAL path into ABSOLUTE space */
 	CGAffineTransform transformAbsolute = [self transformAbsolute];

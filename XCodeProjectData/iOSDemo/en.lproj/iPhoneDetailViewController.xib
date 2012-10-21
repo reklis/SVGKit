@@ -78,7 +78,7 @@
 										<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 									</object>
 								</array>
-								<string key="NSFrameSize">{320, 548}</string>
+								<string key="NSFrameSize">{320, 504}</string>
 								<reference key="NSSuperview" ref="1039675488"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="856830201"/>
@@ -90,7 +90,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							</object>
 						</array>
-						<string key="NSFrameSize">{320, 548}</string>
+						<string key="NSFrameSize">{320, 504}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="28422098"/>
@@ -135,7 +135,7 @@
 						</object>
 					</object>
 				</array>
-				<string key="NSFrame">{{0, 20}, {320, 548}}</string>
+				<string key="NSFrame">{{0, 64}, {320, 504}}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="1039675488"/>
@@ -147,6 +147,9 @@
 					</object>
 				</object>
 				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics"/>
+				<object class="IBUISimulatedNavigationBarMetrics" key="IBUISimulatedTopBarMetrics">
+					<bool key="IBUIPrompted">NO</bool>
+				</object>
 				<reference key="IBUISimulatedDestinationMetrics" ref="289245403"/>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
@@ -267,7 +270,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">65</int>
+			<int key="maxID">68</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -277,6 +280,7 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="animate:">id</string>
 						<string key="exportLayers:">id</string>
+						<string key="showHideBorder:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="animate:">
@@ -285,6 +289,10 @@
 						</object>
 						<object class="IBActionInfo" key="exportLayers:">
 							<string key="name">exportLayers:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showHideBorder:">
+							<string key="name">showHideBorder:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>

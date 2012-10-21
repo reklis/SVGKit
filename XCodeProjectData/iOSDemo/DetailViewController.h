@@ -29,4 +29,6 @@
 - (IBAction)animate:(id)sender;
 - (IBAction)exportLayers:(id)sender;
 
+- (IBAction) showHideBorder:(id)sender;
+
 @end
