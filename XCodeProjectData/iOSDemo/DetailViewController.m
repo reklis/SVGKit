@@ -121,7 +121,16 @@
 	
     [self.contentView removeFromSuperview];
     
-	SVGKImage *document = [SVGKImage imageNamed:[name stringByAppendingPathExtension:@"svg"]];
+	SVGKImage *document = nil;
+	/** Detect URL vs file */
+	if( [name hasPrefix:@"http://"])
+	{
+		document = [SVGKImage imageWithContentsOfURL:[NSURL URLWithString:name]];
+	}
+	else
+		document = [SVGKImage imageNamed:[name stringByAppendingPathExtension:@"svg"]];
+	
+	
 	
 	if( document == nil )
 	{
