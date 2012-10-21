@@ -2,6 +2,18 @@ This file exists to document where each sample file came from, in case anyone ne
 
 Also, it's helpful to know which SVG-editing software created / exported each file - helps us to check compatibility with particular editors.
 
+URL'S INCLUDED IN SVGKit:
+-----------
+  - NB: we are NOT embedding these, so we do NOT have to license them, but FYI here are the original sources:
+
+http://upload.wikimedia.org/wikipedia/commons/f/f9/BlankMap-Africa.svg
+     -- Public Domain, author: http://commons.wikimedia.org/wiki/User:Lokal_Profil
+	 -- http://commons.wikimedia.org/w/index.php?title=File:BlankMap-Africa.svg&page=1
+
+
+FILES INCLUDED IN SVGKit:
+-----------
+
 australia_states_blank.svg
      -- Creative Commons
      -- http://commons.wikimedia.org/wiki/File:Australia_states_blank.svg

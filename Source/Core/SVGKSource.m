@@ -69,7 +69,7 @@
 		
 		httpData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
 		
-		if( error != nil )
+		if( httpData == nil )
 		{
 			NSLog( @"[%@] ERROR: failed to parse SVG from URL, because failed to download file at URL = %@, error = %@", [self class], self.URL, *error );
 			return nil;

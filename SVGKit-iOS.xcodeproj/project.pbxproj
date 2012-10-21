@@ -167,22 +167,6 @@
 		6639633F16145DDC00E58CCA /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		6639634116148CDF00E58CCA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6639634616148DEC00E58CCA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		6649DF5916172CCC00AFE92A /* Monkey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Monkey.png; sourceTree = "<group>"; };
-		6649DF5A16172CCC00AFE92A /* Note.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Note.png; sourceTree = "<group>"; };
-		6649DF5B16172CCC00AFE92A /* Sample Licenses.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Licenses.txt"; sourceTree = "<group>"; };
-		6649DF5D16172CCC00AFE92A /* australia_states_blank.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = australia_states_blank.svg; sourceTree = "<group>"; };
-		6649DF5E16172CCC00AFE92A /* Blank_Map-Africa.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Blank_Map-Africa.svg"; sourceTree = "<group>"; };
-		6649DF5F16172CCC00AFE92A /* breaking-1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "breaking-1.svg"; sourceTree = "<group>"; };
-		6649DF6016172CCC00AFE92A /* CurvedDiamond.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = CurvedDiamond.svg; sourceTree = "<group>"; };
-		6649DF6116172CCC00AFE92A /* Europe_states_reduced.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Europe_states_reduced.svg; sourceTree = "<group>"; };
-		6649DF6216172CCC00AFE92A /* Lion.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Lion.svg; sourceTree = "<group>"; };
-		6649DF6316172CCC00AFE92A /* Location_European_nation_states.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Location_European_nation_states.svg; sourceTree = "<group>"; };
-		6649DF6416172CCC00AFE92A /* Map.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Map.svg; sourceTree = "<group>"; };
-		6649DF6516172CCC00AFE92A /* Monkey.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Monkey.svg; sourceTree = "<group>"; };
-		6649DF6616172CCC00AFE92A /* Note.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Note.svg; sourceTree = "<group>"; };
-		6649DF6816172CCC00AFE92A /* test-wave-1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "test-wave-1.svg"; sourceTree = "<group>"; };
-		6649DF6916172CCC00AFE92A /* Text.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Text.svg; sourceTree = "<group>"; };
-		6649DF6A16172CCC00AFE92A /* uk-only.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "uk-only.svg"; sourceTree = "<group>"; };
 		6649DF6D16172CCC00AFE92A /* CGPathAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGPathAdditions.h; sourceTree = "<group>"; };
 		6649DF6E16172CCC00AFE92A /* CGPathAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGPathAdditions.m; sourceTree = "<group>"; };
 		6649DF7116172CCC00AFE92A /* AppleSucksDOMImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleSucksDOMImplementation.h; sourceTree = "<group>"; };
@@ -302,7 +286,6 @@
 		6649E05F16172CE200AFE92A /* SVGKit-iOS-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVGKit-iOS-Prefix.pch"; sourceTree = "<group>"; };
 		6649E0921617432700AFE92A /* CALayerExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CALayerExporter.h; path = "calayer-exporter/CALayerExporter.h"; sourceTree = SOURCE_ROOT; };
 		6649E0931617432700AFE92A /* CALayerExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CALayerExporter.m; sourceTree = "<group>"; };
-		6649F4F51617CECA00F1A064 /* Reinel_compass_rose.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Reinel_compass_rose.svg; sourceTree = "<group>"; };
 		66C0132C16179DCC00359714 /* SVGDefsElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGDefsElement.h; sourceTree = "<group>"; };
 		66C0132D16179DCC00359714 /* SVGDefsElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGDefsElement.m; sourceTree = "<group>"; };
 		66C0133016179E6F00359714 /* SVGUseElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGUseElement.h; sourceTree = "<group>"; };
@@ -366,50 +349,9 @@
 			isa = PBXGroup;
 			children = (
 				6649E0911617432700AFE92A /* calayer-exporter */,
-				6649DF5716172CCC00AFE92A /* Samples */,
 				6649DF6B16172CCC00AFE92A /* Source */,
 			);
 			name = "EXTERNAL REFERENCES";
-			sourceTree = "<group>";
-		};
-		6649DF5716172CCC00AFE92A /* Samples */ = {
-			isa = PBXGroup;
-			children = (
-				6649DF5816172CCC00AFE92A /* Bitmap */,
-				6649DF5B16172CCC00AFE92A /* Sample Licenses.txt */,
-				6649DF5C16172CCC00AFE92A /* SVG */,
-			);
-			path = Samples;
-			sourceTree = "<group>";
-		};
-		6649DF5816172CCC00AFE92A /* Bitmap */ = {
-			isa = PBXGroup;
-			children = (
-				6649DF5916172CCC00AFE92A /* Monkey.png */,
-				6649DF5A16172CCC00AFE92A /* Note.png */,
-			);
-			path = Bitmap;
-			sourceTree = "<group>";
-		};
-		6649DF5C16172CCC00AFE92A /* SVG */ = {
-			isa = PBXGroup;
-			children = (
-				6649DF5D16172CCC00AFE92A /* australia_states_blank.svg */,
-				6649DF5E16172CCC00AFE92A /* Blank_Map-Africa.svg */,
-				6649DF5F16172CCC00AFE92A /* breaking-1.svg */,
-				6649DF6016172CCC00AFE92A /* CurvedDiamond.svg */,
-				6649DF6116172CCC00AFE92A /* Europe_states_reduced.svg */,
-				6649DF6216172CCC00AFE92A /* Lion.svg */,
-				6649DF6316172CCC00AFE92A /* Location_European_nation_states.svg */,
-				6649DF6416172CCC00AFE92A /* Map.svg */,
-				6649DF6516172CCC00AFE92A /* Monkey.svg */,
-				6649F4F51617CECA00F1A064 /* Reinel_compass_rose.svg */,
-				6649DF6616172CCC00AFE92A /* Note.svg */,
-				6649DF6816172CCC00AFE92A /* test-wave-1.svg */,
-				6649DF6916172CCC00AFE92A /* Text.svg */,
-				6649DF6A16172CCC00AFE92A /* uk-only.svg */,
-			);
-			path = SVG;
 			sourceTree = "<group>";
 		};
 		6649DF6B16172CCC00AFE92A /* Source */ = {
