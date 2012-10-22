@@ -40,6 +40,7 @@
 		6649E10D1617577000AFE92A /* libSVGKit-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6649E10A1617574700AFE92A /* libSVGKit-iOS.a */; };
 		6649E10F1617578500AFE92A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6649E10E1617578500AFE92A /* libxml2.dylib */; };
 		6649F5001617CF2900F1A064 /* Reinel_compass_rose.svg in Resources */ = {isa = PBXBuildFile; fileRef = 6649F4FF1617CF2900F1A064 /* Reinel_compass_rose.svg */; };
+		665E4A7F16355C4000DDA751 /* imageWithASinglePointPath.svg in Resources */ = {isa = PBXBuildFile; fileRef = 665E4A7E16355C4000DDA751 /* imageWithASinglePointPath.svg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +101,7 @@
 		6649E1021617574600AFE92A /* SVGKit-iOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "SVGKit-iOS.xcodeproj"; sourceTree = "<group>"; };
 		6649E10E1617578500AFE92A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		6649F4FF1617CF2900F1A064 /* Reinel_compass_rose.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Reinel_compass_rose.svg; path = Samples/SVG/Reinel_compass_rose.svg; sourceTree = "<group>"; };
+		665E4A7E16355C4000DDA751 /* imageWithASinglePointPath.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = imageWithASinglePointPath.svg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 				661D720416177537005899EA /* breaking-1.svg */,
 				661D720516177537005899EA /* CurvedDiamond.svg */,
 				661D720616177537005899EA /* Europe_states_reduced.svg */,
+				665E4A7E16355C4000DDA751 /* imageWithASinglePointPath.svg */,
 				661D720716177537005899EA /* Lion.svg */,
 				661D720816177537005899EA /* Location_European_nation_states.svg */,
 				661D720916177537005899EA /* Map.svg */,
@@ -313,6 +316,7 @@
 				661D722B16177655005899EA /* MasterViewController_iPad.xib in Resources */,
 				661D722C16177655005899EA /* MasterViewController_iPhone.xib in Resources */,
 				661008971632ED5B00DD3C38 /* Default-568h@2x.png in Resources */,
+				665E4A7F16355C4000DDA751 /* imageWithASinglePointPath.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
