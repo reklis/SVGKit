@@ -129,22 +129,21 @@
 		6649E05B16172CCC00AFE92A /* CAShapeLayerWithHitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6649DFE516172CCC00AFE92A /* CAShapeLayerWithHitTest.m */; };
 		6649E05C16172CCC00AFE92A /* SVGPathView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6649DFE616172CCC00AFE92A /* SVGPathView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6649E05D16172CCC00AFE92A /* SVGPathView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6649DFE716172CCC00AFE92A /* SVGPathView.m */; };
-		6649E06016172CE200AFE92A /* SVGKit-iOS-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 6649E05F16172CE200AFE92A /* SVGKit-iOS-Prefix.pch */; };
 		6649E0941617432700AFE92A /* CALayerExporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 6649E0921617432700AFE92A /* CALayerExporter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6649E0951617432700AFE92A /* CALayerExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6649E0931617432700AFE92A /* CALayerExporter.m */; };
-		66C0132E16179DCC00359714 /* SVGDefsElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0132C16179DCC00359714 /* SVGDefsElement.h */; };
+		66C0132E16179DCC00359714 /* SVGDefsElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0132C16179DCC00359714 /* SVGDefsElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66C0132F16179DCC00359714 /* SVGDefsElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C0132D16179DCC00359714 /* SVGDefsElement.m */; };
-		66C0133216179E6F00359714 /* SVGUseElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0133016179E6F00359714 /* SVGUseElement.h */; };
+		66C0133216179E6F00359714 /* SVGUseElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0133016179E6F00359714 /* SVGUseElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66C0133316179E6F00359714 /* SVGUseElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C0133116179E6F00359714 /* SVGUseElement.m */; };
-		66C0133616179F4400359714 /* SVGElementInstance.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0133416179F4400359714 /* SVGElementInstance.h */; };
+		66C0133616179F4400359714 /* SVGElementInstance.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0133416179F4400359714 /* SVGElementInstance.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66C0133716179F4400359714 /* SVGElementInstance.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C0133516179F4400359714 /* SVGElementInstance.m */; };
-		66C0133A16179FD700359714 /* SVGElementInstanceList.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0133816179FD700359714 /* SVGElementInstanceList.h */; };
+		66C0133A16179FD700359714 /* SVGElementInstanceList.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0133816179FD700359714 /* SVGElementInstanceList.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66C0133B16179FD700359714 /* SVGElementInstanceList.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C0133916179FD700359714 /* SVGElementInstanceList.m */; };
-		66C0133E1617A33000359714 /* SVGKParserDefsAndUse.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0133C1617A33000359714 /* SVGKParserDefsAndUse.h */; };
+		66C0133E1617A33000359714 /* SVGKParserDefsAndUse.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C0133C1617A33000359714 /* SVGKParserDefsAndUse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66C0133F1617A33000359714 /* SVGKParserDefsAndUse.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C0133D1617A33000359714 /* SVGKParserDefsAndUse.m */; };
-		66C013411617A52600359714 /* SVGUseElement_Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C013401617A52600359714 /* SVGUseElement_Mutable.h */; };
-		66C013431617A8FF00359714 /* SVGElementInstance_Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C013421617A8FF00359714 /* SVGElementInstance_Mutable.h */; };
-		66C013451617AA8700359714 /* SVGElementInstanceList_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C013441617AA8600359714 /* SVGElementInstanceList_Internal.h */; };
+		66C013411617A52600359714 /* SVGUseElement_Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C013401617A52600359714 /* SVGUseElement_Mutable.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66C013431617A8FF00359714 /* SVGElementInstance_Mutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C013421617A8FF00359714 /* SVGElementInstance_Mutable.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66C013451617AA8700359714 /* SVGElementInstanceList_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C013441617AA8600359714 /* SVGElementInstanceList_Internal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -596,6 +595,14 @@
 				6649E01916172CCC00AFE92A /* SVGTransform.h in Headers */,
 				6649E01B16172CCC00AFE92A /* SVGViewSpec.h in Headers */,
 				6649E01C16172CCC00AFE92A /* SVGCircleElement.h in Headers */,
+				66C0132E16179DCC00359714 /* SVGDefsElement.h in Headers */,
+				66C0133216179E6F00359714 /* SVGUseElement.h in Headers */,
+				66C0133616179F4400359714 /* SVGElementInstance.h in Headers */,
+				66C0133A16179FD700359714 /* SVGElementInstanceList.h in Headers */,
+				66C0133E1617A33000359714 /* SVGKParserDefsAndUse.h in Headers */,
+				66C013411617A52600359714 /* SVGUseElement_Mutable.h in Headers */,
+				66C013431617A8FF00359714 /* SVGElementInstance_Mutable.h in Headers */,
+				66C013451617AA8700359714 /* SVGElementInstanceList_Internal.h in Headers */,
 				6649E02016172CCC00AFE92A /* SVGDescriptionElement.h in Headers */,
 				6649E02216172CCC00AFE92A /* SVGElement.h in Headers */,
 				6649E02416172CCC00AFE92A /* SVGElement_ForParser.h in Headers */,
