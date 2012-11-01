@@ -127,17 +127,7 @@
 // Introduced in DOM Level 2:
 -(Node*) setNamedItemNS:(Node*) arg
 {
-	NSMutableDictionary* namespaceDict = [self.internalDictionaryOfNamespaces objectForKey:arg.namespaceURI];
-	if( namespaceDict == nil )
-	{
-		namespaceDict = [NSMutableDictionary dictionary];
-		[self.internalDictionaryOfNamespaces setObject:namespaceDict forKey:arg.namespaceURI];
-	}
-	Node* oldNode = [namespaceDict objectForKey:arg.localName];
-					   
-	[namespaceDict setObject:arg forKey:arg.localName];
-	
-	return oldNode;
+	return [self setNamedItemNS:arg inNodeNamespace:nil];
 }
 
 // Introduced in DOM Level 2:
@@ -147,6 +137,29 @@
 	Node* oldNode = [namespaceDict objectForKey:localName];
 	
 	[namespaceDict removeObjectForKey:localName];
+	
+	return oldNode;
+}
+
+#pragma mark - MISSING METHOD FROM SVG Spec, without which you cannot parse documents (don't understand how they intended you to fulfil the spec without this method)
+
+-(Node*) setNamedItemNS:(Node*) arg inNodeNamespace:(NSString*) nodesNamespace
+{
+	NSString* effectiveNamespace = arg.namespaceURI != nil ? arg.namespaceURI : nodesNamespace;
+	if( effectiveNamespace == nil )
+	{
+		return [self setNamedItem:arg]; // this should never happen, but there's a lot of malformed SVG files out in the wild
+	}
+	
+	NSMutableDictionary* namespaceDict = [self.internalDictionaryOfNamespaces objectForKey:effectiveNamespace];
+	if( namespaceDict == nil )
+	{
+		namespaceDict = [NSMutableDictionary dictionary];
+		[self.internalDictionaryOfNamespaces setObject:namespaceDict forKey:effectiveNamespace];
+	}
+	Node* oldNode = [namespaceDict objectForKey:arg.localName];
+	
+	[namespaceDict setObject:arg forKey:arg.localName];
 	
 	return oldNode;
 }

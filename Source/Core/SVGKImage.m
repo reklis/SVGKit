@@ -53,8 +53,25 @@
 
 #ifdef ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
 static NSMutableDictionary* globalSVGKImageCache;
+
+#pragma mark - Respond to low-memory warnings by dumping the global static cache
++(void) initialize
+{
+	if( self == [SVGKImage class]) // Have to protect against subclasses ADDITIONALLY calling this, as a "[super initialize] line
+	{
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarningNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+	}
+}
+
++(void) didReceiveMemoryWarningNotification:(NSNotification*) notification
+{
+	NSLog(@"[%@] Low-mem; purging cache of %i SVGKImage's...", self, [globalSVGKImageCache count] );
+	
+	[globalSVGKImageCache removeAllObjects]; // once they leave the cache, if they are no longer referred to, they should automatically dealloc
+}
 #endif
 
+#pragma mark - Convenience initializers
 + (SVGKImage *)imageNamed:(NSString *)name {
 	NSParameterAssert(name != nil);
     
@@ -116,6 +133,9 @@ static NSMutableDictionary* globalSVGKImageCache;
 	return [[[[self class] alloc] initWithContentsOfFile:aPath] autorelease];
 }
 
+/**
+ Designated Initializer
+ */
 - (id)initWithParsedSVG:(SVGKParseResult *)parseResult {
 	self = [super init];
 	if (self) {
@@ -146,7 +166,7 @@ static NSMutableDictionary* globalSVGKImageCache;
 			self.svgHeight = self.DOMTree.height;
 		}
 	}
-	return self;
+    return self;
 }
 
 - (id)initWithSource:(SVGKSource *)newSource {

@@ -114,15 +114,6 @@
 	_shapeLayer.name = self.identifier;
 		[_shapeLayer setValue:self.identifier forKey:kSVGElementIdentifier];
 	_shapeLayer.opacity = _opacity;
-		
-#if OUTLINE_SHAPES
-	
-#if TARGET_OS_IPHONE
-	_shapeLayer.borderColor = [UIColor redColor].CGColor;
-#endif
-	
-	_shapeLayer.borderWidth = 1.0f;
-#endif
 	
 	/** transform our LOCAL path into ABSOLUTE space */
 	CGAffineTransform transformAbsolute = [self transformAbsolute];
@@ -130,7 +121,7 @@
 	CGPathAddPath( pathToPlaceInLayer, &transformAbsolute, _pathRelative);
 	
 	/** find out the ABSOLUTE BOUNDING BOX of our transformed path */
-    CGRect localPathBB = CGPathGetPathBoundingBox( _pathRelative );
+    //BIZARRE: Apple sometimes gives a different value for this even when transformAbsolute == identity! : CGRect localPathBB = CGPathGetPathBoundingBox( _pathRelative );
 	//DEBUG ONLY: CGRect unTransformedPathBB = CGPathGetBoundingBox( _pathRelative );
 	CGRect transformedPathBB = CGPathGetBoundingBox( pathToPlaceInLayer );
 	
@@ -149,7 +140,7 @@
 	 NB: this line, by changing the FRAME of the layer, has the side effect of also changing the CGPATH's position in absolute
 	 space! This is why we needed the "CGPathRef finalPath =" line a few lines above...
 	 */
-	_shapeLayer.frame = CGRectApplyAffineTransform( localPathBB, transformAbsolute );
+	_shapeLayer.frame = transformedPathBB;
 		
 	//DEBUG ONLY: CGRect shapeLayerFrame = _shapeLayer.frame;
 	

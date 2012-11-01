@@ -19,8 +19,8 @@
 		if( CGRectIsEmpty( initialLayer.frame ) ) // Avoid Apple's UIKit getting upset by infinitely large/small areas due to floating point inaccuracy
 			return initialLayer;
 		
-		CGAffineTransform i = initialLayer.affineTransform;
-		CGAffineTransform mine = self.transformRelative;
+		//For Xcode's broken debugger: CGAffineTransform i = initialLayer.affineTransform;
+		//For Xcode's broken debugger: CGAffineTransform mine = self.transformRelative;
 		
 		initialLayer.affineTransform = CGAffineTransformConcat( self.transformRelative, initialLayer.affineTransform );
 		

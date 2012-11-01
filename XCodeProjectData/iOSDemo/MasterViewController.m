@@ -17,7 +17,7 @@
 - (id)init
 {
     if (self) {
-        self.sampleNames = [NSMutableArray arrayWithObjects: @"australia_states_blank", @"Reinel_compass_rose", @"Monkey", @"Blank_Map-Africa", @"Note", @"Lion", @"Map", @"CurvedDiamond", @"Text", @"Location_European_nation_states", @"uk-only", @"Europe_states_reduced", @"Compass_rose_pale", nil];
+        self.sampleNames = [NSMutableArray arrayWithObjects: @"http://upload.wikimedia.org/wikipedia/commons/f/f9/BlankMap-Africa.svg", @"australia_states_blank", @"Reinel_compass_rose", @"Monkey", @"Blank_Map-Africa", @"Note", @"imageWithASinglePointPath", @"Lion", @"Map", @"CurvedDiamond", @"Text", @"Location_European_nation_states", @"uk-only", @"Europe_states_reduced", @"Compass_rose_pale", nil];
     }
 	
 	/** Apple really sucks. They keep randomly changing which init methods they call, BREAKING ALL EXISTING CODE */
@@ -79,6 +79,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	if( [[_sampleNames objectAtIndex:indexPath.row] isEqualToString:@"Reinel_compass_rose"])
+	{
+		NSLog(@"*****************\n*   WARNING\n*\n* The sample 'Reinel_compass_rose' is currently unsupported;\n* it is included in this build so that people working on it can test it and see if it works yet\n*\n*\n*****************");
+	}
+	
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
 	    if (!self.detailViewController) {
 	        self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"iPhoneDetailViewController" bundle:nil] autorelease];

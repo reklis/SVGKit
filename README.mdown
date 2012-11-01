@@ -12,14 +12,14 @@ This specific branch contains a MASSIVE re-factor of the original SVGKit, aiming
 Usage - Basic (iPhone/iPad)
 -----
 
-To use this, you must:
-  1. Load an SVG file
-  2. EITHER:
-    2a. Convert the document to CALayer's which Apple can render
-    2b. Read the SVG data directly by looking at the tree of SVGElement subclasses
+Instantiate an SVGKImageView using the filename of an SVG file, and add it to your view with [UIView addSubview:]
 
+    [self.view addSubview: [[SVGKImageView alloc] initWithSVGKImage: [SVGKImage imageNamed:@"mySVGfile.svg"]]];
 
-2a: The easiest way to do this is:
+Usage - Intermediate (iPhone/iPad)
+-----
+
+OPTION 1: Load an SVG file, and convert the document to CALayer's which Apple can render
   1. SVGKImage *im = [SVGKImage imageNamed:@"my_svg_file"]; //this loads the file, parses the SVG, and outputs an SVGImage object
   2. [self.view.layer addSublayer:im.CALayerTree]; // SVGKImage can export itself as Apple's CALayer's
 
@@ -27,7 +27,7 @@ To use this, you must:
   3. [self.view.layer addSublayer:[im newCALayerTree]; // Creates a clone of the CALayers, you can edit without affecting originals
 
 
-2b:  The easiest way to do this is:
+OPTION 2: Load an SVG file, and read the SVG data directly by looking at the tree of SVGElement subclasses
   1. SVGKImage *im = [SVGKImage imageNamed:@"my_svg_file"]; //this loads the file, parses the SVG, and outputs an SVGImage object
   2. SVGSVGElement* rootOfTree = im.DOMTree; // NB: this is a partial implementation of the official "SVG DOM" standard. See the header file for this class and its superclass to see what you can do with it
 
@@ -35,7 +35,17 @@ To use this, you must:
 Advanced Features (this branch/fork only!) (iPhone/iPad)
 =====
 
-FEATURE 1: load SVG from web, or from disk
+FEATURE 1: use an SVG just like it's a normal PNG file: use SVGKImageView like it's UIImageView:
+-----
+
+  - SVGKImage = equivalent of UIImage (same methods and properties - some not implemented, but all core items implemented)
+  - SVGKImageView = equivalent of UIImageView (same methods, with extra properties to support the features of SVG that plain bitmaps lack - e.g. resolution independent rendering)
+
+...NB: by default, if you change the "frame" property of an SVGKImageView, it automatically re-renders the SVG at the new resolution.
+...NB: bugs in Apple's UIScrollView mean you MUST disable the above feature before allowing user's pinch-zoom: a property on SVGKImageView lets you turn this on/off
+
+ 
+FEATURE 2: load SVG from web, or from disk
 -----
   - [SVGKParser parse: (SVGKSource*)]; // anything that's an "SVGKSource" can be parsed
 
@@ -43,30 +53,30 @@ FEATURE 1: load SVG from web, or from disk
   - [SVGKSource sourceWithURL:@"http://upload.wikimedia.org/wikipedia/commons/f/fd/Ghostscript_Tiger.svg"]; // create a source from disk...
 
 
-FEATURE 2: search an SVG file for particular tags / nodes / elements:
+FEATURE 3: search an SVG file for particular tags / nodes / elements:
 -----
   - Find all <svg:g> and <g> tags: NodeList* gElements = [svgImage.DOMDocument getElementsByTagName:@"g"];
   - Find ALL tags (from root of SVG down): NodeList* allElements = [svgImage.DOMDocument getElementsByTagName:@"*"];
 
-FEATURE 3: resize your SVG file to any size:
+FEATURE 4: resize your SVG file to any size:
 -----
   - COMPLICATED: c.f. this thread: https://github.com/adamgit/SVGKit/issues/7
 
-FEATURE 4: automatic scaling of your SVG to fit in memory
+FEATURE 5: automatic scaling of your SVG to fit in memory
 -----
   - AUTOMATIC: SVG files are scaled to fit the co-ordinate system as required/intended by spec
   - ...many files that ran out of memory in previous versions of SVGKit now render OK
 
-FEATURE 5: Access to the DOM Document Object Model
+FEATURE 6: Access to the DOM Document Object Model
 -----
   - PARTIALLY IMPLEMENTED: SVGKImage.DOMDocument is a true DOMDocument, but many of the methods aren't fully implemented
 
-FEATURE 6: Retrieve any part of your SVG document positioned correctly in space
+FEATURE 7: Retrieve any part of your SVG document positioned correctly in space
 -----
   - [((SVGKImage*) image).newCopyPositionedAbsoluteLayerWithIdentifier:@"id of the SVG tag / node /element"];
   - NB: this MUST return a copy, because it's moving your layer out of the tree and into a fresh CALayer of its own
 
-FEATURE X: detailed information on whether and WHY parsing failed:
+FEATURE 8: detailed information on whether and WHY parsing failed:
 -----
   - (SVGKParser*).currentParseRun.warnings; // array of NSError objects, each one a "WARNING" from the parser
   - (SVGKParser*).currentParseRun.errorsFatal; // array of NSError objects, each one a "FATAL ERROR" from the parser - if your SVG didn't render at all, this is why!
