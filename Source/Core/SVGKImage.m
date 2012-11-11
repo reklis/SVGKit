@@ -376,7 +376,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 {
 	CALayer *layer = [element newLayer];
 	
-	NSLog(@"[%@] DEBUG: converted SVG element (class:%@) to CALayer (class:%@ frame:%@) for id = %@", [self class], NSStringFromClass([element class]), NSStringFromClass([layer class]), NSStringFromCGRect( layer.frame ), element.identifier);
+	NSLog(@"[%@] DEBUG: converted SVG element (class:%@) to CALayer (class:%@ frame:%@ pointer:%@) for id = %@", [self class], NSStringFromClass([element class]), NSStringFromClass([layer class]), NSStringFromCGRect( layer.frame ), layer, element.identifier);
 	
 	NodeList* childNodes = element.childNodes;
 	
@@ -427,6 +427,7 @@ NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 {
 	if( CALayerTree == nil )
 	{
+		NSLog(@"[%@] WARNING: no CALayer tree found, creating a new one (will cache it once generated)", [self class] );
 		self.CALayerTree = [[self newCALayerTree] autorelease];
 	}
 	

@@ -53,7 +53,10 @@
 
 -(void)viewDidLoad
 {
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Debug" style:UIBarButtonItemStyleBordered target:self action:@selector(showHideBorder:)] autorelease];
+	self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:
+											   [[[UIBarButtonItem alloc] initWithTitle:@"Debug" style:UIBarButtonItemStyleBordered target:self action:@selector(showHideBorder:)] autorelease],
+											   [[[UIBarButtonItem alloc] initWithTitle:@"Animate" style:UIBarButtonItemStyleBordered target:self action:@selector(animate:)] autorelease],
+											   nil];
 }
 
 #pragma mark - CRITICAL: this method makes Apple render SVGs in sharp focus

@@ -24,7 +24,7 @@
 {
 	if( im == nil )
 	{
-		NSLog(@"[%@] WARNING: you have initialized an SVGKImageView with a blank image (nil). Possibly because you're using Storyboars or NIBs which Apple won't allow anyone to use with 3rd party code", [self class]);
+		NSLog(@"[%@] WARNING: you have initialized an SVGKImageView with a blank image (nil). Possibly because you're using Storyboards or NIBs which Apple won't allow us to decorate. Make sure you assign an SVGKImage to the .image property!", [self class]);
 	}
 	
     self = [super init];
@@ -37,33 +37,38 @@
 		self.tileRatio = CGSizeZero;
 		self.backgroundColor = [UIColor clearColor];
 		
+#ifdef USE_SUBLAYERS_INSTEAD_OF_BLIT
+		if( im != nil )
+			[self.layer addSublayer:im.CALayerTree];
+#endif
+		
+		/** redraw-observers */
 		if( self.disableAutoRedrawAtHighestResolution )
 			;
 		else
-			[self addAllInternalObservers];
+			[self addInternalRedrawOnResizeObservers];
+		
+		/** other obeservers */
+		[self addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+		[self addObserver:self forKeyPath:@"tileRatio" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+		[self addObserver:self forKeyPath:@"showBorder" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
     }
     return self;
 }
 
--(void) addAllInternalObservers
+-(void) addInternalRedrawOnResizeObservers
 {
 	[self addObserver:self forKeyPath:@"layer" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
 	[self.layer addObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
-	[self addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
-	[self addObserver:self forKeyPath:@"scaleMultiplier" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
-	[self addObserver:self forKeyPath:@"tileContents" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
-	[self addObserver:self forKeyPath:@"showBorder" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+	
+	
+	
 }
 
--(void) removeAllInternalObservers
+-(void) removeInternalRedrawOnResizeObservers
 {
 	[self removeObserver:self  forKeyPath:@"layer" context:internalContextPointerBecauseApplesDemandsIt];
 	[self.layer removeObserver:self forKeyPath:@"transform" context:internalContextPointerBecauseApplesDemandsIt];
-	
-	[self removeObserver:self forKeyPath:@"image" context:internalContextPointerBecauseApplesDemandsIt];
-	[self removeObserver:self forKeyPath:@"scaleMultiplier" context:internalContextPointerBecauseApplesDemandsIt];
-	[self removeObserver:self forKeyPath:@"tileContents" context:internalContextPointerBecauseApplesDemandsIt];
-	[self removeObserver:self forKeyPath:@"showBorder" context:internalContextPointerBecauseApplesDemandsIt];
 }
 
 -(void)setDisableAutoRedrawAtHighestResolution:(BOOL)newValue
@@ -75,11 +80,11 @@
 	
 	if( self.disableAutoRedrawAtHighestResolution ) // disabled, so we have to remove the observers
 	{
-		[self removeAllInternalObservers];
+		[self removeInternalRedrawOnResizeObservers];
 	}
 	else // newly-enabled ... must add the observers
 	{
-		[self addAllInternalObservers];
+		[self addInternalRedrawOnResizeObservers];
 	}
 }
 
@@ -88,7 +93,11 @@
 	if( self.disableAutoRedrawAtHighestResolution )
 		;
 	else
-		[self removeAllInternalObservers];
+		[self removeInternalRedrawOnResizeObservers];
+	
+	[self removeObserver:self forKeyPath:@"image" context:internalContextPointerBecauseApplesDemandsIt];
+	[self removeObserver:self forKeyPath:@"tileRatio" context:internalContextPointerBecauseApplesDemandsIt];
+	[self removeObserver:self forKeyPath:@"showBorder" context:internalContextPointerBecauseApplesDemandsIt];
     
 	self.image = nil;
 	
@@ -98,12 +107,30 @@
 /** Trigger a call to re-display (at higher or lower draw-resolution) (get Apple to call drawRect: again) */
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+	if( [keyPath isEqualToString:@"transform"] &&  CGSizeEqualToSize( CGSizeZero, self.tileRatio ) )
+	{
+		/*NSLog(@"transform changed. Setting layer scale: %2.2f --> %2.2f", self.layer.contentsScale, self.transform.a);
+		self.layer.contentsScale = self.transform.a;*/
+		[self.image.CALayerTree removeFromSuperlayer]; // force apple to redraw?
+		[self setNeedsDisplay];
+	}
+	else
+	{
+	
 	if( self.disableAutoRedrawAtHighestResolution )
 		;
 	else
+	{
 		[self setNeedsDisplay];
+	}
+	}
 }
 
+/**
+ NB: this implementation is a bit tricky, because we're extending Apple's concept of a UIView to add "tiling"
+ and "automatic rescaling"
+ 
+ */
 -(void)drawRect:(CGRect)rect
 {
 	/**
@@ -137,15 +164,21 @@
 	CGSize tileSize;
 	if( cols == 1 && rows == 1 ) // if we are NOT tiling, then obey the UIViewContentMode as best we can!
 	{
-		tileSize = CGSizeMake( 1.0f, 1.0f );
-		switch( self.contentMode )
+#ifdef USE_SUBLAYERS_INSTEAD_OF_BLIT
+		if( self.image.CALayerTree.superlayer == self.layer )
 		{
-			case UIViewContentModeScaleToFill:
-			default:
-			{
-				scaleConvertImageToView = CGSizeMake( self.bounds.size.width / imageBounds.size.width, self.bounds.size.height / imageBounds.size.height );
-			}break;
+			[super drawRect:rect];
+			return; // TODO: Apple's bugs - they ignore all attempts to force a redraw
 		}
+		else
+		{
+			[self.layer addSublayer:self.image.CALayerTree];
+			return; // we've added the layer - let Apple take care of the rest!
+		}
+#else
+		scaleConvertImageToView = CGSizeMake( self.bounds.size.width / imageBounds.size.width, self.bounds.size.height / imageBounds.size.height );
+		tileSize = self.bounds.size;
+#endif
 	}
 	else
 	{

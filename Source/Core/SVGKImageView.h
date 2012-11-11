@@ -2,6 +2,8 @@
 
 #import "SVGKit.h"
 
+//#define USE_SUBLAYERS_INSTEAD_OF_BLIT // completely changes how this class works
+
 /**
  * ADAM: SVGKit's version of UIImageView - with some improvements over Apple's design
  
