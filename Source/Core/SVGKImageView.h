@@ -1,32 +1,23 @@
 #import <Foundation/Foundation.h>
 
-#import "SVGKit.h"
-
-//#define USE_SUBLAYERS_INSTEAD_OF_BLIT // completely changes how this class works
+#import <UIKit/UIKit.h>
+#import "SVGKImage.h" // cannot import "SVGKit.h" because that would cause ciruclar imports
 
 /**
- * ADAM: SVGKit's version of UIImageView - with some improvements over Apple's design
+ * SVGKit's version of UIImageView - with some improvements over Apple's design. There are multiple versions of this class, for different use cases.
  
- Basic usage:
-  - as per UIImageView, simpy:
-  - SVGKImageView *skv = [[SVGKImageView alloc] initWithSVGKImage: [SVGKImage imageNamed:@"image.svg"]];
-  - [self.view addSubview: skv];
+ STANDARD USAGE:
+   - SVGKImageView *myImageView = [[SVGKFastImageView alloc] initWithSVGKImage: [SVGKImage imageNamed:@"image.svg"]];
+   - [self.view addSubview: myImageView];
  
- Advanced usage:
-  - to make the contents shrink to half their actual size, and tile to fill, set self.tileRatio = CGSizeMake( 2.0f, 2.0f );
-     NOTE: I'd prefer to do this view UIViewContentMode, but Apple didn't make it extensible
-  - to disable tiling completely (might help with draw performance), set self.tileRatio = CGSizeZero
+ NB: the "SVGKFastImageView" is the one you want 9 times in 10. The alternative classes (e.g. SVGKLayeredImageView) are for advanced usage.
  
- Performance:
-  - NOTE: the way this works - calling Apple's renderInContext: method - MAY BE artificially slow, because of Apple's implementation
-  - NOTE: you MUST NOT call SVGKImage.CALayerTree.transform - that will have unexpected side-effects, because of Apple's implementation
-     (hence: we currently use renderInContext:, even though we'd prefer not to :( )
+ NB: read the class-comment for each subclass carefully before deciding what to use.
+ 
  */
 @interface SVGKImageView : UIView
 
 @property(nonatomic,retain) SVGKImage* image;
-@property(nonatomic) CGSize tileRatio;
-@property(nonatomic) BOOL disableAutoRedrawAtHighestResolution;
 @property(nonatomic) BOOL showBorder; /*< mostly for debugging - adds a coloured 1-pixel border around the image */
 
 - (id)initWithSVGKImage:(SVGKImage*) im;
