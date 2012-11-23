@@ -18,6 +18,8 @@
 @property(nonatomic,retain) SVGSVGElement* rootOfSVGTree; /*< both are needed, see spec */
 @property(nonatomic,retain) SVGDocument* parsedDocument; /*< both are needed, see spec */
 
+@property(nonatomic,retain) NSMutableDictionary* namespacesEncountered; /**< maps "prefix" to "uri" */
+
 -(void) addSourceError:(NSError*) fatalError;
 -(void) addParseWarning:(NSError*) warning;
 -(void) addParseErrorRecoverable:(NSError*) recoverableError;
