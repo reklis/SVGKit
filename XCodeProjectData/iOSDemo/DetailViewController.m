@@ -11,6 +11,8 @@
 
 #import "NodeList+Mutable.h"
 
+#import "SVGKFastImageView.h"
+
 @interface DetailViewController ()
 
 @property (nonatomic, retain) UIPopoverController *popoverController;
@@ -141,40 +143,56 @@
 	}
 	else
 	{
-	if( document.parseErrorsAndWarnings.rootOfSVGTree != nil )
-	{
-		NSLog(@"[%@] Freshly loaded document (name = %@) has size = %@", [self class], name, NSStringFromCGSize(document.size) );
-		
-		self.contentView = [[[SVGKImageView alloc] initWithSVGKImage:document] autorelease];
-		
-		NSLog(@"[%@] WARNING: workaround for Apple bugs: UIScrollView spams tiny changes to the transform to the content view; currently, we have NO WAY of efficiently measuring whether or not to re-draw the SVGKImageView. As a temporary solution, we are DISABLING the SVGKImageView's auto-redraw-at-higher-resolution code - in general, you do NOT want to do this", [self class]);
-		
-		self.contentView.disableAutoRedrawAtHighestResolution = TRUE;
-		
-		self.contentView.showBorder = FALSE;
-		
-		if (_name) {
-			[_name release];
-			_name = nil;
-		}
-		
-		_name = [name copy];
-		
-		[self.scrollViewForSVG addSubview:self.contentView];
-		[self.scrollViewForSVG setContentSize: self.contentView.frame.size];
-		
-		float screenToDocumentSizeRatio = self.scrollViewForSVG.frame.size.width / self.contentView.frame.size.width;
-		
-		self.scrollViewForSVG.minimumZoomScale = MIN( 1, screenToDocumentSizeRatio );
-		self.scrollViewForSVG.maximumZoomScale = MAX( 1, screenToDocumentSizeRatio );
+		if( document.parseErrorsAndWarnings.rootOfSVGTree != nil )
+		{
+			NSLog(@"[%@] Freshly loaded document (name = %@) has size = %@", [self class], name, NSStringFromCGSize(document.size) );
+			
+			if( [name  isEqualToString:@"Monkey"])
+			{
+				/**
+				 
+				 NB: very special-case handling here -- this is included AS AN EXAMPLE so you can see the differences.
+				 
+				 The problem: Apple's code doesn't allow us to support CoreAnimation *and* make image loading easy.
+				 The solution: there are two versions of SVGKImageView - a "normal" one, and a "weaker one that supports CoreAnimation"
+				 
+				 In this demo, we setup the Monkey.SVG to allow layer-based animation...
+				 */
 				
-		NodeList* elementsUsingTagG = [document.DOMDocument getElementsByTagName:@"g"];
-		NSLog( @"[%@] checking for SVG standard set of elements with XML tag/node of <g>: %@", [self class], elementsUsingTagG.internalArray );
-	}
-	else
-	{
-		[[[[UIAlertView alloc] initWithTitle:@"SVG parse failed" message:[NSString stringWithFormat:@"%i fatal errors, %i warnings. First fatal = %@",[document.parseErrorsAndWarnings.errorsFatal count],[document.parseErrorsAndWarnings.errorsRecoverable count]+[document.parseErrorsAndWarnings.warnings count], ((NSError*)[document.parseErrorsAndWarnings.errorsFatal objectAtIndex:0]).localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease] show];
-	}
+				self.contentView = [[[SVGKLayeredImageView alloc] initWithSVGKImage:document] autorelease];
+			}
+			else
+			{
+				self.contentView = [[[SVGKFastImageView alloc] initWithSVGKImage:document] autorelease];
+				
+				NSLog(@"[%@] WARNING: workaround for Apple bugs: UIScrollView spams tiny changes to the transform to the content view; currently, we have NO WAY of efficiently measuring whether or not to re-draw the SVGKImageView. As a temporary solution, we are DISABLING the SVGKImageView's auto-redraw-at-higher-resolution code - in general, you do NOT want to do this", [self class]);
+				
+				((SVGKFastImageView*)self.contentView).disableAutoRedrawAtHighestResolution = TRUE;
+			}
+			self.contentView.showBorder = FALSE;
+			
+			if (_name) {
+				[_name release];
+				_name = nil;
+			}
+			
+			_name = [name copy];
+			
+			[self.scrollViewForSVG addSubview:self.contentView];
+			[self.scrollViewForSVG setContentSize: self.contentView.frame.size];
+			
+			float screenToDocumentSizeRatio = self.scrollViewForSVG.frame.size.width / self.contentView.frame.size.width;
+			
+			self.scrollViewForSVG.minimumZoomScale = MIN( 1, screenToDocumentSizeRatio );
+			self.scrollViewForSVG.maximumZoomScale = MAX( 1, screenToDocumentSizeRatio );
+			
+			NodeList* elementsUsingTagG = [document.DOMDocument getElementsByTagName:@"g"];
+			NSLog( @"[%@] checking for SVG standard set of elements with XML tag/node of <g>: %@", [self class], elementsUsingTagG.internalArray );
+		}
+		else
+		{
+			[[[[UIAlertView alloc] initWithTitle:@"SVG parse failed" message:[NSString stringWithFormat:@"%i fatal errors, %i warnings. First fatal = %@",[document.parseErrorsAndWarnings.errorsFatal count],[document.parseErrorsAndWarnings.errorsRecoverable count]+[document.parseErrorsAndWarnings.warnings count], ((NSError*)[document.parseErrorsAndWarnings.errorsFatal objectAtIndex:0]).localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease] show];
+		}
 	}
 	
 	[self.viewActivityIndicator stopAnimating];

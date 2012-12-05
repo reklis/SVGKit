@@ -65,6 +65,7 @@
 
 
 @property(nonatomic,retain) NSMutableArray* parserExtensions;
+@property(nonatomic,retain) NSMutableDictionary* parserKnownNamespaces; /**< maps "uri" to "array of parser-extensions" */
 
 #pragma mark - NEW
 

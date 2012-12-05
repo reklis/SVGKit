@@ -1,6 +1,7 @@
 #import "Element.h"
 
 #import "NamedNodeMap.h"
+#import "DOMHelperUtilities.h"
 
 @interface Element()
 @property(nonatomic,retain,readwrite) NSString* tagName;
@@ -95,8 +96,10 @@
 
 -(NodeList*) getElementsByTagName:(NSString*) name
 {
-	NSAssert( FALSE, @"Not implemented yet" );
-	return nil;
+	NodeList* accumulator = [[[NodeList alloc] init] autorelease];
+	[DOMHelperUtilities privateGetElementsByName:name inNamespace:nil childrenOfElement:self addToList:accumulator];
+	
+	return accumulator;
 }
 
 // Introduced in DOM Level 2:
@@ -142,8 +145,10 @@
 // Introduced in DOM Level 2:
 -(NodeList*) getElementsByTagNameNS:(NSString*) namespaceURI localName:(NSString*) localName
 {
-	NSAssert( FALSE, @"Not implemented yet" );
-	return nil;
+	NodeList* accumulator = [[[NodeList alloc] init] autorelease];
+	[DOMHelperUtilities privateGetElementsByName:localName inNamespace:namespaceURI childrenOfElement:self addToList:accumulator];
+	
+	return accumulator;
 }
 
 // Introduced in DOM Level 2:
