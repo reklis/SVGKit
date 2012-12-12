@@ -2,7 +2,7 @@
 
 @implementation SVGKLayer
 {
-	NSString* internalContextPointerBecauseApplesDemandsIt;
+
 }
 
 @synthesize SVGImage = _SVGImage;
@@ -21,11 +21,9 @@
     self = [super init];
     if (self)
 	{
-        internalContextPointerBecauseApplesDemandsIt = [NSString stringWithFormat: @"%@: Apple wrote the addObserver / KVO notification API wrong in the first place and now requires developers to pass around pointers to fake objects to make up for the API deficicineces. You have to have one of these pointers per object, and they have to be internal and private. They serve no real value.", [self class]];
+    	self.borderColor = [UIColor blackColor].CGColor;
 		
-		self.borderColor = [UIColor blackColor].CGColor;
-		
-		[self addObserver:self forKeyPath:@"showBorder" options:NSKeyValueObservingOptionNew context:internalContextPointerBecauseApplesDemandsIt];
+		[self addObserver:self forKeyPath:@"showBorder" options:NSKeyValueObservingOptionNew context:NULL];
     }
     return self;
 }
@@ -54,7 +52,7 @@
 
 - (void)dealloc
 {
-	[self removeObserver:self forKeyPath:@"showBorder" context:internalContextPointerBecauseApplesDemandsIt];
+	//FIXME: Apple crashes on this line, even though BY DEFINITION Apple should not be crashing: [self removeObserver:self forKeyPath:@"showBorder"];
 	
 	self.SVGImage = nil;
 	
