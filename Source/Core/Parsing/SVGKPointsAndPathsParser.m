@@ -360,6 +360,62 @@ inline BOOL SVGCurveEqualToCurve(SVGCurve curve1, SVGCurve curve2)
 }
 
 /**
+ quadratic-bezier-curveto:
+ ( "Q" | "q" ) wsp* quadratic-bezier-curveto-argument-sequence
+*/
++ (SVGCurve) readQuadraticCurvetoCommand:(NSScanner*)scanner path:(CGMutablePathRef)path relativeTo:(CGPoint)origin isRelative:(BOOL) isRelative
+{
+    NSString* cmd = nil;
+    NSCharacterSet* cmdFormat = [NSCharacterSet characterSetWithCharactersInString:@"Qq"];
+    BOOL ok = [scanner scanCharactersFromSet:cmdFormat intoString:&cmd];
+    
+    NSAssert(ok, @"failed to scan quadratic curve to command");
+    if (!ok) return SVGCurveZero;
+	
+    [SVGKPointsAndPathsParser readWhitespace:scanner];
+    
+    SVGCurve lastCurve = [SVGKPointsAndPathsParser readQuadraticCurvetoArgumentSequence:scanner path:path relativeTo:origin isRelative:isRelative];
+    return lastCurve;
+}
+/**
+ quadratic-bezier-curveto-argument-sequence:
+ quadratic-bezier-curveto-argument
+ | quadratic-bezier-curveto-argument comma-wsp? quadratic-bezier-curveto-argument-sequence
+*/
++ (SVGCurve) readQuadraticCurvetoArgumentSequence:(NSScanner*)scanner path:(CGMutablePathRef)path relativeTo:(CGPoint)origin isRelative:(BOOL) isRelative
+{
+    SVGCurve curve = [SVGKPointsAndPathsParser readQuadraticCurvetoArgument:scanner path:path relativeTo:origin];
+    
+    if (![scanner isAtEnd]) {
+        curve = [SVGKPointsAndPathsParser readQuadraticCurvetoArgumentSequence:scanner path:path relativeTo:(isRelative ? curve.p : origin) isRelative:isRelative];
+    }
+    
+    return curve;
+}
+
+/**
+ quadratic-bezier-curveto-argument:
+ coordinate-pair comma-wsp? coordinate-pair
+ */
++ (SVGCurve) readQuadraticCurvetoArgument:(NSScanner*)scanner path:(CGMutablePathRef)path relativeTo:(CGPoint)origin
+{
+    CGPoint p1 = [SVGKPointsAndPathsParser readCoordinatePair:scanner];
+    CGPoint coord1 = CGPointMake(p1.x+origin.x, p1.y+origin.y);
+    [SVGKPointsAndPathsParser readCommaAndWhitespace:scanner];
+    
+    CGPoint p2 = [SVGKPointsAndPathsParser readCoordinatePair:scanner];
+    CGPoint coord2 = CGPointMake(p2.x+origin.x, p2.y+origin.y);
+    [SVGKPointsAndPathsParser readCommaAndWhitespace:scanner];
+    
+    CGPathAddQuadCurveToPoint(path, NULL, coord1.x, coord1.y, coord2.x, coord2.y);
+#if DEBUG_PATH_CREATION
+	NSLog(@"[%@] PATH: QUADRATIC CURVE to (%2.2f, %2.2f)..(%2.2f, %2.2f)", [SVGKPointsAndPathsParser class], coord1.x, coord1.y, coord2.x, coord2.y );
+#endif
+    
+    return SVGCurveMake(coord1.x, coord1.y, 0.0f, 0.0f, coord2.x, coord2.y);
+}
+ 
+/**
  curveto:
  ( "C" | "c" ) wsp* curveto-argument-sequence
  */
