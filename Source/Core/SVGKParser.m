@@ -103,7 +103,29 @@ static NSMutableDictionary *NSDictionaryFromLibxmlAttributes (const xmlChar **at
 		self.parserExtensions = [NSMutableArray array];
 	}
 	
+	if( [self.parserExtensions containsObject:extension])
+	{
+		NSLog(@"[%@] WARNING: attempted to add a ParserExtension that was already added = %@", [self class], extension);
+		return;
+	}
+	
 	[self.parserExtensions addObject:extension];
+	
+	if( self.parserKnownNamespaces == nil )
+	{
+		self.parserKnownNamespaces = [NSMutableDictionary dictionary];
+	}
+	for( NSString* parserNamespace in extension.supportedNamespaces )
+	{
+		NSMutableArray* extensionsForNamespace = [self.parserKnownNamespaces objectForKey:parserNamespace];
+		if( extensionsForNamespace == nil )
+		{
+			extensionsForNamespace = [NSMutableArray array];
+			[self.parserKnownNamespaces setObject:extensionsForNamespace forKey:parserNamespace];
+		}
+		
+		[extensionsForNamespace addObject:extension];
+	}
 }
 
 - (SVGKParseResult*) parseSynchronously
@@ -320,7 +342,7 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	
 	NSString *stringLocalName = NSStringFromLibxmlString(localname);
 	NSString *stringPrefix = NSStringFromLibxmlString(prefix);
-	NSMutableDictionary *namespacesByPrefix = NSDictionaryFromLibxmlNamespaces(namespaces, nb_namespaces);
+	NSMutableDictionary *namespacesByPrefix = NSDictionaryFromLibxmlNamespaces(namespaces, nb_namespaces); // TODO: need to do something with this; this is the ONLY point at which we discover the "xml:ns" definitions in the SVG doc! See below for a temp fix
 	NSMutableDictionary *attributeObjects = NSDictionaryFromLibxmlAttributes(attributes, nb_attributes);
 	NSString *stringURI = NSStringFromLibxmlString(URI);
 	
@@ -353,6 +375,20 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 	{
 		if( newAttribute.namespaceURI == nil )
 			newAttribute.namespaceURI = self.defaultXMLNamespaceForThisParseRun;
+	}
+	
+	/**
+	 TODO: temporary workaround to PRETEND that all namespaces are always defined;
+	 this is INCORRECT: namespaces should be UNdefined once you close the parent tag that defined them (I think?)
+	 */
+	for( NSString* prefix in namespacesByPrefix )
+	{
+		NSString* uri = [namespacesByPrefix objectForKey:prefix];
+		
+		if( prefix != nil )
+			[self.currentParseRun.namespacesEncountered setObject:uri forKey:prefix];
+		else
+			[self.currentParseRun.namespacesEncountered setObject:uri forKey:[NSNull null]];
 	}
 	
 #if DEBUG_VERBOSE_LOG_EVERY_TAG

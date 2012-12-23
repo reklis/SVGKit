@@ -168,7 +168,12 @@
 
 -(NSString *)description
 {
-	return [NSString stringWithFormat:@"NamedNodeMap: NSDictionary(%@)", self.internalDictionary];
+	/** test (and output) both the "DOM 1" and "DOM 2" dictionaries, if they're non-empty */
+	
+	NSString* dom1 = self.internalDictionary.count > 0 ? [NSString stringWithFormat:@"DOM-v1(%@)", self.internalDictionary] : nil;
+	NSString* dom2 = self.internalDictionaryOfNamespaces.count > 0 ? [NSString stringWithFormat:@"DOM-v2(%@)", self.internalDictionaryOfNamespaces] : nil;
+	
+	return [NSString stringWithFormat:@"NamedNodeMap: %@%@%@", dom1, dom1 != nil && dom2 != nil ? @"\n" : @"", dom2  ];
 }
 
 

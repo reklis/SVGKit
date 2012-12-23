@@ -3,9 +3,6 @@ SVGKit
 
 SVGKit is a Cocoa framework for rendering SVG files as Core Animation layers. All shapes are represented by instances of the `CAShapeLayer` class, and are, by design, animatable. SVGKit is compatible with the latest iOS SDK's.
 
-BRANCH: "transforms"
-======
-
 This specific branch contains a MASSIVE re-factor of the original SVGKit, aiming to make it easier to use in your apps. Please read the "usage" instructions carefully - they have changed from previous SVGKit versions!
 
 
@@ -14,7 +11,7 @@ Usage - Basic (iPhone/iPad)
 
 Instantiate an SVGKImageView using the filename of an SVG file, and add it to your view with [UIView addSubview:]
 
-    [self.view addSubview: [[SVGKImageView alloc] initWithSVGKImage: [SVGKImage imageNamed:@"mySVGfile.svg"]]];
+    [self.view addSubview: [[SVGKFastImageView alloc] initWithSVGKImage: [SVGKImage imageNamed:@"mySVGfile.svg"]]];
 
 Usage - Intermediate (iPhone/iPad)
 -----
@@ -35,14 +32,14 @@ OPTION 2: Load an SVG file, and read the SVG data directly by looking at the tre
 Advanced Features (this branch/fork only!) (iPhone/iPad)
 =====
 
-FEATURE 1: use an SVG just like it's a normal PNG file: use SVGKImageView like it's UIImageView:
+FEATURE 1: use an SVG just like it's a normal PNG file: use SVGKFastImageView like it's UIImageView:
 -----
 
   - SVGKImage = equivalent of UIImage (same methods and properties - some not implemented, but all core items implemented)
-  - SVGKImageView = equivalent of UIImageView (same methods, with extra properties to support the features of SVG that plain bitmaps lack - e.g. resolution independent rendering)
+  - SVGKFastImageView = equivalent of UIImageView (same methods, with extra properties to support the features of SVG that plain bitmaps lack - e.g. resolution independent rendering)
 
-...NB: by default, if you change the "frame" property of an SVGKImageView, it automatically re-renders the SVG at the new resolution.
-...NB: bugs in Apple's UIScrollView mean you MUST disable the above feature before allowing user's pinch-zoom: a property on SVGKImageView lets you turn this on/off
+...NB: by default, if you change the "frame" property of an SVGKFastImageView, it automatically re-renders the SVG at the new resolution.
+...NB: bugs in Apple's UIScrollView mean you MUST disable the above feature before allowing user's pinch-zoom: a property on SVGKFastImageView lets you turn this on/off
 
  
 FEATURE 2: load SVG from web, or from disk

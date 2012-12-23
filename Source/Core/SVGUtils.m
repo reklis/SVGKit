@@ -399,7 +399,7 @@ CGMutablePathRef createPathFromPointsInString (const char *string, boolean_t clo
 			bzero(accum, MAX_ACCUM);
 			accumIdx = 0;
 		}
-		else if (isdigit(c) || c == '.') { // is digit or decimal separator?
+		else if (isdigit(c) || c == '-' || c == '.') { // is digit or decimal separator OR A MINUS SIGN!!! ?
 			accum[accumIdx++] = c;
 		}
 	}
