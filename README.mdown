@@ -92,14 +92,11 @@ Feel free to report any issues or suggest improvements in the issue tracker
 Installation
 -----
 
-Dependencies:
-
-  git submodule init && git submodule update
-
 iOS (iPhone/iPad):
   1. Open the project "XcodeProjects/SVGKit/SVGKit"
   2. Select the target "SVGKit Library" from the dropdown build selector at top left
   3. Build
+  4a. (open the Products section on left hand bar in Xcode, right click the product, and select "Show in Finder". THEN GO UP ONE DIRECTORY! You MUST NOT USE the Product that Xcode shows you - it IS WRONG, it is a BUG IN APPLE'S XCODE)
   4. Look in your output directory for a folder named "debug-universal" - this contains a library + headers for: iPhone, iPad, iOS Simulator
 
   5. Drag/drop the library file, and the headers folder (should be called "usr") into your iPhone/iPad project.
