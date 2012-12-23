@@ -253,8 +253,15 @@ static NSMutableDictionary* globalSVGKImageCache;
 #if TARGET_OS_IPHONE
 -(UIImage *)UIImage
 {
-	NSAssert( FALSE, @"Auto-converting SVGKImage to a rasterized UIImage is not yet implemented by SVGKit" );
-	return nil;
+	NSAssert( self.DOMTree != nil, @"You cannot request a .UIImage for an SVG that you haven't parsed yet! There's no data to return!");
+	
+	UIGraphicsBeginImageContextWithOptions(self.size, FALSE, [UIScreen mainScreen].scale );
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	[self.CALayerTree renderInContext:context];
+	UIImage* result = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	
+	return result;
 }
 #endif
 

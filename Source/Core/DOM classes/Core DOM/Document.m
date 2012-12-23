@@ -7,8 +7,6 @@
 
 @interface Document()
 -(Element*) privateGetElementById:(NSString*) idValue childrenOfElement:(Node*) parent;
-/*! private method used in implementation of the MULTIPLE getElementsByTagName methods */
--(void) privateGetElementsByName:(NSString*) name inNamespace:(NSString*) namespaceURI childrenOfElement:(Node*) parent addToList:(NodeList*) accumulator;
 @end
 
 @implementation Document
